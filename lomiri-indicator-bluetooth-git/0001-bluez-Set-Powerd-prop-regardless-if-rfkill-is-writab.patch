@@ -1,0 +1,42 @@
+From 6d5be9017e9614e0e5e057ff98d14132f3cfc39c Mon Sep 17 00:00:00 2001
+From: Marius Gripsgard <marius@ubports.com>
+Date: Sun, 10 Jan 2021 16:07:59 +0100
+Subject: [PATCH] [bluez] Set Powerd prop regardless if rfkill is writable
+
+---
+ src/bluez.vala | 19 +++++++++----------
+ 1 file changed, 9 insertions(+), 10 deletions(-)
+
+diff --git a/src/bluez.vala b/src/bluez.vala
+index b74b53a..52ef0d6 100644
+--- a/src/bluez.vala
++++ b/src/bluez.vala
+@@ -442,16 +442,15 @@ public class Bluez: Bluetooth, Object
+         debug (@"setting killswitch blocked to $(!b)");
+         killswitch.try_set_blocked (!b);
+       }
+-    else
+-      {
+-        var iter = HashTableIter<ObjectPath,BluezAdapter> (path_to_adapter_proxy);
+-        ObjectPath object_path;
+-        BluezAdapter adapter_proxy;
+-        while (iter.next (out object_path, out adapter_proxy))
+-          adapter_proxy.call.begin ("org.freedesktop.DBus.Properties.Set",
+-                                    new Variant ("(ssv)", "org.bluez.Adapter1", "Powered", new Variant.boolean (b)),
+-                                    DBusCallFlags.NONE, -1);
+-      }
++
++    var iter = HashTableIter<ObjectPath,BluezAdapter> (path_to_adapter_proxy);
++    ObjectPath object_path;
++    BluezAdapter adapter_proxy;
++    while (iter.next (out object_path, out adapter_proxy))
++      adapter_proxy.call.begin ("org.freedesktop.DBus.Properties.Set",
++                                new Variant ("(ssv)", "org.bluez.Adapter1", "Powered", new Variant.boolean (b)),
++                                DBusCallFlags.NONE, -1);
++
+   }
+ }
+ 
+-- 
+2.30.0
+

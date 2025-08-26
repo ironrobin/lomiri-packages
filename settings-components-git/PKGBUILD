@@ -1,0 +1,44 @@
+# Maintainer: Ivan Semkin (ivan at semkin dot ru)
+
+pkgname=lomiri-settings-components-git
+_pkgname=lomiri-settings-components
+pkgver=r897.41d8ca7
+pkgrel=1
+pkgdesc='Ubuntu settings components for Unity8'
+url='https://gitlab.com/ubports/development/core/lomiri-settings-components'
+arch=(x86_64 i686 armv7h aarch64)
+license=(LGPL GPL)
+conflicts=(settings-components)
+provides=(settings-components lomiri-settings-components)
+depends=(xorg-server-xvfb qt5-quickcontrols)
+makedepends=(git cmake cmake-extras-git)
+source=('git+https://gitlab.com/ubports/development/core/lomiri-settings-components.git')
+sha256sums=('SKIP')
+
+BUILDENV+=('!check') # https://paste.ubuntu.com/p/gsfv2YX6Z5/
+BUILD_DIR=build
+
+pkgver() {
+  cd ${_pkgname}
+  echo "r$(git rev-list --count HEAD).$(git describe --always)"
+}
+
+build() {
+  cd ${_pkgname}
+  mkdir -p ${BUILD_DIR}
+  cd ${BUILD_DIR}
+  cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_INSTALL_LIBDIR="lib/" ..
+  make
+}
+
+check() {
+  cd ${_pkgname}/${BUILD_DIR}
+  make ARGS+="--output-on-failure" test
+}
+
+package() {
+  cd ${_pkgname}/${BUILD_DIR}
+  make DESTDIR="${pkgdir}/" install
+  mv ${pkgdir}/usr/lib/qt5/ ${pkgdir}/usr/lib/qt/
+}
+# vim:set ts=2 sw=2 et:

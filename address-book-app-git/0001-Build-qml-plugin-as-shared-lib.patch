@@ -1,0 +1,25 @@
+From be4dac5627054c91d61da0ff34623c2bdb682a95 Mon Sep 17 00:00:00 2001
+From: Marius Gripsgard <marius@ubports.com>
+Date: Wed, 9 Sep 2020 02:24:55 +0200
+Subject: [PATCH] Build qml plugin as shared lib
+
+---
+ src/imports/Ubuntu/Contacts/CMakeLists.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/imports/Ubuntu/Contacts/CMakeLists.txt b/src/imports/Ubuntu/Contacts/CMakeLists.txt
+index f0c03b57..8a3ac8b6 100644
+--- a/src/imports/Ubuntu/Contacts/CMakeLists.txt
++++ b/src/imports/Ubuntu/Contacts/CMakeLists.txt
+@@ -50,7 +50,7 @@ include_directories(
+     ${QOfono_INCLUDE_DIRS}
+ )
+ 
+-add_library(${CONTACT_COMPONENTS_PLUGIN} MODULE
++add_library(${CONTACT_COMPONENTS_PLUGIN} SHARED
+     ${CONTACT_COMPONENTS_SRC}
+ )
+ 
+-- 
+2.25.1
+

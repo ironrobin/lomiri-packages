@@ -1,0 +1,31 @@
+From de9b340d823f4effff4c8d2b14b6c30e1f1c3097 Mon Sep 17 00:00:00 2001
+From: Marius Gripsgard <marius@ubports.com>
+Date: Thu, 14 May 2020 03:42:25 +0200
+Subject: [PATCH] [DO NOT MERGE] Temp fix for wrongly scaled buffers
+
+---
+ src/platform/graphics/display_configuration.cpp | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/src/platform/graphics/display_configuration.cpp b/src/platform/graphics/display_configuration.cpp
+index fa19499387..9238bb919b 100644
+--- a/src/platform/graphics/display_configuration.cpp
++++ b/src/platform/graphics/display_configuration.cpp
+@@ -237,14 +237,14 @@ mir::geometry::Rectangle extents_of(
+     size_t current_mode_index,
+     MirOrientation orientation,
+     mir::geometry::Point top_left,
+-    float scale)
++    float)
+ {
+     if (current_mode_index >= modes.size())
+         return mir::geometry::Rectangle();
+ 
+     mir::geometry::Size const size{
+-        roundf(modes[current_mode_index].size.width.as_int() / scale),
+-        roundf(modes[current_mode_index].size.height.as_int() / scale)};
++        roundf(modes[current_mode_index].size.width.as_int()),
++        roundf(modes[current_mode_index].size.height.as_int())};
+ 
+     if (orientation == mir_orientation_normal ||
+         orientation == mir_orientation_inverted)

@@ -1,0 +1,37 @@
+# Maintainer: Furkan Kardame <furkan@fkardame.com>
+
+pkgname=lomiri-clock-app-git
+_pkgname=clock-app
+pkgver=r2857.acbfa82b
+pkgrel=1
+pkgdesc="Lomiri clock app"
+arch=('x86_64' 'armv7' 'aarch64')
+url="https://gitlab.com/ubports/apps/clock-app"
+license=('GPL3')
+depends=(qt5-base qt5-declarative ubuntu-ui-toolkit-git u1db-qt libusermetrics)
+makedepends=('git' 'cmake' 'intltool')
+provides=(lomiri-clock-app)
+conflicts=(lomiri-clock-app)
+source=('git+https://gitlab.com/ubports/apps/clock-app.git')
+md5sums=('SKIP')
+
+pkgver() {
+  cd ${_pkgname}
+  printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+}
+
+prepare() {
+  mkdir -p build
+  cd ${_pkgname}
+}
+
+build() {
+  cd build
+  cmake ../${_pkgname} . -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_INSTALL_LIBDIR="lib/" -DCMAKE_INSTALL_SYSCONFDIR=/etc -DCMAKE_INSTALL_LOCALSTATEDIR=/var -DCLICK_MODE=off
+  make
+}
+
+package() {
+  cd build
+  make DESTDIR="$pkgdir/" install
+}

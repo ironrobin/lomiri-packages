@@ -1,0 +1,10 @@
+#!/bin/sh
+
+systemctl --user import-environment
+
+dbus-update-activation-environment --systemd XDG_SESSION_DESKTOP="ubuntu-touch"
+dbus-update-activation-environment --systemd MIR_SERVER_WAYLAND_HOST=/tmp/wayland-root
+
+/usr/share/lomiri-session/run-systemd-session lomiri.service
+
+exit 0

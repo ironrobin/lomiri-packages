@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Lomiri Touch
+Exec=lomiri-touch-session
+TryExec=lomiri-touch-session
+Type=Application
+X-LightDM-Session-Type=wayland
+X-LightDM-DesktopName=Lomiri

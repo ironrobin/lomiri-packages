@@ -1,0 +1,39 @@
+# Maintainer: Furkan Kardame (furkan@fkardame.com)
+
+pkgname=mediascanner2-git
+_pkgname=mediascanner2
+pkgver=2.0
+pkgrel=4
+pkgdesc='MediaScanner2 from UBPorts'
+url='https://github.com/ubports/mediascanner2'
+arch=(x86_64 i686 armv7h aarch64)
+license=(LGPL)
+conflicts=(mediascanner2)
+provides=(mediascanner2)
+depends=(libexif dbus-cpp dbus apparmor glib2 gstreamer gst-plugins-base gdk-pixbuf2 properties-cpp sqlite taglib udisks2 qt5-declarative gst-plugins-good)
+makedepends=(cmake cmake-extras-git gtest shared-mime-info)
+source=("git+https://github.com/ubports/mediascanner2#branch=xenial"
+        "fix-cmake-hh-moc-policy.patch")
+md5sums=('SKIP'
+         'SKIP')
+
+prepare() {
+  cd ${_pkgname}
+
+  patch -Np1 -i "${srcdir}/fix-cmake-hh-moc-policy.patch"
+}
+
+build() {
+  mkdir -p ${srcdir}/build
+  cd ${srcdir}/build
+
+  # HACK, for some reason pkg-config --cflags ligexif returns nothing so we need to add it manully
+  cmake ../${_pkgname} -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_CXX_FLAGS="-I/usr/include/libexif" -DENABLE_TESTS=off .
+  make
+}
+
+package() {
+  cd ${srcdir}/build
+  make DESTDIR="${pkgdir}/" install
+  mv "${pkgdir}/usr/lib/qt5/" "${pkgdir}/usr/lib/qt/"
+}

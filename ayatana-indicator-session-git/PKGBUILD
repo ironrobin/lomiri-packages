@@ -1,0 +1,45 @@
+# Maintainer: Furkan Kardame <furkan@fkardame.com>
+
+pkgname="ayatana-indicator-session-git"
+_pkgname="ayatana-indicator-session"
+pkgver=git_r2492
+pkgrel=1
+pkgdesc="Ayatana Indicator showing session management, status and user switching"
+arch=("i686" "x86_64" "aarch64")
+url="https://github.com/AyatanaIndicators"
+license=("GPL2" "GPL3")
+depends=("libayatana-indicator" "gsettings-desktop-schemas" "systemd" "glib2" "url-dispatcher-git" "libayatana-common")
+makedepends=("git" "cmake" "intltool" "glib2" "systemd")
+optdepends=("mate-screensaver" "mate-ayatana-indicator-applet" "mate-control-center" "yelp" "firefox")
+source=("git+https://github.com/AyatanaIndicators/${_pkgname}.git"
+        'https://patch-diff.githubusercontent.com/raw/AyatanaIndicators/ayatana-indicator-session/pull/25.patch')
+md5sums=('SKIP'
+         '962eeccbd33cb88d54bf0472bae4d2fb')
+options=("!emptydirs")
+provides=("${_pkgname}")
+conflicts=("${_pkgname}")
+
+pkgver()
+{
+    cd ${_pkgname}
+    echo "git_r$(git rev-list --count HEAD)"
+}
+
+prepare()
+{
+    cd ${_pkgname}
+    patch -p1 -i ../25.patch
+}
+
+build()
+{
+    cd ${srcdir}/${_pkgname}
+    cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBEXECDIR=lib -Denable_tests=OFF
+    make
+}
+
+package()
+{
+    cd ${srcdir}/${_pkgname}
+    make DESTDIR="${pkgdir}" install
+}

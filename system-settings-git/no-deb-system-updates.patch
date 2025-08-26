@@ -1,0 +1,54 @@
+diff --git a/plugins/system-update/CMakeLists.txt b/plugins/system-update/CMakeLists.txt
+index 57488cc5..e9cc2db0 100644
+--- a/plugins/system-update/CMakeLists.txt
++++ b/plugins/system-update/CMakeLists.txt
+@@ -42,6 +42,11 @@ add_library(UpdatePlugin SHARED
+     updatemanager.cpp
+     ../../src/i18n.cpp
+ )
++
++if (DEB_SYSTEM)
++  set(apt-pkg apt-pkg)
++endif()
++
+ target_link_libraries(UpdatePlugin
+     Qt5::Core
+     Qt5::Gui
+@@ -49,7 +54,7 @@ target_link_libraries(UpdatePlugin
+     Qt5::Quick
+     Qt5::Sql
+ 
+-    apt-pkg
++    ${apt-pkg}
+     uss-systemimage
+ )
+ 
+diff --git a/plugins/system-update/update.cpp b/plugins/system-update/update.cpp
+index 83a4581a..a47b271f 100644
+--- a/plugins/system-update/update.cpp
++++ b/plugins/system-update/update.cpp
+@@ -19,7 +19,10 @@
+ #include "helpers.h"
+ #include "update.h"
+ 
++#ifdef DEB_SYSTEM
+ #include <apt-pkg/debversion.h>
++#endif
++
+ #include <QVariant>
+ 
+ namespace UpdatePlugin
+@@ -339,9 +342,13 @@ void Update::setPackageName(const QString &packageName)
+ 
+ bool Update::isUpdateRequired()
+ {
++#ifdef DEB_SYSTEM
+     int result = debVS.CmpVersion(m_localVersion.toUtf8().data(),
+             m_remoteVersion.toUtf8().data());
+     return result < 0;
++#else
++    return false;
++#endif
+ }
+ 
+ bool Update::operator==(const Update &other) const

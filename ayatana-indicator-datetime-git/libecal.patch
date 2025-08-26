@@ -1,0 +1,17 @@
+--- a/CMakeLists.txt	2020-07-18 11:54:42.332529645 +0300
++++ b/CMakeLists.txt	2020-07-18 11:56:13.279206692 +0300
+@@ -45,7 +45,7 @@
+                    glib-2.0>=2.36
+                    gio-unix-2.0>=2.36
+                    libical>=0.48
+-                   libecal-1.2>=3.16
++                   libecal-2.0>=1-64
+                    libedataserver-1.2>=3.5
+                    gstreamer-1.0>=1.2
+                    libnotify>=0.7.6
+@@ -115,4 +115,4 @@
+ add_subdirectory(po)
+ if (${enable_tests})
+   add_subdirectory(tests)
+-endif ()
++endif () 

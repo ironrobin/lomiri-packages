@@ -1,0 +1,37 @@
+# Maintainer: Marius Gripsgard (marius@ubports.com)
+# Maintainer: Furkan Kardame <furkan@fkardame.com>
+
+pkgname=lomiri-desktop-session
+pkgver=0.1.3
+pkgrel=1
+pkgdesc='Lomiri Desktop Session Scripts'
+url='https://gitlab.com/ubports/core/lomiri-desktop-session'
+arch=(any)
+license=(LGPL3)
+depends=(inotify-tools unity8)
+source=('run-systemd-session'
+        'lomiri.service'
+        'lomiri-session'
+        'dm-lomiri-session'
+        'lomiri.desktop')
+md5sums=('feeb2cec28c11f0d823b490899edbe1e'
+         '1a9d14484164501f76aac7dd672f9d87'
+         '7d277dec0f3e6de9c3ca716466068180'
+         '1b044d521d244e56991e158d10992364'
+         'ff49abc45a9f7da0d488ed79749eab93')
+
+prepare(){
+    mkdir -p "${pkgdir}/usr/lib/lomiri-session"
+    mkdir -p "${pkgdir}/usr/share/wayland-sessions"
+    mkdir -p "${pkgdir}/usr/share/lightdm/sessions"
+}
+
+package() {
+    install -Dm755 "${srcdir}/run-systemd-session" -t "${pkgdir}/usr/lib/lomiri-session/"
+    install -Dm755 "${srcdir}/lomiri.service" -t "${pkgdir}/usr/lib/systemd/user"
+    install -Dm755 "${srcdir}/lomiri-session" -t "${pkgdir}/usr/bin"
+    install -Dm755 "${srcdir}/dm-lomiri-session" -t "${pkgdir}/usr/bin/"
+    install -Dm644 "${srcdir}/lomiri.desktop" -t "${pkgdir}/usr/share/lightdm/sessions/"
+    install -Dm644 "${srcdir}/lomiri.desktop" -t "${pkgdir}/usr/share/wayland-sessions"
+
+}

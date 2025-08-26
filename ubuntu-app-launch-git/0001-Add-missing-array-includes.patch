@@ -1,0 +1,39 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 4064afb..e95007f 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -56,8 +56,8 @@ add_compile_options(
+ 	-pthread
+ )
+ 
+-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu99")
+-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
++set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu99 -Wno-deprecated-declarations")
++set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-deprecated-declarations")
+ 
+ enable_testing()
+ 
+diff --git a/liblomiri-app-launch/jobs-base.cpp b/liblomiri-app-launch/jobs-base.cpp
+index 46f3e3e..ab2d009 100644
+--- a/liblomiri-app-launch/jobs-base.cpp
++++ b/liblomiri-app-launch/jobs-base.cpp
+@@ -18,6 +18,7 @@
+  */
+ 
+ #include <algorithm>
++#include <array>
+ #include <cerrno>
+ #include <cstring>
+ #include <numeric>
+diff --git a/tests/spew-master.h b/tests/spew-master.h
+index c3737c2..a157557 100644
+--- a/tests/spew-master.h
++++ b/tests/spew-master.h
+@@ -19,6 +19,7 @@
+ 
+ #pragma once
+ 
++#include <array>
+ #include "glib-thread.h"
+ 
+ class SpewMaster

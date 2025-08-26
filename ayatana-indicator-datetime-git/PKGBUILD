@@ -1,0 +1,37 @@
+# Maintainer: Furkan Kardame <furkan@fkardame.com>
+
+pkgname="ayatana-indicator-datetime-git"
+_pkgname="ayatana-indicator-datetime"
+pkgver=git_r2273
+pkgrel=1
+pkgdesc="Ayatana Indicator providing clock and calendar"
+arch=("i686" "x86_64" "aarch64")
+url="https://github.com/AyatanaIndicators"
+license=("GPL3")
+depends=("glib2" "evolution-data-server" "libaccounts-glib" "properties-cpp")
+makedepends=("cmake" "dbus" "intltool" "glib2" "libnotify" "gstreamer" "libical" "evolution-data-server" "gsettings-desktop-schemas" "evolution-data-server" "git")
+optdepends=("mate-ayatana-indicator-applet" "geoclue")
+source=("git+https://github.com/AyatanaIndicators/${_pkgname}.git"
+       )
+md5sums=("SKIP"
+        )
+options=("!emptydirs")
+
+pkgver()
+{
+    cd ${_pkgname}
+    echo "git_r$(git rev-list --count HEAD)"
+}
+
+build()
+{
+    cd ${_pkgname}
+    cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBEXECDIR=lib -Denable_tests=OFF
+    make
+}
+
+package()
+{
+    cd ${_pkgname}
+    make DESTDIR="${pkgdir}" install
+}

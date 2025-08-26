@@ -1,0 +1,10 @@
+build:
+  tags:
+    - bigbuilds
+    - philm
+  script:
+    - sudo pacman -Syy && makepkg -scr --noconfirm
+  artifacts:
+    paths:
+    - ./*.pkg.tar.*
+    expire_in: 1 week

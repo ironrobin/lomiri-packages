@@ -1,0 +1,12 @@
+diff --git a/include/core/internal/persistent_string_cache_impl.h b/include/core/internal/persistent_string_cache_impl.h
+index 59f81f8..1bed3f5 100644
+--- a/include/core/internal/persistent_string_cache_impl.h
++++ b/include/core/internal/persistent_string_cache_impl.h
+@@ -23,6 +23,7 @@
+ 
+ #include <leveldb/db.h>
+ 
++#include <array>
+ #include <mutex>
+ #include <sstream>
+ 

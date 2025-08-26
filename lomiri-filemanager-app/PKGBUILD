@@ -1,0 +1,41 @@
+# Maintainer: Furkan Kardame <furkan@fkardame.com>
+
+pkgname=lomiri-filemanager-app-git
+_pkgname=filemanager-app
+pkgver=r2395.ea63772
+pkgrel=1
+pkgdesc="Lomiri filemanager app"
+arch=('x86_64' 'armv7' 'aarch64')
+url="https://gitlab.com/ubports/apps/filemanager-app"
+license=('GPL3')
+provides=(lomiri-filemanager-app)
+conflicts=(lomiri-filemanager-app)
+depends=(qt5-base qt5-declarative ubuntu-ui-toolkit-git taglib pam smbclient lomiri-terminal-app)
+makedepends=('git' 'cmake' 'intltool')
+source=('git+https://gitlab.com/ubports/apps/filemanager-app.git'
+        '0001-Use-pamauth-from-terminal-app.patch')
+md5sums=('SKIP'
+         'SKIP')
+
+pkgver() {
+  cd ${_pkgname}
+  printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+}
+
+prepare() {
+  mkdir -p build
+  cd ${_pkgname}
+  patch -Np1 -i "${srcdir}/0001-Use-pamauth-from-terminal-app.patch"
+}
+
+build() {
+  cd build
+  cmake ../${_pkgname} . -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_INSTALL_LIBDIR="lib/" -DCMAKE_INSTALL_SYSCONFDIR=/etc -DCMAKE_INSTALL_LOCALSTATEDIR=/var -DCLICK_MODE=off
+  make
+}
+
+package() {
+  cd build
+  make DESTDIR="$pkgdir/" install
+#  mv "${pkgdir}/usr/lib/qt5/" "${pkgdir}/usr/lib/qt/"
+}

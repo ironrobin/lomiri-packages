@@ -1,0 +1,37 @@
+# Maintainer: nano thirteen <nano13@gmx.net>
+
+pkgname=presage
+pkgver=0.9.1.r50.gaa52c37
+pkgrel=2.0
+pkgdesc='Presage is an intelligent predictive text entry platform.'
+arch=('aarch64' 'x86_64')
+licence=('GPL')
+url='http://presage.sourceforge.net'
+makedepends=('git')
+depends=('sqlite')
+source=("git+https://git.code.sf.net/p/$pkgname/$pkgname")
+sha256sums=('SKIP')
+conflicts=('presage-git')
+provides=('presage-git')
+replaces=('presage-git')
+
+pkgver() {
+    cd $pkgname
+    git describe --long | sed 's/^v//;s/\([^-]*-g\)/r\1/;s/-/./g'
+}
+
+build() {
+    cd $pkgname
+    
+    autoreconf -fvi
+    autoconf
+    
+    ./configure --prefix=/usr --sysconfdir=/etc \
+      --localstatedir=/var --libexecdir=/usr/lib
+    make
+}
+
+package() {
+    cd $pkgname
+    make DESTDIR="$pkgdir" install
+}

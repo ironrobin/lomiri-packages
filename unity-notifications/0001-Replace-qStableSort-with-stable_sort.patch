@@ -1,0 +1,13 @@
+diff --git a/src/NotificationModel.cpp b/src/NotificationModel.cpp
+index e0896bd..7c209b6 100644
+--- a/src/NotificationModel.cpp
++++ b/src/NotificationModel.cpp
+@@ -469,7 +469,7 @@ void NotificationModel::insertSnap(const QSharedPointer<Notification> &n) {
+         if(!replaced) {
+             p->snapQueue.push_back(n);
+         }
+-        qStableSort(p->snapQueue.begin(), p->snapQueue.end(), notificationCompare);
++        std::stable_sort(p->snapQueue.begin(), p->snapQueue.end(), notificationCompare);
+         Q_EMIT queueSizeChanged(queued());
+     } else {
+         bool inserted = false;

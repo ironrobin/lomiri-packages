@@ -1,0 +1,53 @@
+# Maintainer: Furkan Kardame <furkan@fkardame.com>
+
+pkgname="repowerd-git"
+_pkgname="repowerd"
+pkgver=r322.4fa3396
+pkgrel=1
+pkgdesc="Repowerd, power daemon for Lomiri UI"
+arch=("i686" "x86_64" "aarch64")
+url="https://github.com/ubports/repowerd"
+license=("GPL3")
+depends=("glib2" "systemd" "qt5-base" "deviceinfo" "dbus")
+makedepends=("cmake" "cmake-extras" "gmock")
+source=("git+https://github.com/ubports/${_pkgname}.git#branch=xenial_-_edge_-_wayland"
+        "0001-Allow-to-be-built-without-hybris-android-papi-suppor.patch"
+        "0002-Fix-warning-on-newer-gcc.patch"
+        "0001-Install-systemd-unit-with-cmake-not-just-debian-pkg.patch"
+        "0001-Make-wayland-session-a-compatable-repowerd-session.patch")
+md5sums=("SKIP"
+         "SKIP"
+         "SKIP"
+         "SKIP"
+         "e8597cb24d60ea329b1e83e3f795498b")
+options=("!emptydirs")
+provides=("${_pkgname}")
+conflicts=("${_pkgname}")
+
+pkgver() {
+  cd ${_pkgname}
+  printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+}
+
+prepare() {
+  cd ${_pkgname}
+
+  patch -Np1 -i ../0001-Allow-to-be-built-without-hybris-android-papi-suppor.patch
+  patch -Np1 -i ../0002-Fix-warning-on-newer-gcc.patch
+  patch -Np1 -i ../0001-Install-systemd-unit-with-cmake-not-just-debian-pkg.patch
+  patch -Np1 -i ../0001-Make-wayland-session-a-compatable-repowerd-session.patch
+  }
+
+build()
+{
+    cd ${_pkgname}
+    cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBEXECDIR=lib -DCMAKE_INSTALL_SYSCONFDIR=/etc -DREPOWERD_DISABLE_HYBRIS=yes -DREPOWERD_BUILD_TESTS=no
+    make
+}
+
+package()
+{
+    cd ${_pkgname}
+    make DESTDIR="${pkgdir}" install
+    mv "${pkgdir}/usr/sbin" "${pkgdir}/usr/bin"
+}

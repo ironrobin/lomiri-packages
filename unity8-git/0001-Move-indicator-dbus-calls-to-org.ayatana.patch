@@ -1,0 +1,120 @@
+From ba3a157b12cae6b53ab96ee17eec0134273e8d54 Mon Sep 17 00:00:00 2001
+From: Marius Gripsgard <marius@ubports.com>
+Date: Tue, 22 Sep 2020 21:56:01 +0200
+Subject: [PATCH] Move indicator dbus calls to org.ayatana
+
+---
+ qml/Components/BrightnessControl.qml              | 4 ++--
+ qml/Components/KeymapSwitcher.qml                 | 4 ++--
+ qml/Components/VolumeControl.qml                  | 4 ++--
+ qml/Greeter/Clock.qml                             | 6 +++---
+ qml/Panel/Indicators/IndicatorMenuItemFactory.qml | 4 ++--
+ qml/Panel/Indicators/IndicatorsLight.qml          | 8 ++++----
+ 6 files changed, 15 insertions(+), 15 deletions(-)
+
+diff --git a/qml/Components/BrightnessControl.qml b/qml/Components/BrightnessControl.qml
+index 51aeee6474..f14ae0d876 100644
+--- a/qml/Components/BrightnessControl.qml
++++ b/qml/Components/BrightnessControl.qml
+@@ -42,8 +42,8 @@ QtObject {
+ 
+     property QDBusActionGroup actionGroup: QDBusActionGroup {
+         busType: DBus.SessionBus
+-        busName: "com.canonical.indicator.power"
+-        objectPath: "/com/canonical/indicator/power"
++        busName: "org.ayatana.indicator.power"
++        objectPath: "/org/ayatana/indicator/power"
+ 
+         property variant brightness: action("brightness")
+ 
+diff --git a/qml/Components/KeymapSwitcher.qml b/qml/Components/KeymapSwitcher.qml
+index 6e87bce3e1..3ecc4ab3db 100644
+--- a/qml/Components/KeymapSwitcher.qml
++++ b/qml/Components/KeymapSwitcher.qml
+@@ -83,8 +83,8 @@ QtObject {
+     // indicator
+     property QDBusActionGroup actionGroup: QDBusActionGroup {
+         busType: DBus.SessionBus
+-        busName: "com.canonical.indicator.keyboard"
+-        objectPath: "/com/canonical/indicator/keyboard"
++        busName: "org.ayatana.indicator.keyboard"
++        objectPath: "/org/ayatana/indicator/keyboard"
+ 
+         property variant currentAction: action("current") // the one that's checked by the indicator
+         property variant activeAction: action("active")   // the one that we clicked
+diff --git a/qml/Components/VolumeControl.qml b/qml/Components/VolumeControl.qml
+index 116af32227..6eec012115 100644
+--- a/qml/Components/VolumeControl.qml
++++ b/qml/Components/VolumeControl.qml
+@@ -37,8 +37,8 @@ Item {
+     QMenuModel.QDBusActionGroup {
+         id: actionGroup
+         busType: QMenuModel.DBus.SessionBus
+-        busName: "com.canonical.indicator.sound"
+-        objectPath: "/com/canonical/indicator/sound"
++        busName: "org.ayatana.indicator.sound"
++        objectPath: "/org/ayatana/indicator/sound"
+ 
+         property variant actionObject: action("volume")
+         // temporary workaround for lp:1623166
+diff --git a/qml/Greeter/Clock.qml b/qml/Greeter/Clock.qml
+index 011fe220ea..9995391f71 100644
+--- a/qml/Greeter/Clock.qml
++++ b/qml/Greeter/Clock.qml
+@@ -48,9 +48,9 @@ Item {
+         id: timeModel
+         objectName: "timeModel"
+ 
+-        busName: "com.canonical.indicator.datetime"
+-        actions: { "indicator": "/com/canonical/indicator/datetime" }
+-        menuObjectPath: clock.visible ? "/com/canonical/indicator/datetime/phone" : ""
++        busName: "org.ayatana.indicator.datetime"
++        actions: { "indicator": "/org/ayatana/indicator/datetime" }
++        menuObjectPath: clock.visible ? "/org/ayatana/indicator/datetime/phone" : ""
+     }
+ 
+     Indicators.ModelActionRootState {
+diff --git a/qml/Panel/Indicators/IndicatorMenuItemFactory.qml b/qml/Panel/Indicators/IndicatorMenuItemFactory.qml
+index a89ab9c670..89805c2337 100644
+--- a/qml/Panel/Indicators/IndicatorMenuItemFactory.qml
++++ b/qml/Panel/Indicators/IndicatorMenuItemFactory.qml
+@@ -671,8 +671,8 @@ Object {
+             QDBusActionGroup {
+                 id: tzActionGroup
+                 busType: DBus.SessionBus
+-                busName: "com.canonical.indicator.datetime"
+-                objectPath: "/com/canonical/indicator/datetime"
++                busName: "org.ayatana.indicator.datetime"
++                objectPath: "/org/ayatana/indicator/datetime"
+ 
+                 property variant setLocation: action("set-location")
+ 
+diff --git a/qml/Panel/Indicators/IndicatorsLight.qml b/qml/Panel/Indicators/IndicatorsLight.qml
+index 20d2ed04a1..9ff7ce5d00 100644
+--- a/qml/Panel/Indicators/IndicatorsLight.qml
++++ b/qml/Panel/Indicators/IndicatorsLight.qml
+@@ -179,8 +179,8 @@ console.log("no support for Multicolor LED. " + indicatorState)
+     // Existence of unread notifications is determined by checking for a specific icon name in a dbus signal.
+     property var _actionGroup: QMenuModel.QDBusActionGroup {
+         busType: 1
+-        busName: "com.canonical.indicator.messages"
+-        objectPath: "/com/canonical/indicator/messages"
++        busName: "org.ayatana.indicator.messages"
++        objectPath: "/org/ayatana/indicator/messages"
+     }
+ 
+     property var _rootState: Indicators.ActionRootState {
+@@ -198,8 +198,8 @@ console.log("no support for Multicolor LED. " + indicatorState)
+     // See also system-settings battery plugin.
+     property var _ipag: QMenuModel.QDBusActionGroup {
+         busType: 1
+-        busName: "com.canonical.indicator.power"
+-        objectPath: "/com/canonical/indicator/power"
++        busName: "org.ayatana.indicator.power"
++        objectPath: "/org/ayatana/indicator/power"
+         property variant batteryLevel: action("battery-level").state
+         property variant deviceState: action("device-state").state
+         Component.onCompleted: start()
+-- 
+2.25.1
+

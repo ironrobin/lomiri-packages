@@ -1,0 +1,42 @@
+# Maintainer: Bernhard Landauer <bernhard@manjaro.org>
+
+_pkgname=sensorfw
+pkgname=$_pkgname-git
+_branch=xenial_-_edge
+pkgver=0.11.2.r30.g65080cb
+pkgrel=2
+pkgdesc="SensorFw"
+arch=('aarch64')
+url="https://github.com/ubports/$_pkgname"
+license=('GPL')
+depends=('qt5-es2-base' 'systemd-libs' 'graphviz')
+makedepends=('git' 'cmake' 'doxygen' 'deviceinfo-git')
+source=("git+$url.git#branch=$_branch")
+md5sums=('SKIP')
+
+pkgver() {
+  cd ${_pkgname}
+  echo "$(git describe --long | sed 's/\([^-]*-g\)/r\1/;s/-/./g')"
+}
+
+build() {
+  cd ${_pkgname}
+  qmake-qt5 CONFIG+="configs"
+  make
+}
+
+#check() {
+#  cd ${_pkgname}
+#  make check TESTARGS="-silent"
+#}
+
+package() {
+  cd ${_pkgname}
+  make INSTALL_ROOT="${pkgdir}/" install
+  
+  # Fix install
+  mv -v ${pkgdir}/usr/sbin/* ${pkgdir}/usr/bin
+  rm -Rfv ${pkgdir}/usr/sbin
+  mv -v ${pkgdir}/lib/* ${pkgdir}/usr/lib
+  rm -Rfv ${pkgdir}/lib
+}

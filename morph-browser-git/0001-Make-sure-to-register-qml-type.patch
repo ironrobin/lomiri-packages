@@ -1,0 +1,24 @@
+From e65578dcb4020afaf0011f5702473b1247c4f432 Mon Sep 17 00:00:00 2001
+From: Marius Gripsgard <marius@ubports.com>
+Date: Wed, 9 Sep 2020 01:22:02 +0200
+Subject: [PATCH] Make sure to register qml type
+
+---
+ src/Morph/Web/plugin.cpp | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/Morph/Web/plugin.cpp b/src/Morph/Web/plugin.cpp
+index d405e0f3..08911a78 100644
+--- a/src/Morph/Web/plugin.cpp
++++ b/src/Morph/Web/plugin.cpp
+@@ -232,6 +232,7 @@ void MorphBrowserPlugin::initializeEngine(QQmlEngine* engine, const char* uri)
+ void MorphBrowserPlugin::registerTypes(const char* uri)
+ {
+     Q_ASSERT(uri == QLatin1String("Morph.Web"));
++    qmlRegisterModule(uri, 0, 1);
+ }
+ 
+ #include "plugin.moc"
+-- 
+2.28.0
+

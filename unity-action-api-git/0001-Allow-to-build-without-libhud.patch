@@ -1,0 +1,390 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 8397c6e..5561064 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -16,7 +16,16 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/mod
+ option(basic_warnings "Basic compiler warnings." ON)
+ include(FindPkgConfig)
+ 
+-pkg_search_module(HUD REQUIRED hud-2)
++pkg_search_module(HUD hud-2)
++if(${HUD_FOUND})
++    message("Found libhud, bulding with hud")
++    add_definitions(-DHAVE_HUD=1)
++else()
++    message(WARNING "Did not find libhud, bulding without")
++    pkg_check_modules(GLIB2 REQUIRED glib-2.0)
++    pkg_check_modules(GOBJECT2 REQUIRED gobject-2.0)
++    pkg_check_modules(GIO2 REQUIRED gio-2.0)
++endif()
+ 
+ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++11 -fno-permissive -pedantic -Wall -Wextra")
+ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden")
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index 1d61f95..def1011 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -28,13 +28,20 @@ set(PUBLIC_HEADERS
+     ${PUBLIC_HEADER_DIR}/lomiri-action-context.h
+ )
+ 
+-include_directories(${HUD_INCLUDE_DIRS})
+-
+ add_library(lomiri-action-qt SHARED
+     ${CORE_SRCS}
+     ${PUBLIC_HEADERS} # public headers have to be included here for Q_DECL_EXPORT to work properly
+ )
+-target_link_libraries (lomiri-action-qt ${HUD_LIBRARIES})
++
++if(${HUD_FOUND})
++  include_directories(${HUD_INCLUDE_DIRS})
++  target_link_libraries (lomiri-action-qt ${HUD_LIBRARIES})
++else()
++  include_directories(${GLIB2_INCLUDE_DIRS})
++  include_directories(${GOBJECT2_INCLUDE_DIRS})
++  include_directories(${GIO2_INCLUDE_DIRS})
++  target_link_libraries(lomiri-action-qt ${GLIB2_LIBRARIES} ${GOBJECT2_LIBRARIES} ${GIO2_LIBRARIES})
++endif()
+ 
+ qt5_use_modules(lomiri-action-qt Core)
+ 
+diff --git a/src/lomiri-action-manager.cpp b/src/lomiri-action-manager.cpp
+index 83a9136..b496461 100644
+--- a/src/lomiri-action-manager.cpp
++++ b/src/lomiri-action-manager.cpp
+@@ -28,7 +28,11 @@
+ 
+ // needed for gio includes.
+ #undef signals
++#ifdef HAVE_HUD
+ #include <libhud-2/hud.h>
++#else
++#include <gio/gio.h>
++#endif
+ 
+ using namespace lomiri::action;
+ 
+@@ -76,26 +80,36 @@ namespace action {
+ //! \private
+ struct Q_DECL_HIDDEN ContextData
+ {
++#ifdef HAVE_HUD
+     HudActionPublisher *publisher;
++#endif
+     QSet<Action *>      actions;
+ 
+     ContextData() {
++#ifdef HAVE_HUD
+         publisher = 0;
++#endif
+     }
+     ContextData(const ContextData &other) {
++#ifdef HAVE_HUD
+         publisher = (HudActionPublisher*)  g_object_ref(other.publisher);
++#endif
+         actions   = other.actions;
+     }
+     ContextData &operator= (const ContextData &other) {
+         if (this != &other){
++#ifdef HAVE_HUD
+             g_clear_object(&publisher);
+             publisher = (HudActionPublisher*)  g_object_ref(other.publisher);
++#endif
+             actions   = other.actions;
+         }
+         return *this;
+     }
+     ~ContextData() {
++#ifdef HAVE_HUD
+         g_clear_object(&publisher);
++#endif
+     }
+ };
+ 
+@@ -140,8 +154,9 @@ struct Q_DECL_HIDDEN ParameterData
+ //! \private
+ struct Q_DECL_HIDDEN ActionData
+ {
+-
++#ifdef HAVE_HUD
+     HudActionDescription  *desc;
++#endif
+     GSimpleAction         *gaction;
+ 
+     bool isPreviewAction;
+@@ -153,7 +168,9 @@ struct Q_DECL_HIDDEN ActionData
+     GMenu *paramMenu;
+ 
+     ActionData() {
++#ifdef HAVE_HUD
+         desc      = 0;
++#endif
+         gaction   = 0;
+         paramMenu = 0;
+ 
+@@ -161,11 +178,14 @@ struct Q_DECL_HIDDEN ActionData
+     }
+     ActionData &operator= (const ActionData &other) {
+         if (this != &other){
++#ifdef HAVE_HUD
+             g_clear_object(&desc);
++#endif
+             g_clear_object(&gaction);
+             g_clear_object(&paramMenu);
+-
++#ifdef HAVE_HUD
+             desc      = (HudActionDescription*) g_object_ref(other.desc);
++#endif
+             gaction   = (GSimpleAction *)       g_object_ref(other.gaction);
+             params    = other.params;
+             paramMenu = other.paramMenu;
+@@ -177,7 +197,9 @@ struct Q_DECL_HIDDEN ActionData
+         return *this;
+     }
+     ActionData(const ActionData &other) {
++#ifdef HAVE_HUD
+         desc      = (HudActionDescription*) g_object_ref(other.desc);
++#endif
+         gaction   = (GSimpleAction *)       g_object_ref(other.gaction);
+         params    = other.params;
+         paramMenu = other.paramMenu;
+@@ -187,7 +209,9 @@ struct Q_DECL_HIDDEN ActionData
+         isPreviewAction = other.isPreviewAction;
+     }
+     ~ActionData() {
++#ifdef HAVE_HUD
+         g_clear_object(&desc);
++#endif
+         g_clear_object(&gaction);
+         g_clear_object(&paramMenu);
+     }
+@@ -197,8 +221,12 @@ struct Q_DECL_HIDDEN ActionData
+ //! \private
+ bool operator== (const ActionData &a, const ActionData &b) {
+     // comparing these pointers is enough
++#ifndef HAVE_HUD
++    return a.gaction == b.gaction;
++#else
+     return a.gaction == b.gaction &&
+            a.desc    == b.desc;
++#endif
+ }
+ 
+ namespace {
+@@ -247,8 +275,9 @@ public:
+ 
+     QHash<ActionContext *, ContextData> contextData;
+     QHash<Action *, ActionData>         actionData;
++#ifdef HAVE_HUD
+     HudManager *hudManager;
+-
++#endif
+     GSimpleActionGroup *actionGroup;
+     guint exportId;
+ 
+@@ -258,11 +287,15 @@ public:
+         : q(mgr)
+     {
+         globalContext = new GlobalActionContext();
++#ifdef HAVE_HUD
+         hudManager = 0;
++#endif
+     }
+     ~Private() {
+         delete globalContext;
++#ifdef HAVE_HUD
+         g_clear_object(&hudManager);
++#endif
+     }
+ 
+     /* ActionContext */
+@@ -279,7 +312,9 @@ public:
+     void createAction(Action *action);
+     void destroyAction(Action *action);
+     void createActionData(Action *action, ActionData &adata);
++#ifdef HAVE_HUD
+     void updateActionDescription(Action *action, HudActionDescription *desc);
++#endif
+     void updateActionsWhenNameOrTypeHaveChanged(Action *action);
+     static void action_activated(GSimpleAction *action,
+                                  GVariant      *parameter,
+@@ -352,7 +387,7 @@ ActionManager::ActionManager(QObject *parent)
+         g_error_free(error);
+         error = NULL;
+     }
+-
++#ifdef HAVE_HUD
+     const char *appid = getenv("APP_ID");
+     if (appid == 0) {
+         qWarning("%s:\n"
+@@ -362,7 +397,7 @@ ActionManager::ActionManager(QObject *parent)
+         appid = "unknown";
+     }
+     d->hudManager = hud_manager_new(appid);
+-
++#endif
+     connect(d->globalContext, SIGNAL(actionsChanged()), d.data(), SLOT(contextActionsChanged()));
+     connect(d->globalContext, SIGNAL(activeChanged(bool)), d.data(), SLOT(contextActiveChanged(bool)));
+     connect(d->globalContext, SIGNAL(destroyed(QObject*)), d.data(), SLOT(contextDestroyed(QObject *)));
+@@ -378,9 +413,10 @@ ActionManager::ActionManager(QObject *parent)
+     d->createContext(d->globalContext);
+     d->globalContext->addBuiltInAction(d->quitAction.data());
+     d->updateContext(d->globalContext);
++#ifdef HAVE_HUD
+     hud_manager_switch_window_context(d->hudManager,
+                                       d->contextData[d->globalContext].publisher);
+-
++#endif
+     d->exportId = 0;
+     if (d->sessionBus) {
+         d->exportId = g_dbus_connection_export_action_group(d->sessionBus,
+@@ -557,6 +593,7 @@ ActionManager::Private::createContext(ActionContext *context)
+     static int id = 0;
+ 
+     ContextData cdata;
++#ifdef HAVE_HUD
+     /* create a new HUD context */
+     cdata.publisher = hud_action_publisher_new(HUD_ACTION_PUBLISHER_ALL_WINDOWS,
+                                                qPrintable(QString("action_context_%1").arg(id++)));
+@@ -564,6 +601,7 @@ ActionManager::Private::createContext(ActionContext *context)
+                                           "hud",
+                                           LOMIRI_ACTION_EXPORT_PATH);
+     hud_manager_add_actions(hudManager, cdata.publisher);
++#endif
+     contextData.insert(context, cdata);
+ }
+ 
+@@ -620,8 +658,10 @@ ActionManager::Private::setActiveContext(ActionContext *context)
+     if (activeLocalContext == 0) {
+         activeLocalContext = context;
+         updateActionGroup();
++#ifdef HAVE_HUD
+         hud_manager_switch_window_context(hudManager,
+                                           contextData[context].publisher);
++#endif
+     } else if (activeLocalContext == context) {
+         // already active one.
+         return;
+@@ -631,8 +671,10 @@ ActionManager::Private::setActiveContext(ActionContext *context)
+         activeLocalContext = context;
+         old->setActive(false);
+         updateActionGroup();
++#ifdef HAVE_HUD
+         hud_manager_switch_window_context(hudManager,
+                                           contextData[context].publisher);
++#endif
+     }
+ }
+ 
+@@ -657,8 +699,10 @@ ActionManager::Private::contextActiveChanged(bool value)
+             // this means that only the global context is active
+             activeLocalContext = 0;
+             updateActionGroup();
++#ifdef HAVE_HUD
+             hud_manager_switch_window_context(hudManager,
+                                               contextData[globalContext].publisher);
++#endif
+         }
+     }
+ }
+@@ -817,6 +861,9 @@ ActionManager::Private::updateHudContext(ActionContext *context, QSet<Action *>
+     Q_ASSERT(contextData.contains(context));
+     const ContextData &cdata = contextData[context];
+ 
++#ifndef HAVE_HUD
++    return;
++#else
+ 
+     QSet<Action *> currentActions = context->actions() + globalContext->allActions();
+     QSet<Action *> newActions     = currentActions - oldActions;
+@@ -838,6 +885,7 @@ ActionManager::Private::updateHudContext(ActionContext *context, QSet<Action *>
+                                                    G_MENU_ATTRIBUTE_LABEL,
+                                                    g_variant_new_string(""));
+     }
++#endif
+ }
+ 
+ void
+@@ -1030,20 +1078,23 @@ void ActionManager::Private::createActionData(Action *action, ActionData &adata)
+                      "activate",
+                      G_CALLBACK(Private::action_activated),
+                      action);
+-
++#ifdef HAVE_HUD
+     adata.desc = hud_action_description_new(qPrintable(QString("hud.%1").arg(actionid)), NULL);
+     updateActionDescription(action, adata.desc);
+-
++#endif
+     if (adata.isPreviewAction) {
+         PreviewAction *previewAction = qobject_cast<PreviewAction *>(action);
+         Q_ASSERT(previewAction != 0);
+         adata.paramMenu = g_menu_new();
+         updatePreviewActionParameters(previewAction, adata);
+         updateParameterMenu(previewAction, adata);
++#ifdef HAVE_HUD
+         hud_action_description_set_parameterized(adata.desc, G_MENU_MODEL(adata.paramMenu));
++#endif
+     }
+ }
+ 
++#ifdef HAVE_HUD
+ void
+ ActionManager::Private::updateActionDescription(Action *action,
+                                                 HudActionDescription *desc)
+@@ -1075,7 +1126,7 @@ ActionManager::Private::updateActionDescription(Action *action,
+                                                    g_variant_new_string("quit"));
+     }
+ }
+-
++#endif
+ void
+ ActionManager::Private::updateActionsWhenNameOrTypeHaveChanged(Action *action)
+ {
+@@ -1094,7 +1145,7 @@ ActionManager::Private::updateActionsWhenNameOrTypeHaveChanged(Action *action)
+         (activeLocalContext != 0 && activeLocalContext->actions().contains(action))) {
+         updateActionGroup();
+     }
+-
++#ifdef HAVE_HUD
+     // update the desc
+     // go through all the HUD contexts and add the new descriptor
+     foreach(ContextData cdata, contextData) {
+@@ -1115,6 +1166,7 @@ ActionManager::Private::updateActionsWhenNameOrTypeHaveChanged(Action *action)
+     }
+     g_clear_object(&adata.desc);
+     adata.desc = (HudActionDescription *)g_object_ref(tmpdata.desc);
++#endif
+ }
+ 
+ void
+@@ -1148,7 +1200,9 @@ ActionManager::Private::actionPropertiesChanged()
+     Action *action= qobject_cast<Action *>(sender());
+     Q_ASSERT(action != 0);
+     Q_ASSERT(actionData.contains(action));
++#ifdef HAVE_HUD
+     updateActionDescription(action, actionData[action].desc);
++#endif
+ }
+ 
+ /************************************************************************/
+@@ -1178,7 +1232,9 @@ ActionManager::Private::previewActionCommitLabelChanged()
+     Action *action= qobject_cast<Action *>(sender());
+     Q_ASSERT(action != 0);
+     Q_ASSERT(actionData.contains(action));
++#ifdef HAVE_HUD
+     updateActionDescription(action, actionData[action].desc);
++#endif
+ }
+ 
+ void
+@@ -1283,8 +1339,9 @@ ActionManager::Private::updateParameterMenu(PreviewAction *action, const ActionD
+         g_menu_append_item(adata.paramMenu,
+                            adata.params[parameter].gmenuitem);
+     }
++#ifdef HAVE_HUD
+     hud_action_description_set_parameterized(adata.desc, G_MENU_MODEL(adata.paramMenu));
+-
++#endif
+ }
+ 
+ 

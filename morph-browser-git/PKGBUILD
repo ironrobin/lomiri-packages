@@ -1,0 +1,48 @@
+# Maintainer: Furkan Kardame <furkan@fkardame.com>
+
+pkgname=morph-browser-git
+_pkgname=morph-browser
+pkgver=r7629.38cf29bb
+pkgrel=1
+pkgdesc="Lomiri UI Web browser for Mobile Devices"
+arch=('x86_64' 'armv7' 'aarch64')
+url="https://github.com/ubports/morph-browser"
+license=('GPL3')
+depends=(qt5-webengine qt5-base qt5-declarative ubuntu-ui-toolkit-git unity-action-api-git ubuntu-ui-extras-git)
+makedepends=('git' 'cmake' 'intltool' 'clang')
+source=('git+https://github.com/ubports/morph-browser.git#branch=xenial'
+	'fix-qt5.patch'
+        '0001-Add-missing-include-for-std-isnan.patch' # Remove once accepted upstream: https://github.com/ubports/morph-browser/pull/447
+        '0001-Make-sure-to-register-qml-type.patch'    # Remove once accepted upstream: https://github.com/ubports/morph-browser/pull/448
+        'fix-auto-rotate-wrong.patch')
+md5sums=('SKIP'
+	 'SKIP'
+         'SKIP'
+         'SKIP'
+         'SKIP')
+
+pkgver() {
+  cd ${_pkgname}
+  printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+}
+
+prepare() {
+  mkdir -p build
+  cd ${_pkgname}
+  patch -Np1 -i "${srcdir}/fix-qt5.patch"
+  patch -Np1 -i "${srcdir}/0001-Add-missing-include-for-std-isnan.patch"
+  patch -Np1 -i "${srcdir}/0001-Make-sure-to-register-qml-type.patch"
+  patch -Np1 -i "${srcdir}/fix-auto-rotate-wrong.patch"
+}
+
+build() {
+  cd build
+  cmake ../${_pkgname} . -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_INSTALL_LIBDIR="lib/" -DCMAKE_INSTALL_SYSCONFDIR=/etc -DCMAKE_INSTALL_LOCALSTATEDIR=/var
+  make
+}
+
+package() {
+  cd build
+  make DESTDIR="$pkgdir/" install
+  mv "${pkgdir}/usr/lib/qt5/" "${pkgdir}/usr/lib/qt/"
+}

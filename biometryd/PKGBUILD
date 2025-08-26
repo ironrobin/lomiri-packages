@@ -1,0 +1,46 @@
+# Maintainer: Marius Gripsgard <marius@ubports.com>
+
+pkgname=biometryd-git
+_pkgname=biometryd
+pkgver=r130.d91741b
+pkgrel=1
+pkgdesc='Fingerprint deamon'
+url='https://github.com/ubports/biometryd'
+arch=(x86_64 i686 armv7h aarch64)
+license=(LGPL GPL)
+conflicts=(biometryd)
+provides=(biometryd)
+depends=(qt5-base qt5-declarative dbus-cpp apparmor process-cpp properties-cpp boost-libs libelf sqlite)
+makedepends=(git cmake boost cmake-extras-git gtest gmock)
+checkdepends=()
+source=('git+https://github.com/ubports/biometryd.git#branch=xenial'
+        'fix-new-gcc-and-boost.patch')
+sha256sums=('SKIP'
+            'SKIP')
+
+BUILD_DIR=build
+
+pkgver() {
+  cd ${_pkgname}
+  echo "r$(git rev-list --count HEAD).$(git describe --always)"
+}
+
+prepare() {
+  cd ${_pkgname}
+
+  patch -Np1 -i "${srcdir}/fix-new-gcc-and-boost.patch"
+}
+
+build() {
+  cd ${_pkgname}
+  mkdir -p ${BUILD_DIR}
+  cd ${BUILD_DIR}
+  cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_INSTALL_LIBDIR="lib/" ..
+  make
+}
+
+package() {
+  cd ${_pkgname}/${BUILD_DIR}
+  make DESTDIR="${pkgdir}/" install
+  mv ${pkgdir}/usr/lib/qt5/ ${pkgdir}/usr/lib/qt/
+}

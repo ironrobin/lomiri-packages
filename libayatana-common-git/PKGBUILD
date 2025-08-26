@@ -1,0 +1,36 @@
+# Maintainer: Furkan Kardame <furkan@fkardame.com>
+
+pkgname="libayatana-common-git"
+_pkgname="libayatana-common"
+pkgver=git_r1
+pkgrel="1"
+pkgdesc="Ayatana shared library for common functions"
+arch=("i686" "x86_64" "aarch64")
+url="https://github.com/AyatanaIndicators/libayatana-common"
+license=("LGPL2.1" "LGPL3")
+makedepends=("git" "cmake" "cmake-extras" "gtest")
+depends=("gtk3" "glib2" "url-dispatcher-git")
+options=('!emptydirs')
+source=("git+https://github.com/AyatanaIndicators/${_pkgname}.git")
+md5sums=("SKIP")
+provides=("$_pkgname")
+conflicts=("$_pkgname" "${_pkgname}-gtk3")
+
+pkgver()
+{
+    cd ${srcdir}/${_pkgname}
+    echo "git_r$(git rev-list --count HEAD)"
+}
+
+build()
+{
+    cd ${srcdir}/${_pkgname}
+    cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBEXECDIR=lib -Denable_tests=OFF
+    make
+}
+
+package()
+{
+    cd ${srcdir}/${_pkgname}
+    make DESTDIR="${pkgdir}" install
+}

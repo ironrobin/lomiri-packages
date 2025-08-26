@@ -1,0 +1,518 @@
+From 2ac64a6ebd0529b489ec7c1abe7af3a8f6910418 Mon Sep 17 00:00:00 2001
+From: Marius Gripsgard <marius@ubports.com>
+Date: Mon, 11 Jan 2021 19:38:17 +0100
+Subject: [PATCH] Move common parts over to libayatana-common and clean up
+
+This moves some common functions over to libayatana-common, this also
+removes the direct need for any ayatana indicators to depend on
+url-dispatcher as this will be handeled by libayatana-common.
+
+This also cleans up a pretty messy code and removes many duplicates.
+---
+ CMakeLists.txt             |   8 +-
+ debian/control             |   1 -
+ src/backend-dbus/actions.c | 218 +++++++++----------------------------
+ src/service.c              |   2 +-
+ src/utils.c                |  45 --------
+ src/utils.h                |  14 ---
+ 6 files changed, 54 insertions(+), 234 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 8088152..ff3f002 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -24,17 +24,11 @@ set (CMAKE_INSTALL_FULL_PKGLIBEXECDIR "${CMAKE_INSTALL_FULL_LIBEXECDIR}/${CMAKE_
+ find_package (PkgConfig REQUIRED)
+ include (FindPkgConfig)
+ pkg_check_modules (SERVICE REQUIRED
++                   libayatana-common
+                    glib-2.0>=2.36
+                    gio-unix-2.0>=2.36)
+ include_directories (${SERVICE_INCLUDE_DIRS})
+ 
+-set(URL_DISPATCHER_1_REQUIRED_VERSION 1)
+-pkg_check_modules(
+-  URLDISPATCHER
+-  url-dispatcher-1>=${URL_DISPATCHER_1_REQUIRED_VERSION}
+-)
+-include_directories(${URLDISPATCHER_INCLUDE_DIRS})
+-
+ set (CC_WARNING_ARGS " -Wall -pedantic -Wextra -Wno-missing-field-initializers")
+ 
+ set (ARCHIVE_NAME ${CMAKE_PROJECT_NAME}-${PROJECT_VERSION})
+diff --git a/debian/control b/debian/control
+index 4acd8ca..386e307 100644
+--- a/debian/control
++++ b/debian/control
+@@ -9,7 +9,6 @@ Build-Depends: cmake,
+                intltool,
+                libglib2.0-dev (>= 2.36),
+                libgtest-dev,
+-               liburl-dispatcher1-dev | hello,
+                systemd [linux-any],
+ Standards-Version: 4.1.1
+ Homepage: https://github.com/AyatanaIndicators/ayatana-indicator-session
+diff --git a/src/backend-dbus/actions.c b/src/backend-dbus/actions.c
+index f1c2498..c94ac91 100644
+--- a/src/backend-dbus/actions.c
++++ b/src/backend-dbus/actions.c
+@@ -20,9 +20,7 @@
+ #include <glib.h>
+ #include <glib/gi18n.h>
+ 
+-#ifdef HAS_URLDISPATCHER
+-# include <url-dispatcher.h>
+-#endif
++#include <ayatana/common/utils.h>
+ 
+ #include "dbus-end-session-dialog.h"
+ #include "dbus-login1-manager.h"
+@@ -36,8 +34,6 @@
+ #include "../utils.h"
+ 
+ /* some prototypes... */
+-static char *   find_browser ();
+-static void     run_outside_app (const char * cmd);
+ static gboolean zenity_warning (const char * icon_name, const char * title, const char * text);
+ 
+ enum
+@@ -109,40 +105,28 @@ prompt_status_t;
+ static gboolean
+ have_gnome_program (const gchar *program)
+ {
+-  g_auto(GStrv) desktop_names = NULL;
+-
+-  if (is_gnome()) {
+-    g_autofree gchar *path = g_find_program_in_path (program);
+-    return path != NULL;
+-  }
++  if (!is_gnome())
++    return FALSE;
+ 
+-  return FALSE;
++  return have_program(program);
+ }
+ 
+ static gboolean
+ have_mate_program (const gchar *program)
+ {
+-  g_auto(GStrv) desktop_names = NULL;
+-
+-  if (is_mate()) {
+-    g_autofree gchar *path = g_find_program_in_path (program);
+-    return path != NULL;
+-  }
++  if (!is_mate())
++    return FALSE;
+ 
+-  return FALSE;
++  return have_program(program);
+ }
+ 
+ static gboolean
+ have_xfce_program (const gchar *program)
+ {
+-  g_auto(GStrv) desktop_names = NULL;
+-
+-  if (is_xfce()) {
+-    g_autofree gchar *path = g_find_program_in_path (program);
+-    return path != NULL;
+-  }
++  if (is_xfce())
++    return FALSE;
+ 
+-  return FALSE;
++  return have_program(program);
+ }
+ 
+ static prompt_status_t
+@@ -778,28 +762,10 @@ zenity_question (IndicatorSessionActionsDbus * self,
+ static void
+ my_bug (IndicatorSessionActions * self G_GNUC_UNUSED)
+ {
+-  const  char * bts_url = get_distro_bts_url();
+-  static char * browser = NULL;
+-
+-#ifdef HAS_URLDISPATCHER
+-  if (g_getenv ("MIR_SOCKET") != NULL)
+-    url_dispatch_send(bts_url, NULL, NULL);
+-  else
+-#endif
+-    {
+-
+-      if (browser == NULL)
+-        browser = find_browser();
+-
+-      if (browser != NULL)
+-        run_outside_app(g_strdup_printf("%s '%s'", browser, bts_url));
+-
+-      else
+-        zenity_warning ("dialog-warning",
+-                        _("Warning"),
+-                        _("The operating system's bug tracker needs to be accessed with\na web browser.\n\nThe Ayatana Session Indicator could not find any web\nbrowser on your computer."));
+-
+-    }
++  if (!open_url(get_distro_bts_url()))
++    zenity_warning ("dialog-warning",
++                    _("Warning"),
++                    _("The operating system's bug tracker needs to be accessed with\na web browser.\n\nThe Ayatana Session Indicator could not find any web\nbrowser on your computer."));
+ }
+ 
+ static gboolean
+@@ -849,15 +815,6 @@ zenity_warning (const char * icon_name,
+   return confirmed;
+ }
+ 
+-static void
+-run_outside_app (const char * cmd)
+-{
+-  GError * err = NULL;
+-  g_debug ("%s calling \"%s\"", G_STRFUNC, cmd);
+-  g_spawn_command_line_async (cmd, &err);
+-  log_and_clear_error (&err, G_STRLOC, G_STRFUNC);
+-}
+-
+ static void
+ my_logout (IndicatorSessionActions * actions)
+ {
+@@ -871,11 +828,11 @@ my_logout (IndicatorSessionActions * actions)
+ 
+       case PROMPT_WITH_MATE:
+         /* --logout-dialog presents Logout and (if available) Switch User options */
+-        run_outside_app ("mate-session-save --logout-dialog");
++        execute_command ("mate-session-save --logout-dialog");
+         break;
+ 
+       case PROMPT_WITH_XFCE:
+-        run_outside_app ("xfce4-session-logout");
++        execute_command ("xfce4-session-logout");
+         break;
+ 
+       case PROMPT_NONE:
+@@ -917,11 +874,11 @@ my_reboot (IndicatorSessionActions * actions)
+ 
+       case PROMPT_WITH_MATE:
+         /* --shutdown-dialog presents Restart, Shutdown and (if available) Suspend options */
+-        run_outside_app ("mate-session-save --shutdown-dialog");
++        execute_command ("mate-session-save --shutdown-dialog");
+         break;
+ 
+       case PROMPT_WITH_XFCE:
+-        run_outside_app ("xfce4-session-logout");
++        execute_command ("xfce4-session-logout");
+         break;
+ 
+       case PROMPT_NONE:
+@@ -958,11 +915,11 @@ my_power_off (IndicatorSessionActions * actions)
+ 
+       case PROMPT_WITH_MATE:
+         /* --shutdown-dialog presents Restart, Shutdown and (if available) Suspend options */
+-        run_outside_app ("mate-session-save --shutdown-dialog");
++        execute_command ("mate-session-save --shutdown-dialog");
+         break;
+ 
+       case PROMPT_WITH_XFCE:
+-        run_outside_app ("xfce4-session-logout");
++        execute_command ("xfce4-session-logout");
+         break;
+ 
+       case PROMPT_WITH_ZENITY:
+@@ -985,57 +942,19 @@ my_power_off (IndicatorSessionActions * actions)
+ ****
+ ***/
+ 
+-static char *
+-find_browser ()
+-{
+-  static char * browser_path = NULL;
+-  char* tmp_browser_path;
+-  gchar **browser_names;
+-
+-  int i;
+-
+-  if (browser_path == NULL)
+-  {
+-
+-    browser_names = g_strsplit ("x-www-browser,google-chrome,firefox,chromium", ",", 0);
+-
+-    for (i = 0; browser_names[i]; ++i) {
+-
+-      tmp_browser_path = g_find_program_in_path (browser_names[i]);
+-
+-      if (tmp_browser_path) {
+-        browser_path = g_strdup (tmp_browser_path);
+-        g_free (tmp_browser_path);
+-        g_strfreev (browser_names);
+-        break;
+-      }
+-    }
+-  }
+-
+-  return browser_path;
+-
+-}
+-
+ static void
+ my_desktop_help (IndicatorSessionActions * self G_GNUC_UNUSED)
+ {
+-  static char * browser = NULL;
+-
+   if (have_gnome_program ("yelp"))
+-    run_outside_app ("yelp help:gnome-user-guide");
++    execute_command ("yelp help:gnome-user-guide");
+   else if (have_mate_program ("yelp"))
+-    run_outside_app ("yelp help:mate-user-guide");
+-  else if (is_xfce())
+-    {
+-      if (browser == NULL)
+-        browser = find_browser();
+-      if (browser != NULL)
+-        run_outside_app(g_strdup_printf("%s '%s'", browser, "https://docs.xfce.org/"));
+-      else
+-        zenity_warning ("dialog-warning",
+-                        _("Warning"),
+-                        _("The XFCE desktop's user guide needs to be accessed with\na web browser.\n\nThe Ayatana Session Indicator could not find any web\nbrowser on your computer."));
+-    }
++    execute_command ("yelp help:mate-user-guide");
++  else if (is_xfce()) {
++    if (!open_url("https://docs.xfce.org/"))
++      zenity_warning ("dialog-warning",
++                      _("Warning"),
++                      _("The XFCE desktop's user guide needs to be accessed with\na web browser.\n\nThe Ayatana Session Indicator could not find any web\nbrowser on your computer."));
++  }
+   else
+     zenity_warning ("dialog-warning",
+                     _("Warning"),
+@@ -1045,14 +964,7 @@ my_desktop_help (IndicatorSessionActions * self G_GNUC_UNUSED)
+ static void
+ my_distro_help (IndicatorSessionActions * self G_GNUC_UNUSED)
+ {
+-  static char * browser = NULL;
+-
+-  if (browser == NULL)
+-    browser = find_browser();
+-
+-  if (browser != NULL)
+-    run_outside_app(g_strdup_printf("%s '%s'", browser, get_distro_url()));
+-  else
++  if (!open_url(get_distro_url()))
+     zenity_warning ("dialog-warning",
+                     _("Warning"),
+                     g_strdup_printf(_("Displaying information on %s  requires\na web browser.\n\nThe Ayatana Session Indicator could not find any web\nbrowser on your computer."), get_distro_name()));
+@@ -1062,51 +974,31 @@ my_distro_help (IndicatorSessionActions * self G_GNUC_UNUSED)
+ static gboolean
+ have_unity_control_center (void)
+ {
+-  gchar *path;
+-  gboolean have_ucc;
+-
+   if (!is_unity())
+     return FALSE;
+ 
+-  path = g_find_program_in_path ("unity-control-center");
+-  have_ucc = path != NULL;
+-  g_free (path);
+-
+-  return have_ucc;
++  return have_program("unity-control-center");
+ }
+ 
+ static gboolean
+ have_gnome_control_center (void)
+ {
+-  gchar *path;
+-  gboolean have_gcc;
+-
+-  if (!is_gnome())
+-    return FALSE;
+-
+-  path = g_find_program_in_path ("gnome-control-center");
+-  have_gcc = path != NULL;
+-  g_free (path);
+-
+-  return have_gcc;
++  return have_gnome_program("gnome-control-center");
+ }
+ 
+ static void
+ my_settings (IndicatorSessionActions * self G_GNUC_UNUSED)
+ {
+-#ifdef HAS_URLDISPATCHER
+-  if (g_getenv ("MIR_SOCKET") != NULL)
+-    url_dispatch_send("settings:///system", NULL, NULL);
+-  else
+-#endif
+-  if (have_unity_control_center ())
+-    run_outside_app ("unity-control-center");
++  if (is_lomiri())
++    open_url("settings:///system");
++  else if (have_unity_control_center ())
++    execute_command ("unity-control-center");
+   else if (have_gnome_control_center())
+-    run_outside_app ("gnome-control-center");
++    execute_command ("gnome-control-center");
+   else if (have_mate_program ("mate-control-center"))
+-    run_outside_app ("mate-control-center");
++    execute_command ("mate-control-center");
+   else if (have_xfce_program ("xfce4-settings-manager"))
+-    run_outside_app ("xfce4-settings-manager");
++    execute_command ("xfce4-settings-manager");
+   else
+     zenity_warning ("dialog-warning",
+                     _("Warning"),
+@@ -1116,15 +1008,12 @@ my_settings (IndicatorSessionActions * self G_GNUC_UNUSED)
+ static void
+ my_online_accounts (IndicatorSessionActions * self G_GNUC_UNUSED)
+ {
+-#ifdef HAS_URLDISPATCHER
+-  if (g_getenv ("MIR_SOCKET") != NULL)
+-    url_dispatch_send("settings:///system/online-accounts", NULL, NULL);
+-  else
+-#endif
+-  if (have_unity_control_center ())
+-    run_outside_app ("unity-control-center credentials");
++  if (is_lomiri())
++    open_url("settings:///system/online-accounts");
++  else if (have_unity_control_center ())
++    execute_command ("unity-control-center credentials");
+   else if (have_gnome_control_center())
+-    run_outside_app ("gnome-control-center credentials");
++    execute_command ("gnome-control-center credentials");
+   else
+     zenity_warning ("dialog-warning",
+                     _("Warning"),
+@@ -1134,19 +1023,16 @@ my_online_accounts (IndicatorSessionActions * self G_GNUC_UNUSED)
+ static void
+ my_about (IndicatorSessionActions * self G_GNUC_UNUSED)
+ {
+-#ifdef HAS_URLDISPATCHER
+-  if (g_getenv ("MIR_SOCKET") != NULL)
+-    url_dispatch_send("settings:///system/about", NULL, NULL);
+-  else
+-#endif
+-  if (have_unity_control_center ())
+-    run_outside_app ("unity-control-center info");
++  if (is_lomiri())
++    open_url("settings:///system/about");
++  else if (have_unity_control_center ())
++    execute_command ("unity-control-center info");
+   else if (have_gnome_control_center())
+-    run_outside_app ("gnome-control-center info");
++    execute_command ("gnome-control-center info");
+   else if (have_mate_program ("mate-system-monitor"))
+-    run_outside_app ("mate-system-monitor --show-system-tab");
++    execute_command ("mate-system-monitor --show-system-tab");
+   else if (have_xfce_program ("xfce4-about"))
+-    run_outside_app ("xfce4-about");
++    execute_command ("xfce4-about");
+   else
+     zenity_warning ("dialog-warning",
+                     _("Warning"),
+@@ -1175,11 +1061,11 @@ lock_current_session (IndicatorSessionActions * self, gboolean immediate)
+     }
+   else if (have_mate_program ("mate-screensaver-command"))
+     {
+-      run_outside_app ("mate-screensaver-command --lock");
++      execute_command ("mate-screensaver-command --lock");
+     }
+   else if (have_xfce_program ("xflock4"))
+     {
+-      run_outside_app ("xflock4");
++      execute_command ("xflock4");
+     }
+   else
+     {
+diff --git a/src/service.c b/src/service.c
+index 0d0cd36..d1bc444 100644
+--- a/src/service.c
++++ b/src/service.c
+@@ -24,7 +24,7 @@
+ #include "recoverable-problem.h"
+ #include "service.h"
+ 
+-#include "utils.h"
++#include <ayatana/common/utils.h>
+ 
+ #define BUS_NAME "org.ayatana.indicator.session"
+ #define BUS_PATH "/org/ayatana/indicator/session"
+diff --git a/src/utils.c b/src/utils.c
+index e950d3b..651e6f2 100644
+--- a/src/utils.c
++++ b/src/utils.c
+@@ -16,51 +16,6 @@
+ 
+ #include "utils.h"
+ 
+-static  gboolean
+-is_xdg_current_desktop (const gchar* desktop)
+-{
+-  const gchar *xdg_current_desktop;
+-  gchar **desktop_names;
+-  int i;
+-
+-  xdg_current_desktop = g_getenv ("XDG_CURRENT_DESKTOP");
+-  if (xdg_current_desktop != NULL) {
+-    desktop_names = g_strsplit (xdg_current_desktop, ":", 0);
+-    for (i = 0; desktop_names[i]; ++i) {
+-      if (!g_strcmp0 (desktop_names[i], desktop)) {
+-        g_strfreev (desktop_names);
+-        return TRUE;
+-      }
+-    }
+-    g_strfreev (desktop_names);
+-  }
+-  return FALSE;
+-}
+-
+-gboolean
+-is_gnome ()
+-{
+-  return is_xdg_current_desktop(DESKTOP_GNOME);
+-}
+-
+-gboolean
+-is_unity ()
+-{
+-  return is_xdg_current_desktop(DESKTOP_UNITY);
+-}
+-
+-gboolean
+-is_mate ()
+-{
+-  return is_xdg_current_desktop(DESKTOP_MATE);
+-}
+-
+-gboolean
+-is_xfce ()
+-{
+-  return is_xdg_current_desktop(DESKTOP_XFCE);
+-}
+-
+ GHashTable*
+ get_os_release (void)
+ {
+diff --git a/src/utils.h b/src/utils.h
+index 2d3c932..149087b 100644
+--- a/src/utils.h
++++ b/src/utils.h
+@@ -20,20 +20,6 @@
+ #include <glib.h>
+ #include <string.h>
+ 
+-
+-/* XDG_CURRENT_DESKTOP environment variable values
+- * as set by well-known desktop environments
+- */
+-#define DESKTOP_UNITY  "Unity"
+-#define DESKTOP_MATE   "MATE"
+-#define DESKTOP_GNOME  "GNOME"
+-#define DESKTOP_XFCE   "XFCE"
+-
+-gboolean is_unity();
+-gboolean is_gnome();
+-gboolean is_mate();
+-gboolean is_xfce();
+-
+ const char* get_distro_name();
+ const char* get_distro_url();
+ const char* get_distro_bts_url();

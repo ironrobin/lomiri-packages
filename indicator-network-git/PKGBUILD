@@ -1,0 +1,51 @@
+# Maintainer: Ivan Semkin (ivan at semkin dot ru)
+
+pkgname=indicator-network-git
+_pkgname=lomiri-indicator-network
+pkgver=r2162.ea27f11
+pkgrel=1
+pkgdesc='Network indicator'
+url='https://gitlab.com/ubports/development/core/lomiri-indicator-network'
+arch=(x86_64 i686 armv7h aarch64)
+license=(LGPL3 GPL3)
+conflicts=(indicator-network)
+provides=(indicator-network)
+depends=(lcov gcovr gsettings-qt ofono url-dispatcher-git libqofono-qt5 libqtdbustest-git libqtdbusmock-git gmenuharness-bzr)
+makedepends=(git cmake cmake-extras-git doxygen)
+checkdepends=()
+source=('git+https://gitlab.com/ubports/development/core/lomiri-indicator-network.git'
+        'fix-systemd.patch')
+sha256sums=('SKIP'
+            'c56f15c39832d62cbf6c7e158a08293c3e9764cdb16b6e1e841201c940dfc6cb')
+BUILDENV+=('!check') # Hangs
+
+pkgver() {
+  cd ${_pkgname}
+  echo "r$(git rev-list --count HEAD).$(git describe --always)"
+}
+
+prepare() {
+  cd ${_pkgname}
+  patch -Np1 -i "${srcdir}/fix-systemd.patch"
+}
+
+build() {
+  cd ${_pkgname}
+  mkdir -p build
+  cd build
+  cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_INSTALL_LIBDIR="lib/" -DCMAKE_INSTALL_LIBEXECDIR="lib/" ..
+  make
+}
+
+check() {
+  cd ${_pkgname}/build
+  export PYTHONIOENCODING=UTF-8
+  make ARGS+="--output-on-failure" test
+}
+
+package() {
+  cd ${_pkgname}/build
+  make DESTDIR="${pkgdir}/" install
+  mv ${pkgdir}/usr/lib/qt5/ ${pkgdir}/usr/lib/qt/
+}
+# vim:set ts=2 sw=2 et:

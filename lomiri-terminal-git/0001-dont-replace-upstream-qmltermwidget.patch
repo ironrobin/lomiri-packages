@@ -1,0 +1,129 @@
+diff --git a/src/app/main.cpp b/src/app/main.cpp
+index 0037802..be628f8 100644
+--- a/src/app/main.cpp
++++ b/src/app/main.cpp
+@@ -97,8 +97,8 @@ int main(int argc, char *argv[])
+         QString cs, kbl;
+ 
+         foreach (QString pwd, importPathList) {
+-            cs  = pwd + "/QMLTermWidget/color-schemes";
+-            kbl = pwd + "/QMLTermWidget/kb-layouts";
++            cs  = pwd + "/QMLTermWidgetLomiri/color-schemes";
++            kbl = pwd + "/QMLTermWidgetLomiri/kb-layouts";
+             if (QDir(cs).exists()) break;
+         }
+ 
+diff --git a/src/app/qml/Settings/BackgroundOpacityEditor.qml b/src/app/qml/Settings/BackgroundOpacityEditor.qml
+index 9f576e0..463537b 100644
+--- a/src/app/qml/Settings/BackgroundOpacityEditor.qml
++++ b/src/app/qml/Settings/BackgroundOpacityEditor.qml
+@@ -18,7 +18,7 @@
+ 
+ import QtQuick 2.4
+ import Ubuntu.Components 1.3
+-import QMLTermWidget 1.0
++import QMLTermWidgetLomiri 1.0
+ 
+ ColorSchemeEditor {
+     id: backgroundOpacityEditor
+diff --git a/src/app/qml/Settings/ColorRow.qml b/src/app/qml/Settings/ColorRow.qml
+index cb3802d..b96b5a0 100644
+--- a/src/app/qml/Settings/ColorRow.qml
++++ b/src/app/qml/Settings/ColorRow.qml
+@@ -19,7 +19,7 @@
+ import QtQuick 2.4
+ import Ubuntu.Components 1.3
+ import Ubuntu.Components.Popups 1.3
+-import QMLTermWidget 1.0
++import QMLTermWidgetLomiri 1.0
+ 
+ ColorSchemeEditor {
+     id: colorRow
+diff --git a/src/app/qml/Settings/ColorSchemeEditor.qml b/src/app/qml/Settings/ColorSchemeEditor.qml
+index 54ead32..62c8140 100644
+--- a/src/app/qml/Settings/ColorSchemeEditor.qml
++++ b/src/app/qml/Settings/ColorSchemeEditor.qml
+@@ -18,7 +18,7 @@
+ 
+ import QtQuick 2.4
+ import Ubuntu.Components 1.3
+-import QMLTermWidget 1.0
++import QMLTermWidgetLomiri 1.0
+ 
+ Column {
+     id: colorSchemeEditor
+diff --git a/src/app/qml/Settings/SettingsInterfaceSection.qml b/src/app/qml/Settings/SettingsInterfaceSection.qml
+index cf7f401..db67afd 100644
+--- a/src/app/qml/Settings/SettingsInterfaceSection.qml
++++ b/src/app/qml/Settings/SettingsInterfaceSection.qml
+@@ -20,7 +20,7 @@ import QtQuick 2.4
+ import QtQuick.Layouts 1.3
+ import Ubuntu.Components 1.3
+ import Terminal 0.1
+-import QMLTermWidget 1.0
++import QMLTermWidgetLomiri 1.0
+ 
+ SettingsSection {
+     id: section
+diff --git a/src/app/qml/Terminal.qml b/src/app/qml/Terminal.qml
+index 9d0b9a8..5296670 100644
+--- a/src/app/qml/Terminal.qml
++++ b/src/app/qml/Terminal.qml
+@@ -18,7 +18,7 @@
+ import QtQuick 2.4
+ import Ubuntu.Components 1.3
+ import Ubuntu.Components.Popups 1.3
+-import QMLTermWidget 1.0
++import QMLTermWidgetLomiri 1.0
+ import Terminal 0.1
+ 
+ QMLTermWidget {
+diff --git a/src/app/qml/TerminalPage.qml b/src/app/qml/TerminalPage.qml
+index 6d4eccc..3ffc39d 100644
+--- a/src/app/qml/TerminalPage.qml
++++ b/src/app/qml/TerminalPage.qml
+@@ -19,7 +19,7 @@ import QtQuick 2.4
+ import Ubuntu.Components 1.3
+ import Ubuntu.Components.Popups 1.3
+ import Ubuntu.Components.Extras 0.3
+-import QMLTermWidget 1.0
++import QMLTermWidgetLomiri 1.0
+ import GSettings 1.0
+ 
+ // For FastBlur
+diff --git a/src/app/qml/ubuntu-terminal-app.qml b/src/app/qml/ubuntu-terminal-app.qml
+index 56f8475..e80a49f 100644
+--- a/src/app/qml/ubuntu-terminal-app.qml
++++ b/src/app/qml/ubuntu-terminal-app.qml
+@@ -18,7 +18,7 @@
+  */
+ import QtQuick 2.5
+ import QtSystemInfo 5.5
+-import QMLTermWidget 1.0
++import QMLTermWidgetLomiri 1.0
+ import Terminal 0.1
+ import "helpers.js" as Helpers
+ import "KeyboardRows"
+diff --git a/src/plugin/qmltermwidget/CMakeLists.txt b/src/plugin/qmltermwidget/CMakeLists.txt
+index 6d66ea0..2d10c63 100644
+--- a/src/plugin/qmltermwidget/CMakeLists.txt
++++ b/src/plugin/qmltermwidget/CMakeLists.txt
+@@ -2,7 +2,7 @@ include_directories(
+     ${CMAKE_CURRENT_SOURCE_DIR} lib src
+ )
+ 
+-set(PLUGIN_DIR QMLTermWidget)
++set(PLUGIN_DIR QMLTermWidgetLomiri)
+ add_definitions(-DHAVE_POSIX_OPENPT -DHAVE_SYS_TIME_H -DHAVE_UPDWTMPX)
+ add_definitions(-DQ_WS_UBUNTU)
+ 
+diff --git a/src/plugin/qmltermwidget/src/qmldir b/src/plugin/qmltermwidget/src/qmldir
+index 0e5012d..7c37739 100644
+--- a/src/plugin/qmltermwidget/src/qmldir
++++ b/src/plugin/qmltermwidget/src/qmldir
+@@ -1,4 +1,4 @@
+-module QMLTermWidget
++module QMLTermWidgetLomiri
+ plugin qmltermwidget
+ QMLTermScrollbar 1.0 QMLTermScrollbar.qml
+ 

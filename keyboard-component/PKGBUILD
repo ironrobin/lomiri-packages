@@ -1,0 +1,32 @@
+# Maintainer: Furkan Kardame <furkan@fkardame.com>
+
+pkgname=keyboard-component-git
+_pkgname=keyboard-component
+pkgver=r1164.2863cdc
+pkgrel=1
+pkgdesc='Keyboard Component for Mir'
+url='https://github.com/ubports/keyboard-component'
+arch=(x86_64 i686 armv7h aarch64)
+license=()
+conflicts=(unity-system-compositor)
+provides=(unity-system-compositor)
+depends=(plasma-maliit-framework ubuntu-ui-toolkit)
+makedepends=(git)
+source=('git+https://github.com/ubports/keyboard-component.git#branch=xenial')
+sha256sums=('SKIP')
+
+pkgver() {
+  cd ${_pkgname}
+ printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+}
+
+build() {
+   cd ${_pkgname}
+   qmake-qt5 PREFIX=/usr
+   make
+
+}
+package() {
+  cd ${_pkgname}
+  make INSTALL_ROOT="${pkgdir}" install
+}

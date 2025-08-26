@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=Lomiri
+Exec=dm-lomiri-session
+Type=Application
+X-LightDM-Allow-Greeter=true
+DesktopNames=Lomiri

@@ -1,0 +1,13 @@
+diff --git a/config.pri b/config.pri
+index 3bda05a1..bc12c4cd 100644
+--- a/config.pri
++++ b/config.pri
+@@ -48,6 +48,8 @@ enable-opengl {
+     DEFINES += MALIIT_KEYBOARD_HAVE_OPENGL
+ }
+ 
++MALIIT_PLUGINS_DIR = "/usr/lib/maliit/plugins" 
++MALIIT_PLUGINS_DATA_DIR = "/usr/share/maliit/plugins"
+ UBUNTU_KEYBOARD_PACKAGENAME = ubuntu-keyboard
+ UBUNTU_KEYBOARD_VERSION = $$system(cat $$PWD/VERSION)
+ UBUNTU_KEYBOARD_DATA_DIR = "$${MALIIT_PLUGINS_DATA_DIR}/com/ubuntu"

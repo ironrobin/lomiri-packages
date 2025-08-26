@@ -1,0 +1,35 @@
+# Maintainer: Furkan Kardame <furkan@fkardame.com>
+
+pkgname="unav"
+pkgver=git_r233
+pkgrel=1
+pkgdesc="Simple and easy GPS navigator"
+arch=("any")
+url="https://github.com/costales/unav"
+license=("GPL3")
+depends=("qt5-base" "qt5-declarative" "ubuntu-ui-toolkit-git")
+makedepends=("git")
+source=("git+${url}.git" unav.desktop)
+md5sums=('SKIP'
+         '30cd1b14de529243f4f80d602f1ac790')
+options=("!emptydirs")
+
+pkgver()
+{
+    cd ${srcdir}/${pkgname}
+    echo "git_r$(git rev-list --count HEAD)"
+}
+
+package()
+{
+    cd ${srcdir}/${pkgname}
+    mkdir -p "${pkgdir}"/usr/share/{applications,unav}
+    mkdir -p "${pkgdir}"/usr/bin
+    cp -a qml "${pkgdir}"/usr/share/unav
+    cp -a nav "${pkgdir}"/usr/share/unav
+    cp icon* "${pkgdir}"/usr/share/unav
+    echo "#!/bin/sh" > "${pkgdir}"/usr/bin/unav
+    echo "qmlscene --scaling %u /usr/share/unav/qml/Main.qml" >> "${pkgdir}"/usr/bin/unav
+    chmod +x "${pkgdir}"/usr/bin/unav
+    install -Dm644 ${srcdir}/unav.desktop "${pkgdir}"/usr/share/applications/unav.desktop
+}

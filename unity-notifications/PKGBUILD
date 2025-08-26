@@ -1,0 +1,46 @@
+# Maintainer: Marius Gripsgard <marius@ubports.com>
+
+pkgname=unity-notifications-git
+_pkgname=unity-notifications
+pkgver=r472.ca59119
+pkgrel=1
+pkgdesc='This project provides an implementation of the Free Desktop Notification server for Unity'
+url='https://github.com/ubports/unity-notifications'
+arch=(x86_64 i686 armv7h aarch64)
+license=(LGPL GPL)
+conflicts=(unity-notifications)
+provides=(unity-notifications)
+depends=(qt5-base libqtdbusmock-git unity-api-git)
+makedepends=(git)
+checkdepends=()
+source=('git+https://github.com/ubports/unity-notifications.git'
+        '0001-Replace-qStableSort-with-stable_sort.patch')
+sha256sums=('SKIP'
+            '5a30777e969739a593d23587818ee16b705df9b4205e7d981655d4ee68c1ea8c')
+
+BUILD_DIR=build
+
+prepare() {
+    cd ${_pkgname}
+    for i in "${srcdir}/"*.patch; do
+        patch -Np1 -i "$i"
+    done
+}
+
+pkgver() {
+  cd ${_pkgname}
+  echo "r$(git rev-list --count HEAD).$(git describe --always)"
+}
+
+build() {
+  cd ${_pkgname}
+  mkdir -p ${BUILD_DIR}
+  cd ${BUILD_DIR}
+  cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_INSTALL_LIBDIR="lib/" ..
+  make
+}
+
+package() {
+  cd ${_pkgname}/${BUILD_DIR}
+  make DESTDIR="${pkgdir}/" install
+}

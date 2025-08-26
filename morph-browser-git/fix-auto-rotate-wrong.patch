@@ -1,0 +1,12 @@
+diff --git a/src/app/BrowserView.qml b/src/app/BrowserView.qml
+index 2d08e632..1c732819 100644
+--- a/src/app/BrowserView.qml
++++ b/src/app/BrowserView.qml
+@@ -51,6 +51,7 @@ FocusScope {
+     property alias automaticOrientation: contentsItem.automaticOrientation
+     OrientationHelper {
+         id: contentsItem
++        automaticOrientation: false
+ 
+         KeyboardRectangle {
+             id: _osk

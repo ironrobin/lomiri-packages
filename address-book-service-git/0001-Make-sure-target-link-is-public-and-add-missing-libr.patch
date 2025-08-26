@@ -1,0 +1,41 @@
+From 19a71abe471c42882a8ebf1d9579c6c07bec7ab2 Mon Sep 17 00:00:00 2001
+From: Marius Gripsgard <marius@ubports.com>
+Date: Wed, 9 Sep 2020 23:38:57 +0200
+Subject: [PATCH] Make sure target link is public and add missing library to
+ common
+
+---
+ common/CMakeLists.txt | 3 ++-
+ lib/CMakeLists.txt    | 2 +-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/common/CMakeLists.txt b/common/CMakeLists.txt
+index 561868d..96d4e09 100644
+--- a/common/CMakeLists.txt
++++ b/common/CMakeLists.txt
+@@ -22,7 +22,8 @@ add_library(${GALERA_COMMON_LIB} STATIC
+     ${GALERA_COMMON_LIB_HEADERS}
+ )
+ 
+-target_link_libraries(${GALERA_COMMON_LIB}
++target_link_libraries(${GALERA_COMMON_LIB} PUBLIC
++    ${LibPhoneNumber_LIBRARIES}
+     Qt5::Core
+     Qt5::Versit
+     Qt5::Contacts
+diff --git a/lib/CMakeLists.txt b/lib/CMakeLists.txt
+index 7ee156a..9b87db2 100644
+--- a/lib/CMakeLists.txt
++++ b/lib/CMakeLists.txt
+@@ -35,7 +35,7 @@ add_library(${CONTACTS_SERVICE_LIB} STATIC
+     ${CONTACTS_SERVICE_LIB_HEADERS}
+ )
+ 
+-target_link_libraries(${CONTACTS_SERVICE_LIB}
++target_link_libraries(${CONTACTS_SERVICE_LIB} PUBLIC
+     galera-common
+     ubuntu-source-eds
+     ${GLIB_LIBRARIES}
+-- 
+2.28.0
+

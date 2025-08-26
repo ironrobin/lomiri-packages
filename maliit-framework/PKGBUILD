@@ -1,0 +1,44 @@
+# Maintainer: Bernhard Landauer <bernhard@manjaro.org>
+# Contributor: Bhushan Shah <bshah@kde.org>
+
+pkgname=maliit-framework
+pkgver=0.99.2
+pkgrel=3
+pkgdesc="Framework for Maliit"
+arch=('aarch64' 'x86_64')
+url="https://github.com/maliit/framework"
+license=('GPL')
+depends=('qt5-declarative' 'kwayland' 'wayland-protocols')
+makedepends=('git' 'cmake' 'doxygen' 'graphviz')
+provides=("$pkgname-git")
+replaces=("$pkgname-git")
+source=("$url/archive/$pkgver.tar.gz"
+        "$url//commit/f8aa18a.patch")
+sha256sums=('5a73a6e1d1ae32cb82be1f72bbcde0a46f9b05c38c5ff8af108df2a3ebebc69a'
+            '47b797c8a4673ada2ab17622f21d08e9d3e074ace6be5707530df6978150fd1a')
+
+prepare() {
+    mkdir -p build
+    cd framework-$pkgver
+    patch -p1 -i ../f8aa18a.patch
+}
+
+build() {
+    cd build
+    cmake ../framework-$pkgver \
+    -DCMAKE_INSTALL_LIBEXECDIR=lib \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DBUILD_TESTING=OFF \
+    -DLIB_INSTALL_DIR=lib \
+    -DKDE_INSTALL_USE_QT_SYS_PATHS=ON \
+    -DQT5_PLUGINS_INSTALL_DIR=lib/qt/plugins \
+    -DQT5_MKSPECS_INSTALL_DIR=lib/qt/mkspecs \
+    -DCMAKE_BUILD_TYPE=Release
+    make
+}
+
+package() {
+    cd build
+    make DESTDIR="$pkgdir/" install
+}
+

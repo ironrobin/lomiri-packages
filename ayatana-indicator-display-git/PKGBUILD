@@ -1,0 +1,36 @@
+# Maintainer: Furkan Kardame <furkan@fkardame.com>
+
+pkgname="ayatana-indicator-display-git"
+_pkgname="ayatana-indicator-display"
+pkgver="0.6.1"
+pkgrel="1"
+pkgdesc="Ayatana Indicator that helps with display rotate"
+arch=("i686" "x86_64" "aarch64")
+url="https://github.com/AyatanaIndicators"
+license=("GPL3")
+depends=("glib2" "accountsservice" "hicolor-icon-theme" "dconf" "systemd" "qt5-base" "gmock" "libqtdbustest-git" "libqtdbusmock-git")
+makedepends=("cmake-extras" "dbus" "intltool" "properties-cpp" "git" "cmake")
+optdepends=("mate-ayatana-indicator-applet")
+source=("git+https://github.com/AyatanaIndicators/${_pkgname}.git")
+md5sums=("SKIP")
+options=("!emptydirs")
+provides=("${_pkgname}")
+conflicts=("${_pkgname}")
+
+pkgver() {
+  cd ${_pkgname}
+  printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+}
+
+build()
+{
+    cd ${_pkgname}
+   cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBEXECDIR=lib -DCMAKE_INSTALL_SYSCONFDIR=/etc
+    make
+}
+
+package()
+{
+    cd ${_pkgname}
+    make DESTDIR="${pkgdir}" install
+}

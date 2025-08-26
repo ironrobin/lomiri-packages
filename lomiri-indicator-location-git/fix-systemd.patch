@@ -1,0 +1,15 @@
+--- a/data/indicator-location.service.in	2020-09-18 00:08:24.163141507 +0300
++++ b/data/indicator-location.service.in	2020-09-18 00:09:44.783682207 +0300
+@@ -1,8 +1,11 @@
+ [Unit]
+ Description=Indicator Location Backend
+ PartOf=graphical-session.target
+-After=indicators-pre.target
++PartOf=ayatana-indicators.target
+ 
+ [Service]
+ ExecStart=@pkglibexecdir@/indicator-location-service
+ Restart=on-failure
++
++[Install]
++WantedBy=ayatana-indicators.target

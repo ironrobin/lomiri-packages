@@ -1,0 +1,250 @@
+From 0525e32601a5b81ea2952548579332e292ff5c39 Mon Sep 17 00:00:00 2001
+From: Marius Gripsgard <marius@ubports.com>
+Date: Fri, 14 Aug 2020 20:37:18 +0200
+Subject: [PATCH 1/2] Allow to be built without hybris/android/papi support
+
+---
+ CMakeLists.txt                | 13 +++++++++----
+ src/CMakeLists.txt            |  4 ++++
+ src/adapters/CMakeLists.txt   | 17 ++++++++++++-----
+ src/default_daemon_config.cpp | 33 +++++++++++++++++++++++++--------
+ 4 files changed, 50 insertions(+), 17 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index f0166df..7156c3a 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -24,6 +24,8 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+ option(REPOWERD_BUILD_TESTS "Build tests" ON)
+ option(REPOWERD_DISABLE_TIME_SENSITIVE_TESTS "Don't run time-sensitive tests" OFF)
+ 
++option(REPOWERD_DISABLE_HYBRIS "Don't build with hybris support" OFF)
++
+ # Work around cmake setting conf dir to "/usr/etc" instead of "/etc"
+ # when prefix is "/usr"
+ if (NOT DEFINED CMAKE_INSTALL_SYSCONFDIR AND CMAKE_INSTALL_PREFIX STREQUAL "/usr")
+@@ -38,10 +40,13 @@ find_package(PkgConfig REQUIRED)
+ pkg_check_modules(DEVICEINFO REQUIRED deviceinfo)
+ pkg_check_modules(GIO REQUIRED gio-2.0)
+ pkg_check_modules(GIO_UNIX REQUIRED gio-unix-2.0)
+-pkg_check_modules(UA REQUIRED ubuntu-platform-api)
+-pkg_check_modules(LIBHARDWARE REQUIRED libhardware)
+-pkg_check_modules(UBUNTU_PLATFORM_HARDWARE_API REQUIRED ubuntu-platform-hardware-api)
+-find_package(AndroidHeaders REQUIRED)
++
++if (NOT REPOWERD_DISABLE_HYBRIS)
++    pkg_check_modules(UA REQUIRED ubuntu-platform-api)
++    pkg_check_modules(LIBHARDWARE REQUIRED libhardware)
++    pkg_check_modules(UBUNTU_PLATFORM_HARDWARE_API REQUIRED ubuntu-platform-hardware-api)
++    find_package(AndroidHeaders REQUIRED)
++endif()
+ 
+ set(CMAKE_CXX_STANDARD 14)
+ 
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index 74dee4a..22585d8 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -21,6 +21,10 @@ include_directories(
+     ${CMAKE_SOURCE_DIR}
+ )
+ 
++if (NOT REPOWERD_DISABLE_HYBRIS)
++    add_definitions(-DREPOWERD_HAS_HYBRIS)
++endif()
++
+ add_subdirectory(core)
+ add_subdirectory(adapters)
+ add_subdirectory(tools)
+diff --git a/src/adapters/CMakeLists.txt b/src/adapters/CMakeLists.txt
+index a83b742..eb9a376 100644
+--- a/src/adapters/CMakeLists.txt
++++ b/src/adapters/CMakeLists.txt
+@@ -17,11 +17,20 @@
+ add_subdirectory(libsuspend)
+ add_subdirectory(sensorfw)
+ 
++if (NOT REPOWERD_DISABLE_HYBRIS)
++    set(REPOWERD_ADAPTER_HYBRIS_SRCS
++        android_backlight.cpp
++        dev_alarm_wakeup_service.cpp
++        ubuntu_light_sensor.cpp
++        ubuntu_performance_booster.cpp
++        ubuntu_proximity_sensor.cpp
++    )
++endif()
++
+ set(
+     REPOWERD_ADAPTER_SRCS
+ 
+     android_autobrightness_algorithm.cpp
+-    android_backlight.cpp
+     android_device_config.cpp
+     android_device_quirks.cpp
+     backlight_brightness_control.cpp
+@@ -30,7 +39,6 @@ set(
+     dbus_connection_handle.cpp
+     dbus_event_loop.cpp
+     dbus_message_handle.cpp
+-    dev_alarm_wakeup_service.cpp
+     default_state_machine_options.cpp
+     event_loop.cpp
+     event_loop_timer.cpp
+@@ -49,14 +57,13 @@ set(
+     syslog_log.cpp
+     sysfs_backlight.cpp
+     timerfd_wakeup_service.cpp
+-    ubuntu_light_sensor.cpp
+-    ubuntu_performance_booster.cpp
+-    ubuntu_proximity_sensor.cpp
+     unity_display.cpp
+     unity_power_button.cpp
+     unity_screen_service.cpp
+     unity_user_activity.cpp
+     upower_power_source_and_lid.cpp
++
++    ${REPOWERD_ADAPTER_HYBRIS_SRCS}
+ )
+ 
+ add_library(
+diff --git a/src/default_daemon_config.cpp b/src/default_daemon_config.cpp
+index 9014f67..62543ee 100644
+--- a/src/default_daemon_config.cpp
++++ b/src/default_daemon_config.cpp
+@@ -18,15 +18,14 @@
+ 
+ #include "default_daemon_config.h"
+ #include "core/default_state_machine_factory.h"
++#include "src/core/performance_booster.h"
+ 
+ #include "adapters/android_autobrightness_algorithm.h"
+-#include "adapters/android_backlight.h"
+ #include "adapters/android_device_config.h"
+ #include "adapters/android_device_quirks.h"
+ #include "adapters/backlight_brightness_control.h"
+ #include "adapters/console_log.h"
+ #include "adapters/default_state_machine_options.h"
+-#include "adapters/dev_alarm_wakeup_service.h"
+ #include "adapters/event_loop_timer.h"
+ #include "adapters/libsuspend_system_power_control.h"
+ #include "adapters/logind_session_tracker.h"
+@@ -40,15 +39,21 @@
+ #include "adapters/sysfs_backlight.h"
+ #include "adapters/syslog_log.h"
+ #include "adapters/timerfd_wakeup_service.h"
+-#include "adapters/ubuntu_light_sensor.h"
+-#include "adapters/ubuntu_performance_booster.h"
+-#include "adapters/ubuntu_proximity_sensor.h"
+ #include "adapters/unity_display.h"
+ #include "adapters/unity_power_button.h"
+ #include "adapters/unity_screen_service.h"
+ #include "adapters/unity_user_activity.h"
+ #include "adapters/upower_power_source_and_lid.h"
+ 
++// Hybris
++#ifdef REPOWERD_HAS_HYBRIS
++#include "adapters/android_backlight.h"
++#include "adapters/dev_alarm_wakeup_service.h"
++#include "adapters/ubuntu_light_sensor.h"
++#include "adapters/ubuntu_performance_booster.h"
++#include "adapters/ubuntu_proximity_sensor.h"
++#endif
++
+ // Sensorfw
+ #include "adapters/sensorfw/sensorfw_light_sensor.h"
+ #include "adapters/sensorfw/sensorfw_proximity_sensor.h"
+@@ -217,20 +222,24 @@ repowerd::DefaultDaemonConfig::the_notification_service()
+ std::shared_ptr<repowerd::PerformanceBooster>
+ repowerd::DefaultDaemonConfig::the_performance_booster()
+ {
+-    if (!performance_booster)
++    if (performance_booster)
++        return performance_booster;
++
++#ifdef REPOWERD_HAS_HYBRIS
+     try
+     {
+         performance_booster = std::make_shared<UbuntuPerformanceBooster>(
+             the_log());
++        return performance_booster;
+     }
+     catch (std::exception const& e)
+     {
+         the_log()->log(log_tag, "Failed to create UbuntuPerformanceBooster: %s", e.what());
+         the_log()->log(log_tag, "Falling back to NullPerformanceBooster");
+-
+-        performance_booster = std::make_shared<NullPerformanceBooster>();
+     }
++#endif
+ 
++    performance_booster = std::make_shared<NullPerformanceBooster>();
+     return performance_booster;
+ }
+ 
+@@ -258,6 +267,7 @@ repowerd::DefaultDaemonConfig::the_proximity_sensor()
+     if (proximity_sensor)
+         return proximity_sensor;
+ 
++#ifdef REPOWERD_HAS_HYBRIS
+     try
+     {
+         proximity_sensor = std::make_shared<UbuntuProximitySensor>(
+@@ -270,6 +280,7 @@ repowerd::DefaultDaemonConfig::the_proximity_sensor()
+         the_log()->log(log_tag, "Failed to create UbuntuProximitySensor: %s", e.what());
+         the_log()->log(log_tag, "Trying SensorfwProximitySensor");
+     }
++#endif
+ 
+     try
+     {
+@@ -380,6 +391,7 @@ repowerd::DefaultDaemonConfig::the_backlight()
+ {
+     if (!backlight)
+     {
++#ifdef REPOWERD_HAS_HYBRIS
+         try
+         {
+             backlight = std::make_shared<AndroidBacklight>();
+@@ -389,6 +401,7 @@ repowerd::DefaultDaemonConfig::the_backlight()
+             the_log()->log(log_tag, "Failed to create AndroidBacklight: %s", e.what());
+             the_log()->log(log_tag, "Trying SysfsBacklight");
+         }
++#endif
+ 
+         try
+         {
+@@ -517,6 +530,7 @@ repowerd::DefaultDaemonConfig::the_light_sensor()
+     if (light_sensor)
+         return light_sensor;
+ 
++#ifdef REPOWERD_HAS_HYBRIS
+     try
+     {
+         light_sensor = std::make_shared<UbuntuLightSensor>();
+@@ -527,6 +541,7 @@ repowerd::DefaultDaemonConfig::the_light_sensor()
+         the_log()->log(log_tag, "Failed to create UbuntuLightSensor: %s", e.what());
+         the_log()->log(log_tag, "Trying SensorfwLightSensor");
+     }
++#endif
+ 
+     try
+     {
+@@ -645,6 +660,7 @@ repowerd::DefaultDaemonConfig::the_upower_power_source_and_lid()
+ std::shared_ptr<repowerd::WakeupService>
+ repowerd::DefaultDaemonConfig::the_wakeup_service()
+ {
++#ifdef REPOWERD_HAS_HYBRIS
+     if (!wakeup_service)
+     try
+     {
+@@ -655,6 +671,7 @@ repowerd::DefaultDaemonConfig::the_wakeup_service()
+         the_log()->log(log_tag, "Failed to create DevAlarmWakeupService: %s", e.what());
+         the_log()->log(log_tag, "Trying TimerfdWakeupService");
+     }
++#endif
+ 
+     if (!wakeup_service)
+         wakeup_service = std::make_shared<TimerfdWakeupService>(the_log());
+-- 
+2.25.1
+

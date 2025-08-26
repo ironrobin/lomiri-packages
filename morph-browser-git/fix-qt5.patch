@@ -1,0 +1,12 @@
+--- a/doc/CMakeLists.txt	2020-07-17 00:23:03.203034133 +0300
++++ b/doc/CMakeLists.txt	2020-07-17 00:25:39.597200993 +0300
+@@ -5,7 +5,7 @@
+     message(WARNING "qdoc not found, documentation cannot be built")
+ else()
+     add_custom_target(doc ALL
+-                      COMMAND ${QDOC_EXECUTABLE} -qt5
++                      COMMAND ${QDOC_EXECUTABLE}
+                       -outputdir ${CMAKE_CURRENT_BINARY_DIR}/html
+                     ${CMAKE_CURRENT_SOURCE_DIR}/morph-web.qdocconf)
+     install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/html
+

@@ -1,0 +1,14 @@
+[Unit]
+Description=Maliit keyboard service
+PartOf=graphical-session.target
+After=lomiri.service
+
+[Service]
+ExecStart=/usr/bin/maliit-server
+Restart=always
+Environment=MALIIT_FORCE_DBUS_CONNECTION=1
+Environment=QT_QPA_PLATFORM=wayland
+
+[Install]
+WantedBy=graphical-session.target
+

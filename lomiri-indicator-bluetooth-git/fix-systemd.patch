@@ -1,0 +1,15 @@
+--- a/data/indicator-bluetooth.service.in	2018-01-11 13:38:38.000000000 +0300
++++ b/data/indicator-bluetooth.service.in	2020-09-17 23:42:52.021561801 +0300
+@@ -1,8 +1,11 @@
+ [Unit]
+ Description=Indicator Bluetooth Backend
+ PartOf=graphical-session.target
+-After=indicators-pre.target
++PartOf=ayatana-indicators.target
+ 
+ [Service]
+ ExecStart=@pkglibexecdir@/indicator-bluetooth-service
+ Restart=on-failure
++
++[Install]
++WantedBy=ayatana-indicators.target

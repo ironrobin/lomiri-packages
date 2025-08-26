@@ -1,0 +1,12 @@
+diff --git a/qml/Wizard/Pages/10-welcome.qml b/qml/Wizard/Pages/10-welcome.qml
+index 78551d65e..b7a7c192a 100644
+--- a/qml/Wizard/Pages/10-welcome.qml
++++ b/qml/Wizard/Pages/10-welcome.qml
+@@ -30,6 +30,7 @@ LocalComponents.Page {
+     forwardButtonSourceComponent: forwardButton
+     hasBackButton: false
+     onlyOnInstall: true
++    skip: true
+ 
+     UbuntuLanguagePlugin {
+         id: plugin

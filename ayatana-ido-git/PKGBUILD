@@ -1,0 +1,35 @@
+# Maintainer: Furkan Kardame <furkan@fkardame.com>
+
+pkgname=ayatana-ido-git
+_pkgname="ayatana-ido"
+pkgver=git_r569
+pkgrel=1
+pkgdesc='Ayatana Indicator Display Objects'
+arch=('x86_64' 'aarch64')
+url='https://github.com/AyatanaIndicators/ayatana-ido'
+license=('LGPL2.1' 'LGPL3')
+depends=('gtk3' 'glib2')
+makedepends=('mate-common' 'gtk-doc' 'gobject-introspection' 'vala' 'git')
+provides=("${_pkgname}")
+conflicts=("${_pkgname}")
+source=("git+https://github.com/AyatanaIndicators/${_pkgname}.git")
+sha512sums=('SKIP')
+
+
+pkgver()
+{
+    cd ${_pkgname}
+    echo "git_r$(git rev-list --count HEAD)"
+}
+
+build() {
+  cd "${_pkgname}"
+  ./autogen.sh --prefix=/usr
+  make
+}
+
+package() {
+  cd "${_pkgname}"
+  make DESTDIR="$pkgdir/" install
+  find ${pkgdir}/usr/lib -name *.la -delete
+}

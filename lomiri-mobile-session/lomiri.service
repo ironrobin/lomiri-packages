@@ -1,0 +1,17 @@
+[Unit]
+Description=Lomiri Shell
+BindsTo=graphical-session.target
+Before=graphical-session.target
+Requires=dbus.socket
+After=dbus.socket
+Before=indicators.target
+Wants=indicators.target
+Before=ayatana-indicators.target
+Wants=ayatana-indicators.target
+
+[Service]
+Type=forking
+ExecStart=/usr/bin/lomiri-session
+ExecStopPost=/usr/bin/dbus-update-activation-environment --systemd WAYLAND_DISPLAY=
+Restart=on-failure
+TimeoutStartSec=120

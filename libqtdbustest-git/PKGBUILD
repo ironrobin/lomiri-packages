@@ -1,0 +1,48 @@
+# Maintainer: Ivan Semkin (ivan at semkin dot ru)
+
+pkgname=libqtdbustest-git
+_pkgname=libqtdbustest
+pkgver=r83.24e410e
+pkgrel=2
+pkgdesc='Library for testing DBus interactions using Qt'
+url='https://github.com/ubports/libqtdbustest'
+arch=(x86_64 i686 armv7h aarch64)
+license=(LGPL3)
+conflicts=(libqtdbustest)
+provides=(libqtdbustest)
+depends=(gcovr lcov gmock qt5-base)
+makedepends=(git cmake cmake-extras-git)
+checkdepends=(python-dbusmock python-dbus python-gobject)
+source=('git+https://github.com/ubports/libqtdbustest.git'
+        'SuicidalSleep.patch')
+sha256sums=('SKIP'
+            'adbb9680bf2293fd4694d35ba5876623dc12c6fc78a5f772817f15921d44c5ec')
+
+BUILDENV+=('!check')
+
+pkgver() {
+  cd ${_pkgname}
+  echo "r$(git rev-list --count HEAD).$(git describe --always)"
+}
+
+prepare() {
+  cd ${_pkgname}
+  patch -Np1 -i "${srcdir}/SuicidalSleep.patch"
+}
+
+build() {
+  cd ${_pkgname}
+  cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_INSTALL_LIBDIR="lib/" -DCMAKE_INSTALL_LIBEXECDIR="lib/" .
+  make
+}
+
+check() {
+  cd ${_pkgname}
+  make ARGS+="--output-on-failure" test
+}
+
+package() {
+  cd ${_pkgname}
+  make DESTDIR="${pkgdir}/" install
+}
+# vim:set ts=2 sw=2 et:

@@ -1,0 +1,43 @@
+# Maintainer: Furkan Kardame <furkan@fkardame.com>
+
+pkgname=camera-app-git
+_pkgname=camera-app
+pkgver=r2484.0f4846f
+pkgrel=1
+pkgdesc="Camera application"
+arch=('x86_64' 'armv7' 'aarch64')
+url="https://gitlab.com/ubports/apps/camera-app"
+license=('GPL3')
+depends=(qt5-base qt5-multimedia qt5-quickcontrols2 exiv2 ubuntu-ui-toolkit-git
+         libusermetrics-git unity-action-api-git gst-plugins-bad gst-plugins-bad-libs) 
+makedepends=('git' 'cmake' 'extra-cmake-modules' 'intltool')
+source=("git+$url.git"
+        unity-actions.patch)
+md5sums=('SKIP' 'SKIP')
+
+pkgver() {
+  cd ${_pkgname}
+  printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+}
+
+prepare() {
+  mkdir -p build
+  cd $_pkgname
+}
+
+build() {
+  cd build
+  cmake ../$_pkgname \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DBUILD_TESTING=OFF \
+    -DLIB_INSTALL_DIR=lib \
+    -DKDE_INSTALL_USE_QT_SYS_PATHS=ON \
+    -DCLICK_MODE=OFF \
+    -DCMAKE_BUILD_TYPE=Release
+  make
+}
+
+package() {
+  cd build
+  make DESTDIR="$pkgdir/" install
+}

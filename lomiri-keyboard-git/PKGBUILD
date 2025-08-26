@@ -1,0 +1,52 @@
+# Maintainer: Philip Müller <philm@manjaro.org>
+# Contributor: Bhushan Shah <bshah@kde.org>
+pkgname=lomiri-keyboard-git
+_pkgname=keyboard-component
+pkgver=r2086.geaa3d713
+pkgrel=6
+pkgdesc="Lomiri Maliit Keyboard"
+arch=('aarch64')
+url="https://github.com/ubports/keyboard-component"
+license=('GPL')
+groups=()
+depends=('maliit-framework-git' 'qt5-feedback' 'qt5-multimedia' 'gsettings-qt-git'
+         'hunspell' 'libchewing' 'presage-git' 'libpinyin' 'sqlite' 'anthy')
+makedepends=('git' 'cmake')
+#provides=(maliit-keyboard)
+#conflicts=(maliit-keyboard maliit-keyboard-git)
+install=
+source=("git+$url.git"
+        "fix-for-newer-cpp.patch"
+        "hack-maliit-dirs.patch"
+        "https://github.com/maliit/keyboard/commit/269646fd87ef79118493011fae3a3c30ac395586.patch"
+        "https://github.com/maliit/keyboard/commit/e8bbad0d78eb2ca75b47e0d9e71b3c40c2e268bc.patch")
+md5sums=('SKIP'
+         'SKIP'
+         'SKIP'         
+         'SKIP'
+         'SKIP')
+
+pkgver() {
+    cd $_pkgname
+    printf "r%s.g%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+}
+
+prepare() {
+    cd $_pkgname
+
+    patch -Np1 -i "${srcdir}/fix-for-newer-cpp.patch"
+    patch -Np1 -i "${srcdir}/hack-maliit-dirs.patch"
+    patch -Np1 -i "${srcdir}/269646fd87ef79118493011fae3a3c30ac395586.patch"
+    patch -Np1 -i "${srcdir}/e8bbad0d78eb2ca75b47e0d9e71b3c40c2e268bc.patch"
+}
+
+build() {
+    cd ${_pkgname}
+    qmake CONFIG+=no_docs CONFIG+=notests INCLUDEPATH+="/usr/include/maliit-2" QMAKE_CXXFLAGS+="-I/usr/include/maliit-2"
+    make
+}
+
+package() {
+    cd ${_pkgname}
+    make INSTALL_ROOT="${pkgdir}/" install
+}

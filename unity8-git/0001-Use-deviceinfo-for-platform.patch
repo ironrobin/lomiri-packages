@@ -1,0 +1,139 @@
+From c11d9dd3e88cd0797b002f07c9cdde134dee4c20 Mon Sep 17 00:00:00 2001
+From: Marius Gripsgard <marius@ubports.com>
+Date: Tue, 18 Aug 2020 20:14:27 +0200
+Subject: [PATCH] Use deviceinfo for platform
+
+---
+ plugins/Unity/Indicators/CMakeLists.txt |  2 ++
+ plugins/Unity/Platform/CMakeLists.txt   |  9 +++++-
+ plugins/Unity/Platform/platform.cpp     | 38 ++++++++++++++++---------
+ plugins/Unity/Platform/platform.h       |  3 ++
+ 4 files changed, 37 insertions(+), 15 deletions(-)
+
+diff --git a/plugins/Unity/Indicators/CMakeLists.txt b/plugins/Unity/Indicators/CMakeLists.txt
+index 6e15b4969b..3e141be83a 100644
+--- a/plugins/Unity/Indicators/CMakeLists.txt
++++ b/plugins/Unity/Indicators/CMakeLists.txt
+@@ -16,6 +16,7 @@ include_directories(
+     SYSTEM
+     ${GIO_INCLUDE_DIRS}
+     ${QMENUMODEL_INCLUDE_DIRS}
++    ${DEVICEINFO_INCLUDE_DIRS}
+ )
+ 
+ set(IndicatorsQML_SOURCES
+@@ -44,6 +45,7 @@ target_link_libraries(IndicatorsQml
+     ${GLIB_LIBRARIES}
+     ${GIO_LIBRARIES}
+     ${QMENUMODEL_LDFLAGS}
++    ${DEVICEINFO_LDFLAGS}
+     Qt5::Core Qt5::Qml Qt5::Quick Qt5::DBus
+ )
+ 
+diff --git a/plugins/Unity/Platform/CMakeLists.txt b/plugins/Unity/Platform/CMakeLists.txt
+index 1adcbd762e..4474275296 100644
+--- a/plugins/Unity/Platform/CMakeLists.txt
++++ b/plugins/Unity/Platform/CMakeLists.txt
+@@ -6,6 +6,13 @@ set(platformplugin_SRCS
+ 
+ add_library(Platform-qml SHARED ${platformplugin_SRCS})
+ 
+-target_link_libraries(Platform-qml Qt5::DBus Qt5::Qml)
++target_include_directories(Platform-qml PUBLIC
++    ${DEVICEINFO_INCLUDE_DIRS}
++)
++
++target_link_libraries(Platform-qml
++    Qt5::DBus Qt5::Qml
++    ${DEVICEINFO_LDFLAGS}
++)
+ 
+ add_unity8_plugin(Unity.Platform 1.0 Unity/Platform TARGETS Platform-qml)
+diff --git a/plugins/Unity/Platform/platform.cpp b/plugins/Unity/Platform/platform.cpp
+index 93ecd9c5a5..5023c8bd48 100644
+--- a/plugins/Unity/Platform/platform.cpp
++++ b/plugins/Unity/Platform/platform.cpp
+@@ -20,8 +20,13 @@
+ #include <QSet>
+ #include <QString>
+ 
++#include <deviceinfo.h>
++
+ Platform::Platform(QObject *parent)
+-    : QObject(parent), m_isPC(true), m_isMultiSession(true)
++    : QObject(parent),
++      m_info(std::make_shared<DeviceInfo>()),
++      m_isPC(true),
++      m_isMultiSession(true)
+ {
+     QMetaObject::invokeMethod(this, "init");
+ }
+@@ -33,20 +38,25 @@ void Platform::init()
+     QDBusInterface seatIface("org.freedesktop.login1", "/org/freedesktop/login1/seat/self", "org.freedesktop.login1.Seat",
+                              QDBusConnection::systemBus(), this);
+ 
+-    // From the source at https://cgit.freedesktop.org/systemd/systemd/tree/src/hostname/hostnamed.c#n130
+-    // "vm\0"
+-    // "container\0"
+-    // "desktop\0"
+-    // "laptop\0"
+-    // "server\0"
+-    // "tablet\0"
+-    // "handset\0"
+-    // "watch\0"
+-    // "embedded\0",
+-    m_chassis = iface.property("Chassis").toString();
++    if (m_info->deviceType() == DeviceInfo::DeviceType::Unknown) {
++        // From the source at https://cgit.freedesktop.org/systemd/systemd/tree/src/hostname/hostnamed.c#n130
++        // "vm\0"
++        // "container\0"
++        // "desktop\0"
++        // "laptop\0"
++        // "server\0"
++        // "tablet\0"
++        // "handset\0"
++        // "watch\0"
++        // "embedded\0",
++        m_chassis = iface.property("Chassis").toString();
++
++        // A PC is not a handset, tablet or watch.
++        m_isPC = !QSet<QString>{"handset", "tablet", "watch"}.contains(m_chassis);
++    } else {
++        m_isPC = m_info->deviceType() == DeviceInfo::DeviceType::Desktop;
++    }
+ 
+-    // A PC is not a handset, tablet or watch.
+-    m_isPC = !QSet<QString>{"handset", "tablet", "watch"}.contains(m_chassis);
+     m_isMultiSession = seatIface.property("CanMultiSession").toBool() && seatIface.property("CanGraphical").toBool();
+ }
+ 
+diff --git a/plugins/Unity/Platform/platform.h b/plugins/Unity/Platform/platform.h
+index 34d1deac87..37b2eae7eb 100644
+--- a/plugins/Unity/Platform/platform.h
++++ b/plugins/Unity/Platform/platform.h
+@@ -18,12 +18,14 @@
+ #define PLATFORM_H
+ 
+ #include <QDBusInterface>
++#include <memory>
+ 
+ /**
+  * @brief The Platform class
+  *
+  * Wrapper around platform detection support (org.freedesktop.hostname1)
+  */
++class DeviceInfo;
+ class Platform: public QObject
+ {
+     Q_OBJECT
+@@ -56,6 +58,7 @@ private Q_SLOTS:
+     void init();
+ 
+ private:
++    std::shared_ptr<DeviceInfo> m_info;
+     QString m_chassis;
+     bool m_isPC;
+     bool m_isMultiSession;
+-- 
+2.25.1
+

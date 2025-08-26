@@ -1,0 +1,50 @@
+# Maintainer: Furkan Kardame <furkan@fkardame.com>
+
+pkgname=unity-system-compositor-git
+_pkgname=unity-system-compositor
+pkgver=r1172.783ddfb
+pkgrel=2
+pkgdesc='Unity Compositor for Mir'
+url='https://github.com/ubports/unity-system-compositor/tree/xenial_-_edge_-_wayland'
+arch=(x86_64 i686 armv7h aarch64)
+license=()
+conflicts=(unity-system-compositor)
+provides=(unity-system-compositor)
+depends=(boost mir dbus gdk-pixbuf2 glib2 mesa glm wayland deviceinfo)
+makedepends=(git gmock cmake cmake-extras)
+source=('git+https://github.com/ubports/unity-system-compositor.git#branch=xenial_-_edge_-_wayland'
+        0001-Manjarofy-spinner.patch
+        0002-Manjarofy-spinner.patch
+        gcc.patch)
+sha256sums=('SKIP'
+            'ca78f0026c7302553736c1bc462dee6985fe06678aa10683e86b15912132071d'
+            'ec77b99659e000e0713705dcb031f81ce6324bc4810e578aea3e739b14d5e52c'
+            '1a9b8f3f19958c119ce5291dfc71bb72184b3ea9f1ad0a26c3852bb00ea3e8ca')
+
+pkgver() {
+ cd ${_pkgname}
+ printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+}
+
+prepare() {
+  cd ${_pkgname}
+  patch -p1 -i ../gcc.patch
+  patch -p1 -i ../0001-Manjarofy-spinner.patch
+  git apply -p1 ../0002-Manjarofy-spinner.patch
+}
+
+build() {
+  cd ${_pkgname}
+  mkdir -p build
+  cd build
+  cmake ../ -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_INSTALL_LIBDIR="lib/" -DCMAKE_INSTALL_SYSCONFDIR=/etc -DCMAKE_INSTALL_LOCALSTATEDIR=/var
+  make
+
+}
+
+package() {
+  cd ${_pkgname}/build
+  make DESTDIR="${pkgdir}/" install
+  mv "${pkgdir}/usr/sbin/unity-system-compositor"  "${pkgdir}/usr/bin"
+  rm -r "${pkgdir}/usr/sbin/"
+}

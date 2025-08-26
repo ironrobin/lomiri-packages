@@ -1,0 +1,107 @@
+From 3cf3a38434fa62ad8bfd0cd9205d823a37a032c9 Mon Sep 17 00:00:00 2001
+From: Marius Gripsgard <marius@ubports.com>
+Date: Wed, 16 Sep 2020 00:05:32 +0200
+Subject: [PATCH] Use ayatana for power, sound and datetime
+
+left wifi, bluetooth and location for now as these do not have ayatana
+support yet
+---
+ plugins/battery/PageComponent.qml       | 4 ++--
+ plugins/brightness/PageComponent.qml    | 4 ++--
+ plugins/sound/PageComponent.qml         | 4 ++--
+ plugins/sound/SoundsList.qml            | 4 ++--
+ plugins/system-update/PageComponent.qml | 4 ++--
+ plugins/time-date/timedate.cpp          | 2 +-
+ 6 files changed, 11 insertions(+), 11 deletions(-)
+
+diff --git a/plugins/battery/PageComponent.qml b/plugins/battery/PageComponent.qml
+index c957efbb..bd90bb52 100644
+--- a/plugins/battery/PageComponent.qml
++++ b/plugins/battery/PageComponent.qml
+@@ -62,8 +62,8 @@ ItemPage {
+     QDBusActionGroup {
+         id: indicatorPower
+         busType: 1
+-        busName: "com.canonical.indicator.power"
+-        objectPath: "/com/canonical/indicator/power"
++        busName: "org.ayatana.indicator.power"
++        objectPath: "/org/ayatana/indicator/power"
+         property variant brightness: action("brightness").state
+         property variant batteryLevel: action("battery-level").state
+         property variant deviceState: action("device-state").state
+diff --git a/plugins/brightness/PageComponent.qml b/plugins/brightness/PageComponent.qml
+index 8ccadc44..82ac291a 100644
+--- a/plugins/brightness/PageComponent.qml
++++ b/plugins/brightness/PageComponent.qml
+@@ -58,8 +58,8 @@ ItemPage {
+     QDBusActionGroup {
+         id: indicatorPower
+         busType: 1
+-        busName: "com.canonical.indicator.power"
+-        objectPath: "/com/canonical/indicator/power"
++        busName: "org.ayatana.indicator.power"
++        objectPath: "/org/ayatana/indicator/power"
+         property variant brightness: action("brightness")
+         Component.onCompleted: start()
+     }
+diff --git a/plugins/sound/PageComponent.qml b/plugins/sound/PageComponent.qml
+index 124a4730..bce17fe1 100644
+--- a/plugins/sound/PageComponent.qml
++++ b/plugins/sound/PageComponent.qml
+@@ -103,8 +103,8 @@ ItemPage {
+                 QDBusActionGroup {
+                     id: soundActionGroup
+                     busType: DBus.SessionBus
+-                    busName: "com.canonical.indicator.sound"
+-                    objectPath: "/com/canonical/indicator/sound"
++                    busName: "org.ayatana.indicator.sound"
++                    objectPath: "/org/ayatana/indicator/sound"
+ 
+                     property variant volume: action("volume")
+                     property variant silentMode: action("silent-mode")
+diff --git a/plugins/sound/SoundsList.qml b/plugins/sound/SoundsList.qml
+index e62f0749..e6272f8d 100644
+--- a/plugins/sound/SoundsList.qml
++++ b/plugins/sound/SoundsList.qml
+@@ -58,8 +58,8 @@ ItemPage {
+     QDBusActionGroup {
+         id: soundActionGroup
+         busType: DBus.SessionBus
+-        busName: "com.canonical.indicator.sound"
+-        objectPath: "/com/canonical/indicator/sound"
++        busName: "org.ayatana.indicator.sound"
++        objectPath: "/org/ayatana/indicator/sound"
+ 
+         Component.onCompleted: start()
+     }
+diff --git a/plugins/system-update/PageComponent.qml b/plugins/system-update/PageComponent.qml
+index 34ddef6a..6300eb29 100644
+--- a/plugins/system-update/PageComponent.qml
++++ b/plugins/system-update/PageComponent.qml
+@@ -68,8 +68,8 @@ ItemPage {
+     QDBusActionGroup {
+         id: indicatorPower
+         busType: 1
+-        busName: "com.canonical.indicator.power"
+-        objectPath: "/com/canonical/indicator/power"
++        busName: "org.ayatana.indicator.power"
++        objectPath: "/org/ayatana/indicator/power"
+         property var batteryLevel: action("battery-level").state || 0
+         property var deviceState: action("device-state").state
+         Component.onCompleted: start()
+diff --git a/plugins/time-date/timedate.cpp b/plugins/time-date/timedate.cpp
+index 3c1cf23b..8f5991dc 100644
+--- a/plugins/time-date/timedate.cpp
++++ b/plugins/time-date/timedate.cpp
+@@ -37,7 +37,7 @@ TimeDate::TimeDate(QObject *parent) :
+                          "/org/freedesktop/timedate1",
+                          "org.freedesktop.timedate1",
+                           m_systemBusConnection),
+-    m_indicatorSettings(g_settings_new("com.canonical.indicator.datetime")),
++    m_indicatorSettings(g_settings_new("org.ayatana.indicator.datetime")),
+     m_timeZoneModel()
+ {
+     connect (&m_serviceWatcher,
+-- 
+2.25.1
+

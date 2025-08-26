@@ -1,0 +1,24 @@
+From 89a73abc1908825b6c71dcc74baa5511f4155728 Mon Sep 17 00:00:00 2001
+From: Marius Gripsgard <marius@ubports.com>
+Date: Thu, 10 Sep 2020 02:26:09 +0200
+Subject: [PATCH] Remove unused slot
+
+---
+ Buteo/buteo-sync-qml.h | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/Buteo/buteo-sync-qml.h b/Buteo/buteo-sync-qml.h
+index 3afec2e..30483ec 100644
+--- a/Buteo/buteo-sync-qml.h
++++ b/Buteo/buteo-sync-qml.h
+@@ -183,7 +183,6 @@ public slots:
+ 
+ private slots:
+     void serviceOwnerChanged(const QString &name, const QString &oldOwner, const QString &newOwner);
+-    void onSyncProfilesByKeyFinished(QDBusPendingCallWatcher *watcher);
+     void onAllVisibleSyncProfilesFinished(QDBusPendingCallWatcher *watcher);
+     void onSyncStatusChanged();
+     void reloadProfiles();
+-- 
+2.28.0
+

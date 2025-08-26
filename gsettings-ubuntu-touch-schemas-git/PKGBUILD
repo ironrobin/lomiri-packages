@@ -1,0 +1,33 @@
+# Maintainer: Ivan Semkin (ivan at semkin dot ru)
+
+pkgname=lomiri-schemas-git
+_pkgname=lomiri-schemas
+pkgver=r13.0.1.1.r2.g60e0cdb
+pkgrel=1
+pkgdesc='GSettings desktop-wide schemas for Ubuntu Touch'
+url='https://github.com/ubports/gsettings-ubuntu-touch-schemas'
+arch=(x86_64 i686 armv7h aarch64)
+license=(LGPL2.1)
+conflicts=(gsettings-ubuntu-touch-schemas lomiri-schemas)
+provides=(gsettings-ubuntu-touch-schemas lomiri-schemas)
+depends=(dconf)
+makedepends=(git gnome-common intltool)
+source=('git+https://gitlab.com/ubports/development/core/lomiri-schemas.git')
+sha256sums=('SKIP')
+
+pkgver() {
+  cd ${_pkgname}
+  echo "r$(git rev-list --count HEAD).$(git describe --always)" | sed 's/\([^-]*-g\)/r\1/;s/-/./g'
+}
+
+build() {
+  cd ${_pkgname}
+  cmake .
+  make
+}
+
+package() {
+  cd ${_pkgname}
+  make DESTDIR="${pkgdir}/" install
+}
+# vim:set ts=2 sw=2 et:

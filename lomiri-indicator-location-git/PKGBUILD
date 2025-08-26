@@ -1,0 +1,47 @@
+# Maintainer: Furkan Kardame <furkan@fkardame.com>
+
+pkgname="lomiri-indicator-location-git"
+_pkgname="indicator-location"
+pkgver=git_r444
+pkgrel=1
+pkgdesc="Lomiri Location Indicator"
+arch=("i686" "x86_64" "aarch64")
+url="https://github.com/ubports/indicator-location"
+license=("GPL2" "GPL3")
+depends=("systemd" "ubuntu-app-launch-git" "glib2" "dbus" "properties-cpp" "url-dispatcher-git")
+makedepends=("cmake" "cmake-extras" "intltool" "git")
+source=("git+https://github.com/ubports/${_pkgname}.git"
+        "fix-systemd.patch")
+md5sums=("SKIP"
+        "2225dc5a239dd1736d4c686f30c76faf")
+options=("!emptydirs")
+provides=("${_pkgname}")
+conflicts=("${_pkgname}")
+
+
+pkgver()
+{
+    cd ${_pkgname}
+    echo "git_r$(git rev-list --count HEAD)"
+}
+
+prepare()
+{
+    cd ${_pkgname}
+    sed -i 's/ubuntu-app-launch-2/ubuntu-app-launch-3/g' CMakeLists.txt
+    patch -Np1 -i "${srcdir}/fix-systemd.patch"
+}
+
+build()
+{
+    cd ${_pkgname}
+    cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBEXECDIR=lib -Denable_tests=OFF
+    make
+}
+
+package()
+{
+    cd ${_pkgname}
+    make DESTDIR="${pkgdir}" install
+}
+ 

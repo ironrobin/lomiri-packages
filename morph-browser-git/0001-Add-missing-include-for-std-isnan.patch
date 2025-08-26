@@ -1,0 +1,24 @@
+From 2ee347186d83edbb3a26778dff536602d1649225 Mon Sep 17 00:00:00 2001
+From: Marius Gripsgard <marius@ubports.com>
+Date: Tue, 8 Sep 2020 20:43:02 +0200
+Subject: [PATCH] Add missing include for std::isnan
+
+---
+ src/app/domain-settings-model.cpp | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/app/domain-settings-model.cpp b/src/app/domain-settings-model.cpp
+index dfc5796c..a77f8536 100644
+--- a/src/app/domain-settings-model.cpp
++++ b/src/app/domain-settings-model.cpp
+@@ -22,6 +22,7 @@
+ #include <QFile>
+ #include <QtSql/QSqlQuery>
+ #include <QUrl>
++#include <cmath>
+ 
+ #define CONNECTION_NAME "morph-browser-domainsettings"
+ 
+-- 
+2.28.0
+

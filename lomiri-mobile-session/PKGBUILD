@@ -1,0 +1,47 @@
+# Maintainer: Marius Gripsgard (marius@ubports.com)
+# Maintainer: Furkan Kardame <furkan@fkardame.com>
+
+pkgname=lomiri-mobile-session
+pkgver=0.1.3
+pkgrel=1
+pkgdesc='Lomiri Mobile Session Scripts'
+url='https://gitlab.manjaro.org/manjaro-arm/packages/community/lomiri-dev/lomiri-mobile-session'
+arch=(any)
+license=(LGPL3)
+depends=(inotify-tools unity8)
+source=('run-systemd-session'
+        'lomiri.service'
+        'maliit-server.service'
+        'lomiri-session'
+        'usc-wrapper'
+        'lomiri-touch-session'
+        'lomiri-touch.desktop'
+        '52-lomiri-touch.conf')
+md5sums=('feeb2cec28c11f0d823b490899edbe1e'
+         '1a9d14484164501f76aac7dd672f9d87'
+         '8152354ba26848a5a01e96f239284b2c'
+         '673eb5859c61d0863100e3fe0dbb7833'
+         '6227d2cab05ddb706d84c105213a3e5b'
+         '6c3818518142cd3be63cfb5f0e2ea849'
+         '46a9c97b74a564104ad349702fd912c3'
+         'a522bffbad09cfebabb734bbb019b670')
+
+prepare(){
+    mkdir -p "${pkgdir}/usr/share/lomiri-session"
+    mkdir -p "${pkgdir}/usr/share/wayland-sessions"
+    mkdir -p "${pkgdir}/usr/share/lightdm/sessions"
+}
+
+package() {
+    install -Dm755 "${srcdir}/run-systemd-session" -t "${pkgdir}/usr/share/lomiri-session/"
+    install -Dm755 "${srcdir}/lomiri.service" -t "${pkgdir}/usr/lib/systemd/user"
+    install -Dm755 "${srcdir}/maliit-server.service" -t "${pkgdir}/usr/lib/systemd/user"
+
+    install -Dm755 "${srcdir}/lomiri-session" -t "${pkgdir}/usr/bin"
+
+    install "${srcdir}/usc-wrapper" -t "${pkgdir}/usr/share/lomiri-session/"
+    install -Dm755 "${srcdir}/lomiri-touch-session" -t "${pkgdir}/usr/bin/"
+    install -Dm644 "${srcdir}/lomiri-touch.desktop" -t "${pkgdir}/usr/share/lightdm/sessions/"
+    install -Dm644 "${srcdir}/52-lomiri-touch.conf" -t "${pkgdir}/usr/share/lightdm/lightdm.conf.d/"
+
+}

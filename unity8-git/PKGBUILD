@@ -1,0 +1,65 @@
+# Maintainer: Ivan Semkin (ivan at semkin dot ru)
+# Maintainer: Marius Gripsgard (marius@ubports.com)
+# Maintainer: Furkan Kardame <furkan@fkardame.com>
+
+pkgbase=lomiri
+pkgname=(lomiri-git)
+_pkgname=lomiri
+pkgver=r18754.e7bc87f88
+pkgrel=1
+url='https://github.com/ubports/unity8'
+arch=(x86_64 i686 armv7h aarch64)
+license=(LGPL3)
+depends=(lcov gcovr geonames-git lomiri-api-git qmenumodel-git gnome-desktop lomiri-app-launch-git lomiri-ui-toolkit-git libqtdbustest-git libqtdbusmock-git indicator-network-git libusermetrics-git liblightdm-qt5 lomiri-settings-components-git lomiri-schemas deviceinfo-git qtmir-git telephony-service-git lomiri-notifications-git lomiri-thumbnailer-git hfd-service-git lomiri-download-manager-git)
+makedepends=(git cmake cmake-extras-git doxygen)
+checkdepends=(xorg-server-xvfb)
+source=('git+https://gitlab.com/ubports/development/core/lomiri.git#branch=main'
+        'NoDpkgParse.patch'
+        'manjarofy-lomiri.patch'
+        'skip-language-wizard-page.patch'
+        '0001-Use-deviceinfo-for-platform.patch'
+        '0001-Move-indicator-dbus-calls-to-org.ayatana.patch')
+sha256sums=('SKIP'
+            '22795aae2c98ae95c58bd7263d7e3619fa5b454cad1267827f16e56074cd17bb'
+            '70edd462639b6c6b428e39b947f20f344b49057d3e3d3a6b0636fee87fd7bce8'
+            'f28deb38ccc6556a749d6d4f0bccd7e6a0166c2880d3fcb78898343c274f92f3'
+            '273f7b342642ed5240cd138911395ee72f45d3cb1509e3f6b78b3f5ec9d5c233'
+            '905c7e4798a8cc41649d532ee097a63f98c85507ec29059f353a082ad0b0f0a0')
+
+BUILDENV+=('!check') # https://paste.ubuntu.com/p/2d33RJX4W8/
+
+pkgver() {
+  cd ${_pkgname}
+  echo "r$(git rev-list --count HEAD).$(git describe --always)"
+}
+
+prepare() {
+  cd ${_pkgname}
+  patch -Np1 -i "${srcdir}/NoDpkgParse.patch"
+}
+
+build() {
+  cd ${_pkgname}
+  mkdir -p build
+  cd build
+  cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_INSTALL_LIBDIR="lib/" -DNO_TESTS=true ..
+  make
+}
+
+#check() {
+#  cd ${_pkgname}/build
+#  make ARGS+="--output-on-failure" test
+#}
+
+package_lomiri-git() {
+  pkgdesc='Lomiri shell'
+  conflicts=(lomiri)
+  provides=(lomiri)
+  cd ${_pkgname}/build
+  make DESTDIR="${pkgdir}/" install
+
+  # Move conf to the right directory
+   #mv "${pkgdir}/usr/etc/dbus-1/system.d/com.canonical.Unity.conf"  "${pkgdir}/etc/dbus-1/system.d/"
+}
+
+# vim:set ts=2 sw=2 et:

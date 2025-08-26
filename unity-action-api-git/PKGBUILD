@@ -1,0 +1,43 @@
+# Maintainer: Furkan Kardame <furkan@fkardame.com>
+
+pkgname=lomiri-action-api-git
+_pkgname=lomiri-action-api
+pkgver=r149.6ee63c1
+pkgrel=1
+pkgdesc='Unity Action QML Components'
+url='https://gitlab.com/ubports/development/core/lomiri-action-api'
+arch=(x86_64 i686 armv7h aarch64)
+license=()
+depends=(qt5-base qt5-declarative qt5-quickcontrols2)
+makedepends=(git cmake cmake-extras)
+source=('git+https://gitlab.com/ubports/development/core/lomiri-action-api.git#branch=main'
+        '0001-Allow-to-build-without-libhud.patch')
+sha256sums=('SKIP'
+            'cadb7192ca03ece5808837b9413ddc16c7d5930bb1182407741564a1f4541935')
+
+pkgver() {
+ cd ${_pkgname}
+ printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+}
+
+prepare() {
+  cd ${_pkgname}
+  
+  for i in "${srcdir}/"*.patch; do
+        patch -Np1 -i "$i"
+    done
+}
+
+build() {
+  cd ${_pkgname}
+  mkdir -p build
+  cd build
+  cmake ../ -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_INSTALL_LIBDIR="lib/" -DCMAKE_INSTALL_SYSCONFDIR=/etc -DCMAKE_INSTALL_LOCALSTATEDIR=/var
+  make
+
+}
+
+package() {
+  cd ${_pkgname}/build
+  make DESTDIR="${pkgdir}/" install
+}

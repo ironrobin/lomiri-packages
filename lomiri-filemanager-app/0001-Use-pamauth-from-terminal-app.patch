@@ -1,0 +1,23 @@
+From de12d4cd5b65ba477e6a320e958c6b63aed4ad77 Mon Sep 17 00:00:00 2001
+From: Marius Gripsgard <marius@ubports.com>
+Date: Tue, 8 Sep 2020 22:46:57 +0200
+Subject: [PATCH] Use pamauth from terminal-app
+
+---
+ src/plugin/CMakeLists.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/plugin/CMakeLists.txt b/src/plugin/CMakeLists.txt
+index 4546290..1ded260 100644
+--- a/src/plugin/CMakeLists.txt
++++ b/src/plugin/CMakeLists.txt
+@@ -9,5 +9,5 @@ find_package(Qt5Widgets)
+ 
+ add_subdirectory(folderlistmodel)
+ add_subdirectory(placesmodel)
+-add_subdirectory(pamauthentication)
++#add_subdirectory(pamauthentication)
+ add_subdirectory(archives)
+-- 
+2.28.0
+

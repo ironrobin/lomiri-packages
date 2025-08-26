@@ -1,0 +1,52 @@
+# Maintainer: Ivan Semkin (ivan at semkin dot ru)
+
+pkgname=qt5-pim-git
+_pkgname=qtpim
+pkgver=v5.0.0.beta1.r227.gc2026b9f
+pkgrel=1
+pkgdesc='Qt Personal Information Management'
+url='http://code.qt.io/cgit/qt/qtpim.git'
+arch=(x86_64 i686 armv7h aarch64)
+license=()
+conflicts=(qt5-pim)
+provides=(qt5-pim)
+depends=(qt5-declarative)
+makedepends=(git)
+source=('git+git://code.qt.io/qt/qtpim.git#commit=c2026b9fb47d914a68fcfc0ed4d80a24da705a7f'
+	0002-Set-PLUGIN_CLASS_NAME-in-.pro-files.patch
+	0003-Set-MODULE_VERSION-to-5.0.0.patch)
+sha256sums=('SKIP'
+            '6e5b7260590a97c003c26391a4eb7bce6c3acfdecf8f48696e8605eaa7a00175'
+            '547f8d75fe95458c88ea6a841a5763594528c1ed34d5b22cf01c1b12f58e1b86')
+
+pkgver() {
+  cd ${_pkgname}
+  echo "$(git describe --tags | sed 's/-/./; s/-/.r/; s/-/./g')"
+}
+
+prepare() {
+  cd ${_pkgname}
+  patch -p1 -i ../0002-Set-PLUGIN_CLASS_NAME-in-.pro-files.patch
+  patch -p1 -i ../0003-Set-MODULE_VERSION-to-5.0.0.patch
+}
+
+build() {
+  cd ${_pkgname}
+  qmake-qt5
+  make
+}
+
+check() {
+  cd ${_pkgname}
+  make check TESTARGS="-silent"
+}
+
+package() {
+  cd ${_pkgname}
+  make INSTALL_ROOT="${pkgdir}/" install
+  
+  # Drop QMAKE_PRL_BUILD_DIR because it references the build dir
+  find "$pkgdir/usr/lib" -type f -name '*.prl' \
+    -exec sed -i -e '/^QMAKE_PRL_BUILD_DIR/d' {} \;
+}
+# vim:set ts=2 sw=2 et:

@@ -1,0 +1,13 @@
+diff --git a/src/qml/Ubuntu/MediaScanner.0.1/CMakeLists.txt b/src/qml/Ubuntu/MediaScanner.0.1/CMakeLists.txt
+index fed683b..d09595f 100644
+--- a/src/qml/Ubuntu/MediaScanner.0.1/CMakeLists.txt
++++ b/src/qml/Ubuntu/MediaScanner.0.1/CMakeLists.txt
+@@ -1,6 +1,8 @@
+ include_directories(../../..)
+ add_definitions(${DBUSCPP_CFLAGS} -DQT_NO_KEYWORDS)
+ 
++cmake_policy(SET CMP0100 NEW)
++
+ set(QML_PLUGIN_DIR "${CMAKE_INSTALL_LIBDIR}/qt5/qml/Ubuntu/MediaScanner.0.1")
+ 
+ add_library(mediascanner-qml MODULE
