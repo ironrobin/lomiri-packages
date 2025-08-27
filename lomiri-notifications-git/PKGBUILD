@@ -2,7 +2,7 @@
 
 pkgname="lomiri-notifications-git"
 _pkgname="lomiri-notifications"
-pkgver=git_r482
+pkgver=git_r502
 pkgrel=1
 pkgdesc="This project provides an implementation of the Free Desktop Notification server for Lomiri. It also provides some additional features as needed on alternative platforms, such as mobile."
 arch=("i686" "x86_64" "aarch64")
@@ -10,10 +10,8 @@ url="https://gitlab.com/ubports/development/core/lomiri-notifications"
 license=("GPL3")
 depends=("glib2" "accountsservice" "hicolor-icon-theme" "dconf")
 makedepends=("gobject-introspection" "gtk-doc" "intltool" "accountsservice" "mate-common" "vala" "git")
-source=("git+https://gitlab.com/ubports/development/core/lomiri-notifications.git"
-        "0001-Replace-qStableSort-with-stable_sort.patch")
-md5sums=("SKIP"
-         "c2eeaf56bde2d8aa33bc4a728d7eb5f2")
+source=("git+https://gitlab.com/ubports/development/core/lomiri-notifications.git")
+md5sums=("SKIP")
 options=("!emptydirs")
 provides=("${_pkgname}")
 conflicts=("${_pkgname}")
@@ -27,9 +25,6 @@ pkgver()
 prepare()
 {
  cd ${_pkgname}
- for i in "${srcdir}/"*.patch; do
-    patch -Np1 -i "$i"
- done   
 }
 
 build()

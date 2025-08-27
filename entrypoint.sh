@@ -52,6 +52,7 @@ pkgs=(
   lomiri-api-git
   lomiri-app-launch-git
   lomiri-url-dispatcher-git
+  lomiri-notifications-git
 )
 
 for i in "${pkgs[@]}" ; do
