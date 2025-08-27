@@ -11,7 +11,7 @@ license=()
 conflicts=(click)
 provides=(click)
 depends=(libgee json-glib)
-makedepends=(git cmake intltool vala gobject-introspection properties-cpp)
+makedepends=(git cmake intltool vala gobject-introspection properties-cpp dbus-test-runner)
 source=('git+https://gitlab.com/ubports/development/core/click.git#branch=main')
 sha256sums=('SKIP')
 

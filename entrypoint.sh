@@ -36,7 +36,7 @@ sudo pacman-key --lsign-key 6ED02751500A833A
 sudo pacman -Sy
 sudo pacman -S base-devel --noconfirm --needed
 
-for i in "accountsservice-ubuntu" "qt5-pim-git" "telepathy-farstream" "telepathy-qt-git" "lomiri-history-service-git" "properties-cpp" "dbus-test-runner" ; do
+for i in "accountsservice-ubuntu" "qt5-pim-git" "telepathy-farstream" "telepathy-qt-git" "lomiri-history-service-git" "properties-cpp" "dbus-test-runner" "click-git" ; do
 	status=13
 	git submodule update --init $i
 	cd $i
