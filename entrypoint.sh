@@ -50,6 +50,7 @@ pkgs=(
   libqtdbustest-git
   libusermetrics-git
   lomiri-api-git
+  lomiri-app-launch-git
 )
 
 for i in "${pkgs[@]}" ; do
