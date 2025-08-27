@@ -25,6 +25,11 @@ gpg --homedir /home/builduser/.gnupg --list-keys
 echo "checking out root key"
 gpg --homedir /root/.gnupg --list-keys
 
+# add the ironrobin-lomiri repo to the end of /etc/pacman.conf
+# need it for telepathy-farstream
+echo '[ironrobin-lomiri]' >> /etc/pacman.conf
+echo 'Server = https://github.com/ironrobin/lomiri-packages/releases/download/packages' >> /etc/pacman.conf
+
 sudo pacman -S base-devel --noconfirm --needed
 
 for i in "accountsservice-ubuntu" "qt5-pim-git" "telepathy-farstream" "telepathy-qt-git" ; do
