@@ -30,6 +30,7 @@ gpg --homedir /root/.gnupg --list-keys
 echo '[ironrobin-lomiri]' >> /etc/pacman.conf
 echo 'Server = https://github.com/ironrobin/lomiri-packages/releases/download/packages' >> /etc/pacman.conf
 
+sudo pacman -Sy --no-confirm --needed
 sudo pacman -S base-devel --noconfirm --needed
 
 for i in "accountsservice-ubuntu" "qt5-pim-git" "telepathy-farstream" "telepathy-qt-git" ; do
