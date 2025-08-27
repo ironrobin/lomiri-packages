@@ -2,10 +2,10 @@
 
 pkgname=libqtdbustest-git
 _pkgname=libqtdbustest
-pkgver=r83.24e410e
-pkgrel=2
+pkgver=r114.0.3.3_7_g4504fa2
+pkgrel=1
 pkgdesc='Library for testing DBus interactions using Qt'
-url='https://github.com/ubports/libqtdbustest'
+url='https://gitlab.com/ubports/development/core/libqtdbustest'
 arch=(x86_64 i686 armv7h aarch64)
 license=(LGPL3)
 conflicts=(libqtdbustest)
@@ -13,21 +13,19 @@ provides=(libqtdbustest)
 depends=(gcovr lcov gmock qt5-base)
 makedepends=(git cmake cmake-extras-git)
 checkdepends=(python-dbusmock python-dbus python-gobject)
-source=('git+https://github.com/ubports/libqtdbustest.git'
-        'SuicidalSleep.patch')
-sha256sums=('SKIP'
-            'adbb9680bf2293fd4694d35ba5876623dc12c6fc78a5f772817f15921d44c5ec')
+source=('git+https://gitlab.com/ubports/development/core/libqtdbustest.git')
+sha256sums=('SKIP')
 
 BUILDENV+=('!check')
 
 pkgver() {
   cd ${_pkgname}
-  echo "r$(git rev-list --count HEAD).$(git describe --always)"
+  ver="r$(git rev-list --count HEAD).$(git describe --always)"
+  echo "${ver//-/_}"
 }
 
 prepare() {
   cd ${_pkgname}
-  patch -Np1 -i "${srcdir}/SuicidalSleep.patch"
 }
 
 build() {
