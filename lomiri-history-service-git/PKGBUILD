@@ -1,7 +1,7 @@
 # Maintainer: Ivan Semkin (ivan at semkin dot ru)
 
 pkgname=lomiri-history-service-git
-_pkgname=lomiri-history-service-git
+_pkgname=lomiri-history-service
 pkgver=r1557.0.6_3_g411a293
 pkgrel=0
 pkgdesc='Service that provides call log and conversation history'
