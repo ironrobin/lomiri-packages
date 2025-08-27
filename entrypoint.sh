@@ -36,7 +36,23 @@ sudo pacman-key --lsign-key 6ED02751500A833A
 sudo pacman -Sy
 sudo pacman -S base-devel --noconfirm --needed
 
-for i in "accountsservice-ubuntu" "qt5-pim-git" "telepathy-farstream" "telepathy-qt-git" "lomiri-history-service-git" "properties-cpp" "dbus-test-runner" "click-git" "cmake-extras-git" "qdjango-git" "libqtdbustest-git" "libusermetrics-git" ; do
+pkgs=(
+  accountsservice-ubuntu
+  qt5-pim-git
+  telepathy-farstream
+  telepathy-qt-git
+  lomiri-history-service-git
+  properties-cpp
+  dbus-test-runner
+  click-git
+  cmake-extras-git
+  qdjango-git
+  libqtdbustest-git
+  libusermetrics-git
+  lomiri-api-git
+)
+
+for i in ${pkgs[@]}" ; do
 	status=13
 	git submodule update --init $i
 	cd $i
