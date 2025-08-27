@@ -28,13 +28,13 @@ build() {
   make
 }
 
-package_url-dispatcher-git() {
+package_lomiri-url-dispatcher-git() {
   cd ${_pkgname}
   make DESTDIR="${pkgdir}/" install
 
 }
 
-package_url-dispatcher-gui-git() {
+package_lomiri-url-dispatcher-gui-git() {
   cd ${_pkgname}
   make DESTDIR="${pkgdir}/" install
 
