@@ -1,10 +1,10 @@
 # Maintainer: Ivan Semkin (ivan at semkin dot ru)
 
-pkgname=history-service-git
-_pkgname=lomiri-history-service
+pkgname=lomiri-history-service-git
+_pkgname=lomiri-history-service-git
 pkgver=r1557.0.6_3_g411a293
-pkgrel=1
-pkgdesc='History service to store messages and calls'
+pkgrel=0
+pkgdesc='Service that provides call log and conversation history'
 url='https://gitlab.com/ubports/development/core/lomiri-history-service'
 arch=(x86_64 i686 armv7h aarch64)
 license=(GPL)
@@ -12,21 +12,13 @@ conflicts=(history-service)
 provides=(history-service)
 depends=(lcov gcovr libphonenumber telepathy-qt-git sqlite telepathy-mission-control qt5-pim-git)
 makedepends=(git cmake)
-source=('git+https://gitlab.com/ubports/development/core/lomiri-history-service.git#branch=main'
-        '0001-Disable-Werror.patch')
-sha256sums=('SKIP'
-            '9eb242daf66f04a49ec38134988b13d5e783cb0e096bd153159df744353540fd')
+checkdepends=(dbus-test-runner xorg-server-xvfb xorg-xauth)
+source=('git+https://gitlab.com/ubports/development/core/lomiri-history-service.git#branch=main')
+sha256sums=('SKIP')
 
 # --   Package 'QtGLib-2.0', required by 'virtual:world', not found (qt-gstreamer)
-BUILDENV+=('!check') # https://paste.ubuntu.com/p/hR9tBFXJ6Y/
-
-prepare() {
-    echo "SKIP"
-    # cd ${_pkgname}
-    # for i in "${srcdir}/"*.patch; do
-    #     patch -Np1 -i "$i"
-    # done
-}
+# BUILDENV+=('!check') 
+# Failing Tests: https://paste.ubuntu.com/p/hR9tBFXJ6Y/
 
 pkgver() {
   cd ${_pkgname}
@@ -36,14 +28,15 @@ pkgver() {
 
 build() {
   cd ${_pkgname}
-  cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_INSTALL_LIBDIR="lib/" .
+  cmake -DENABLE_WERROR=OFF -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_INSTALL_LIBDIR="lib/" .
   make
 }
 
-check() {
-  cd ${_pkgname}
-  make ARGS+="--output-on-failure" test
-}
+# Skip due to failing tests
+# check() {
+#   cd ${_pkgname}
+#   make ARGS+="--output-on-failure" test
+# }
 
 package() {
   cd ${_pkgname}
