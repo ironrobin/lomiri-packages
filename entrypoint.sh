@@ -27,7 +27,7 @@ gpg --homedir /root/.gnupg --list-keys
 
 sudo pacman -S base-devel --noconfirm --needed
 
-for i in "accountsservice-ubuntu" "qt5-pim-git" "telepathy-farstream" ; do
+for i in "accountsservice-ubuntu" "qt5-pim-git" "telepathy-farstream" "telepathy-qt" ; do
 	status=13
 	git submodule update --init $i
 	cd $i

@@ -6,3 +6,4 @@
 **/*.pkg.tar
 **/accountsservice/
 **/qtpim/
+**/telepathy-qt/
