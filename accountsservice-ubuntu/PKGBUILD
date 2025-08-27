@@ -11,7 +11,7 @@ pkgdesc='D-Bus interface for user account query and manipulation'
 url='https://www.freedesktop.org/software/accountsservice/'
 arch=(i686 x86_64 aarch64)
 license=(GPL3)
-depends=(glib2 polkit systemd)
+depends=(glib2 polkit systemd glib2-devel)
 makedepends=(intltool gtk-doc gobject-introspection git)
 provides=("accountsservice=${pkgver}")
 conflicts=(accountsservice)

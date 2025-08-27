@@ -1,0 +1,49 @@
+name: Build packages
+on: [push, pull_request]
+jobs:
+  build:
+    runs-on: [self-hosted, linux, ARM64]
+    environment: "signing key"
+    steps:
+    - name: cleanup work dir
+      run: | 
+        echo ${{ secrets.SUDO_PASSWD }} | sudo -S rm -rf $PWD
+        mkdir -p $PWD
+    - name: checkout repo
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: '0'
+    - name: Build packages
+      run: |
+        echo "$GITHUB_REPOSITORY" > ./repo
+        echo -n "$IRONROBIN_SIGNING_KEY" > ./gpg_key
+        file ./gpg_key
+        docker run -t -v $PWD:/build ogarcia/archlinux /bin/bash /build/entrypoint.sh
+        ls -l .
+      env:
+        IRONROBIN_SIGNING_KEY: ${{ secrets.IRONROBIN_SIGNING_KEY }}
+        
+    - name: Print sha512sums
+      run: sha512sum */*.pkg.tar.*
+
+    - name: Upload Packages Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: lomiri-packages-${{ steps.tag.outputs.tag }}
+        path: |
+          ${{ github.workspace }}/*.pkg.tar.*
+          ${{ github.workspace }}/*-lomiri.files*
+          ${{ github.workspace }}/*-lomiri.db*
+
+    - name: Release 
+      if: ${{ github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, '[no rel]') }}
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          ${{ github.workspace }}/*.pkg.tar.*
+          ${{ github.workspace }}/*-lomiri.files*
+          ${{ github.workspace }}/*-lomiri.db*
+        tag_name: packages 
+
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
