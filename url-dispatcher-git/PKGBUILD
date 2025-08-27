@@ -3,7 +3,7 @@
 pkgbase=url-dispatcher
 pkgname=(url-dispatcher-git url-dispatcher-gui-git)
 _pkgname=lomiri-url-dispatcher
-pkgver=r770.0.1.0.r29.gc71438a
+pkgver=r1030.0.1.4.r9.g372410d
 pkgrel=1
 pkgdesc='Service to allow sending of URLs and get handlers started'
 url='https://gitlab.com/ubports/development/core/lomiri-url-dispatcher'
@@ -14,20 +14,8 @@ provides=(url-dispatcher)
 depends=(lomiri-app-launch-git intltool apparmor)
 makedepends=(git cmake cmake-extras-git dbus-test-runner lcov gcovr gmock)
 checkdepends=(python-testtools python-nose python-dbusmock)
-source=('git+https://gitlab.com/ubports/development/core/lomiri-url-dispatcher#branch=main'
-        '0001-Add-missing-array-includes.patch')
-sha256sums=('SKIP'
-            'bf2cda8e5306dceb1170da8919c9ef0950d81738c3485fa4ef461b09e66d2c9a')
-
-prepare() {
-  cd ${_pkgname}
-
-  sed -i 's/-Wall/-Wall -Wno-deprecated-declarations/g' CMakeLists.txt
-  
-  for i in "${srcdir}/"*.patch; do
-      patch -Np1 -i "$i"
-  done
-}
+source=('git+https://gitlab.com/ubports/development/core/lomiri-url-dispatcher#branch=main')
+sha256sums=('SKIP')
 
 pkgver() {
   cd ${_pkgname}
@@ -36,7 +24,7 @@ pkgver() {
 
 build() {
   cd ${_pkgname}
-  cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_INSTALL_LIBDIR="lib/" -DCMAKE_INSTALL_LIBEXECDIR="lib/" .
+  cmake -Denable_mirclient=off -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_INSTALL_LIBDIR="lib/" -DCMAKE_INSTALL_LIBEXECDIR="lib/" .
   make
 }
 

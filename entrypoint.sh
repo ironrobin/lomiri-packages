@@ -51,6 +51,7 @@ pkgs=(
   libusermetrics-git
   lomiri-api-git
   lomiri-app-launch-git
+  lomiri-url-dispatcher
 )
 
 for i in "${pkgs[@]}" ; do
