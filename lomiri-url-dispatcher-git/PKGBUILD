@@ -1,7 +1,7 @@
 # Maintainer: Ivan Semkin (ivan at semkin dot ru)
 
-pkgbase=url-dispatcher
-pkgname=(url-dispatcher-git url-dispatcher-gui-git)
+pkgbase=lomiri-url-dispatcher
+pkgname=(lomiri-url-dispatcher-git lomiri-url-dispatcher-gui-git)
 _pkgname=lomiri-url-dispatcher
 pkgver=r1030.0.1.4.r9.g372410d
 pkgrel=1
