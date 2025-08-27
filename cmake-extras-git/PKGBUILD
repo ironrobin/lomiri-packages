@@ -2,30 +2,28 @@
 
 pkgname=cmake-extras-git
 _pkgname=cmake-extras
-pkgver=r251.4db1e08
+pkgver=r304.1.8_2_gd2b8aeb
 pkgrel=1
 pkgdesc='A collection of add-ons for the CMake build tool'
-url='https://github.com/ubports/cmake-extras'
+url='https://gitlab.com/ubports/development/core/cmake-extras'
 arch=(any)
 license=(GPL3)
 conflicts=(cmake-extras)
 provides=(cmake-extras)
 depends=(python)
 makedepends=(git cmake)
-source=('git+https://github.com/ubports/cmake-extras.git'
-        'Gtest.patch')
-sha256sums=('SKIP'
-            '84880029cf774b41e6f61f4977bdc3a36621a571087d272a44aa3776a4f883e0')
+source=('git+https://gitlab.com/ubports/development/core/cmake-extras')
+sha256sums=('SKIP')
 
 prepare() {
   cd ${_pkgname}
-  git checkout master
-  patch -Np1 -i "${srcdir}/Gtest.patch"
+  git checkout main
 }
             
 pkgver() {
   cd ${_pkgname}
-  echo "r$(git rev-list --count HEAD).$(git describe --always)"
+  ver="r$(git rev-list --count HEAD).$(git describe --always)"
+  echo "${ver//-/_}"            # only: hyphens → underscores
 }
 
 build() {
