@@ -37,10 +37,8 @@ pkgver() {
 
 build() {
   cd ${_pkgname}
-  mkdir -p build
-  cd build
-  qmake CONFIG+=no_docs .. 
-  make
+  qmake CONFIG+=no_docs
+  make -j8
 }
 
 #check() {
@@ -49,7 +47,7 @@ build() {
 #}
 
 package() {
-  cd ${_pkgname}/build
-  make INSTALL_ROOT="${pkgdir}/" install
+  cd ${_pkgname}
+  make INSTALL_ROOT="${pkgdir}" install
 }
 # vim:set ts=2 sw=2 et:
