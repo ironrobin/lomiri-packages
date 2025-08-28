@@ -49,9 +49,9 @@ pkgs=(
   telepathy-qt-git
   lomiri-history-service-git
   click-git
-  # libqtdbustest-git
-  # lomiri-api-git
-  # libusermetrics-git
+  libqtdbustest-git
+  lomiri-api-git
+  libusermetrics-git
   # Layer 3
   # lomiri-app-launch-git
   # Layer 4
