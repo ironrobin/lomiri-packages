@@ -52,10 +52,10 @@ pkgs=(
   click-git
   libqtdbustest-git
   # Layer 3
-  # libusermetrics-git
-  # lomiri-api-git
-  # lomiri-app-launch-git
-  # lomiri-telephony-service-git
+  libusermetrics-git
+  lomiri-api-git
+  lomiri-app-launch-git
+  lomiri-telephony-service-git
   # Layer 4
   # lomiri-url-dispatcher-git
   # humanity-icon-theme
