@@ -51,12 +51,12 @@ pkgs=(
   # libusermetrics-git
   # lomiri-api-git
   # lomiri-app-launch-git
-  # lomiri-url-dispatcher-git
-  # lomiri-notifications-git
+  lomiri-url-dispatcher-git
+  lomiri-notifications-git
   # lomiri-telephony-service-git
   # humanity-icon-theme
   # suru-icon-theme-git
-  # lomiri-ui-toolkit-git
+  lomiri-ui-toolkit-git
   buteo-syncfw-qml-git
 )
 
