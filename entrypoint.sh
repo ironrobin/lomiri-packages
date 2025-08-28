@@ -37,14 +37,17 @@ sudo pacman -Sy
 sudo pacman -S base-devel --noconfirm --needed
 
 pkgs=(
+  # Layer 1
   telepathy-farstream
   accountsservice-ubuntu
   qt5-pim-git
-  telepathy-qt-git
-  lomiri-history-service-git
   properties-cpp
   dbus-test-runner
-  # click-git
+  # Layer 2
+  telepathy-qt-git
+  lomiri-history-service-git
+  click-git
+  # Layer 3
   # cmake-extras-git
   # qdjango-git
   # libqtdbustest-git
