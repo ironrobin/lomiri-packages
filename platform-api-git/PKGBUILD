@@ -11,7 +11,7 @@ license=(GPL3)
 conflicts=(platform-api)
 provides=(platform-api)
 depends=(location-service-git lomiri-url-dispatcher-git process-cpp)
-makedepends=(git cmake cmake-extras-git doxygen)
+makedepends=(git cmake cmake-extras doxygen)
 source=('git+https://github.com/ubports/platform-api.git'
         'hybris.patch')
 sha256sums=('SKIP'

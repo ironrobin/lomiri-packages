@@ -11,7 +11,7 @@ license=(LGPL)
 conflicts=(trust-store)
 provides=(trust-store)
 depends=(qt5-base qt5-quickcontrols boost dbus-cpp gmock lcov gcovr mir apparmor properties-cpp)
-makedepends=(git cmake cmake-extras-git doxygen graphviz)
+makedepends=(git cmake cmake-extras doxygen graphviz)
 source=('git+https://github.com/ubports/trust-store.git')
 sha256sums=('SKIP')
 

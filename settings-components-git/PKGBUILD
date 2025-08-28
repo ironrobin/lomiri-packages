@@ -11,7 +11,7 @@ license=(LGPL GPL)
 conflicts=(settings-components)
 provides=(settings-components lomiri-settings-components)
 depends=(xorg-server-xvfb qt5-quickcontrols)
-makedepends=(git cmake cmake-extras-git)
+makedepends=(git cmake cmake-extras)
 source=('git+https://gitlab.com/ubports/development/core/lomiri-settings-components.git')
 sha256sums=('SKIP')
 

@@ -11,7 +11,7 @@ license=(LGPL3 LGPL GPL)
 conflicts=(libusermetrics)
 provides=(libusermetrics)
 depends=(qt5-base qt5-xmlpatterns gsettings-qt apparmor click-git qdjango-git libqtdbustest-git)
-makedepends=(git cmake cmake-extras-git doxygen intltool)
+makedepends=(git cmake cmake-extras doxygen intltool)
 source=('git+https://gitlab.com/ubports/development/core/libusermetrics.git')
 sha256sums=('SKIP')
 

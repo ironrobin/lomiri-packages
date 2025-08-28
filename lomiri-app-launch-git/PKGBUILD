@@ -10,7 +10,7 @@ url='https://github.com/ubports/ubuntu-app-launch'
 arch=(x86_64 i686 armv7h aarch64)
 license=(GPL)
 depends=(zeitgeist gobject-introspection lttng-ust lomiri-api-git properties-cpp curl click-git)
-makedepends=(git cmake  cmake-extras-git dbus-test-runner gmock lcov gcovr)
+makedepends=(git cmake  cmake-extras dbus-test-runner gmock lcov gcovr)
 source=('git+https://gitlab.com/ubports/development/core/lomiri-app-launch.git')
 sha256sums=('SKIP')
 

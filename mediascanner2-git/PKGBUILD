@@ -11,7 +11,7 @@ license=(LGPL)
 conflicts=(mediascanner2)
 provides=(mediascanner2)
 depends=(libexif dbus-cpp dbus apparmor glib2 gstreamer gst-plugins-base gdk-pixbuf2 properties-cpp sqlite taglib udisks2 qt5-declarative gst-plugins-good)
-makedepends=(cmake cmake-extras-git gtest shared-mime-info)
+makedepends=(cmake cmake-extras gtest shared-mime-info)
 source=("git+https://github.com/ubports/mediascanner2#branch=xenial"
         "fix-cmake-hh-moc-policy.patch")
 md5sums=('SKIP'

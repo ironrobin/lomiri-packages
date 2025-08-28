@@ -11,7 +11,7 @@ license=(LGPL GPL)
 conflicts=(biometryd)
 provides=(biometryd)
 depends=(qt5-base qt5-declarative dbus-cpp apparmor process-cpp properties-cpp boost-libs libelf sqlite)
-makedepends=(git cmake boost cmake-extras-git gtest gmock)
+makedepends=(git cmake boost cmake-extras gtest gmock)
 checkdepends=()
 source=('git+https://github.com/ubports/biometryd.git#branch=xenial'
         'fix-new-gcc-and-boost.patch')

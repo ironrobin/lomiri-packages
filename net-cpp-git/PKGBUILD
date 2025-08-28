@@ -11,7 +11,7 @@ license=(LGPL)
 conflicts=(net-cpp)
 provides=(net-cpp)
 depends=(boost process-cpp gmock graphviz properties-cpp jsoncpp python-flask-script python-flask python2-decorator python2-simplejson curl)
-makedepends=(git cmake cmake-extras-git doxygen bsdiff)
+makedepends=(git cmake cmake-extras doxygen bsdiff)
 source=('git+https://github.com/ubports/net-cpp.git'
         'Python.patch'
         'HTTPBin.patch')

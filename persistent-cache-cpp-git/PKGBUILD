@@ -11,7 +11,7 @@ license=(LGPL)
 conflicts=(persistent-cache-cpp)
 provides=(persistent-cache-cpp)
 depends=(boost leveldb valgrind)
-makedepends=(git cmake cmake-extras-git doxygen graphviz lcov gcovr gtest gmock)
+makedepends=(git cmake cmake-extras doxygen graphviz lcov gcovr gtest gmock)
 source=("git+https://gitlab.com/ubports/core/lib-cpp/persistent-cache-cpp.git"
         "0001-Add-missing-array-includes.patch")
 sha256sums=('SKIP'

@@ -11,7 +11,7 @@ url='https://github.com/ubports/unity8'
 arch=(x86_64 i686 armv7h aarch64)
 license=(LGPL3)
 depends=(lcov gcovr geonames-git lomiri-api-git qmenumodel-git gnome-desktop lomiri-app-launch-git lomiri-ui-toolkit-git libqtdbustest-git libqtdbusmock-git indicator-network-git libusermetrics-git liblightdm-qt5 lomiri-settings-components-git lomiri-schemas deviceinfo-git qtmir-git telephony-service-git lomiri-notifications-git lomiri-thumbnailer-git hfd-service-git lomiri-download-manager-git)
-makedepends=(git cmake cmake-extras-git doxygen)
+makedepends=(git cmake cmake-extras doxygen)
 checkdepends=(xorg-server-xvfb)
 source=('git+https://gitlab.com/ubports/development/core/lomiri.git#branch=main'
         'NoDpkgParse.patch'

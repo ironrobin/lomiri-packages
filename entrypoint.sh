@@ -43,7 +43,6 @@ pkgs=(
   qt5-pim-git
   properties-cpp
   dbus-test-runner
-  cmake-extras-git
   qdjango-git
   buteo-syncfw-qml-git
   humanity-icon-theme

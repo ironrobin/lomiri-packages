@@ -11,7 +11,7 @@ license=(LGPL3 GPL3)
 conflicts=(indicator-network)
 provides=(indicator-network)
 depends=(lcov gcovr gsettings-qt ofono lomiri-url-dispatcher-git libqofono-qt5 libqtdbustest-git libqtdbusmock-git gmenuharness-bzr)
-makedepends=(git cmake cmake-extras-git doxygen)
+makedepends=(git cmake cmake-extras doxygen)
 checkdepends=()
 source=('git+https://gitlab.com/ubports/development/core/lomiri-indicator-network.git'
         'fix-systemd.patch')

@@ -11,7 +11,7 @@ license=(LGPL GPL)
 conflicts=(location-service)
 provides=(location-service)
 depends=(boost net-cpp-git trust-store-git gtest gmock clang)
-makedepends=(git cmake cmake-extras-git doxygen)
+makedepends=(git cmake cmake-extras doxygen)
 source=('git+https://github.com/ubports/location-service.git#branch=xenial_-_edge_-_wayland')
 sha256sums=('SKIP')
 

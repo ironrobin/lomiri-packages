@@ -11,7 +11,7 @@ license=(LGPL3)
 conflicts=(lomiri-api)
 provides=(lomiri-api)
 depends=(qt5-quickcontrols)
-makedepends=(git cmake cppcheck graphviz libqtdbustest-git cmake-extras-git)
+makedepends=(git cmake cppcheck graphviz libqtdbustest-git cmake-extras)
 source=('git+https://gitlab.com/ubports/development/core/lomiri-api.git#branch=main')
 sha256sums=('SKIP')
 
