@@ -41,9 +41,9 @@ pkgs=(
   accountsservice-ubuntu
   qt5-pim-git
   telepathy-qt-git
-  # lomiri-history-service-git
-  # properties-cpp
-  # dbus-test-runner
+  lomiri-history-service-git
+  properties-cpp
+  dbus-test-runner
   # click-git
   # cmake-extras-git
   # qdjango-git
