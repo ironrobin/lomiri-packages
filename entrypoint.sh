@@ -45,14 +45,14 @@ pkgs=(
   dbus-test-runner
   cmake-extras-git
   qdjango-git
-  lomiri-notifications-git
   # Layer 2
   telepathy-qt-git
   lomiri-history-service-git
+  lomiri-notifications-git
   click-git
   libqtdbustest-git
-  libusermetrics-git
   # Layer 3
+  # libusermetrics-git
   # lomiri-api-git
   # lomiri-app-launch-git
   # lomiri-telephony-service-git
