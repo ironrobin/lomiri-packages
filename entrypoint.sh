@@ -57,10 +57,10 @@ pkgs=(
   libusermetrics-git
   lomiri-api-git
   # Layer 4
-  # lomiri-telephony-service-git
-  # lomiri-app-launch-git
-  # lomiri-url-dispatcher-git
-  # lomiri-ui-toolkit-git
+  lomiri-telephony-service-git
+  lomiri-app-launch-git
+  lomiri-url-dispatcher-git
+  lomiri-ui-toolkit-git
 )
 
 for i in "${pkgs[@]}" ; do
