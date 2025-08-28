@@ -1,0 +1,28 @@
+# Maintainer: Alex R <alex@ironrobin.net>
+
+pkgname=suru-icon-theme-git
+_pkgname=suru-icon-theme
+pkgver=r138.2025.05.0.r2.g37bd176
+pkgrel=0
+pkgdesc="Suru Icon Theme for Lomiri Operating Environment"
+arch=(any)
+url="https://gitlab.com/ubports/development/core/suru-icon-theme"
+license=(CCPL)
+depends=(humanity-icon-theme adwaita-icon-theme hicolor-icon-theme
+         gtk-engine-murrine)
+makedepends=(python imagemagick icon-naming-utils)
+provides=(light-themes ubuntu-mono ubuntu-themes)
+conflicts=(light-themes ubuntu-mono ubuntu-themes)
+source=("git+https://gitlab.com/ubports/development/core/suru-icon-theme.git")
+md5sums=('SKIP')
+
+pkgver() {
+  cd ${_pkgname}
+  echo "r$(git rev-list --count HEAD).$(git describe --always)" | sed 's/\([^-]*-g\)/r\1/;s/-/./g'
+}
+
+package() {
+  cd ${_pkgname}
+  install -d "$pkgdir"/usr/share/icons/
+  cp -r suru/ "$pkgdir"/usr/share/icons/
+}

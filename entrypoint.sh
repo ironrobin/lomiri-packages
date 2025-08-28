@@ -55,6 +55,7 @@ pkgs=(
   lomiri-notifications-git
   lomiri-telephony-service-git
   humanity-icon-theme
+  suru-icon-theme-git
 )
 
 for i in "${pkgs[@]}" ; do
