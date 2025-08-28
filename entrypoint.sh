@@ -43,16 +43,16 @@ pkgs=(
   qt5-pim-git
   properties-cpp
   dbus-test-runner
+  cmake-extras-git
+  qdjango-git
+  libqtdbustest-git
   # Layer 2
   telepathy-qt-git
   lomiri-history-service-git
   click-git
-  # Layer 3
-  # cmake-extras-git
-  # qdjango-git
-  # libqtdbustest-git
-  # libusermetrics-git
   # lomiri-api-git
+  # libusermetrics-git
+  # Layer 3
   # lomiri-app-launch-git
   # lomiri-url-dispatcher-git
   # lomiri-notifications-git
