@@ -38,7 +38,7 @@ pkgver() {
 build() {
   cd ${_pkgname}
   qmake CONFIG+=no_docs
-  make -j8
+  make 
 }
 
 #check() {
