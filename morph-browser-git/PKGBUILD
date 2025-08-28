@@ -8,7 +8,7 @@ pkgdesc="Lomiri UI Web browser for Mobile Devices"
 arch=('x86_64' 'armv7' 'aarch64')
 url="https://github.com/ubports/morph-browser"
 license=('GPL3')
-depends=(qt5-webengine qt5-base qt5-declarative ubuntu-ui-toolkit-git unity-action-api-git ubuntu-ui-extras-git)
+depends=(qt5-webengine qt5-base qt5-declarative lomiri-ui-toolkit-git unity-action-api-git ubuntu-ui-extras-git)
 makedepends=('git' 'cmake' 'intltool' 'clang')
 source=('git+https://github.com/ubports/morph-browser.git#branch=xenial'
 	'fix-qt5.patch'
