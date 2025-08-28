@@ -56,7 +56,8 @@ pkgs=(
   # lomiri-telephony-service-git
   # humanity-icon-theme
   # suru-icon-theme-git
-  lomiri-ui-toolkit-git
+  # lomiri-ui-toolkit-git
+  buteo-syncfw-qml-git
 )
 
 for i in "${pkgs[@]}" ; do
