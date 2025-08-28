@@ -48,12 +48,12 @@ pkgs=(
   buteo-syncfw-qml-git
   humanity-icon-theme
   # Layer 2
-  # suru-icon-theme-git
-  # telepathy-qt-git
-  # lomiri-history-service-git
-  # lomiri-notifications-git
-  # click-git
-  # libqtdbustest-git
+  suru-icon-theme-git
+  telepathy-qt-git
+  lomiri-history-service-git
+  lomiri-notifications-git
+  click-git
+  libqtdbustest-git
   # Layer 3
   # libusermetrics-git
   # lomiri-api-git
