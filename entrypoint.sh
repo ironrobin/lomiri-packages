@@ -62,7 +62,7 @@ pkgs=(
   # Layer 5
   lomiri-url-dispatcher-git
   # Layer 6
-  # lomiri-telephony-service-git
+  lomiri-telephony-service-git
 )
 
 for i in "${pkgs[@]}" ; do
