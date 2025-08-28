@@ -47,16 +47,16 @@ pkgs=(
   qdjango-git
   buteo-syncfw-qml-git
   humanity-icon-theme
-  suru-icon-theme-git
   # Layer 2
-  telepathy-qt-git
-  lomiri-history-service-git
-  lomiri-notifications-git
-  click-git
-  libqtdbustest-git
+  # suru-icon-theme-git
+  # telepathy-qt-git
+  # lomiri-history-service-git
+  # lomiri-notifications-git
+  # click-git
+  # libqtdbustest-git
   # Layer 3
-  libusermetrics-git
-  lomiri-api-git
+  # libusermetrics-git
+  # lomiri-api-git
   # Layer 4
   # lomiri-telephony-service-git
   # lomiri-app-launch-git
