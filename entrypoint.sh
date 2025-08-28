@@ -47,6 +47,7 @@ pkgs=(
   qdjango-git
   buteo-syncfw-qml-git
   humanity-icon-theme
+  suru-icon-theme-git
   # Layer 2
   telepathy-qt-git
   lomiri-history-service-git
@@ -60,7 +61,6 @@ pkgs=(
   # lomiri-telephony-service-git
   # lomiri-app-launch-git
   # lomiri-url-dispatcher-git
-  # suru-icon-theme-git
   # lomiri-ui-toolkit-git
 )
 
