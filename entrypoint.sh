@@ -50,11 +50,11 @@ pkgs=(
   # Layer 2
   suru-icon-theme-git
   telepathy-qt-git
-  lomiri-history-service-git
   lomiri-notifications-git
   click-git
   libqtdbustest-git
   # Layer 3
+  # lomiri-history-service-git
   # libusermetrics-git
   # lomiri-api-git
   # Layer 4
