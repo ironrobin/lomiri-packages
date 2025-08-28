@@ -46,7 +46,7 @@ pkgs=(
   cmake-extras-git
   qdjango-git
   buteo-syncfw-qml-git
-  # humanity-icon-theme
+  humanity-icon-theme
   # Layer 2
   telepathy-qt-git
   lomiri-history-service-git
