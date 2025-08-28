@@ -1,0 +1,33 @@
+# Maintainer: Furkan Kardame <furkan@fkardame.com>
+
+pkgname="ayatana-indicator-messages"
+_pkgname="ayatana-indicator-messages"
+pkgver="24.5.1"
+pkgrel="0"
+pkgdesc="Ayatana Indicator for viewing recent notifications"
+arch=("i686" "x86_64" "aarch64")
+url="https://github.com/AyatanaIndicators"
+license=("GPL3")
+depends=("glib2" "libayatana-indicator")
+makedepends=("intltool" "libayatana-indicator" "glib2" "gdk-pixbuf2" "gtk3" "mate-common")
+source=("https://github.com/AyatanaIndicators/${_pkgname}/archive/${pkgver}.tar.gz")
+md5sums=("65f4d12358e67254b2cd5518b99664cd")
+options=("!emptydirs")
+
+# prepare()
+# {
+#     cd ${_pkgname}
+# }
+
+build()
+{
+    cd ${_pkgname}-${pkgver}
+    cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBEXECDIR=lib -Denable_tests=OFF
+    make
+}
+
+package()
+{
+    cd ${_pkgname}-${pkgver}
+    make DESTDIR="${pkgdir}" install
+}

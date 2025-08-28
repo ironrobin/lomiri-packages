@@ -46,6 +46,7 @@ pkgs=(
   qdjango-git
   buteo-syncfw-qml-git
   humanity-icon-theme
+  ayatana-indicator-messages
   # Layer 2
   suru-icon-theme-git
   telepathy-qt-git
