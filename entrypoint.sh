@@ -47,6 +47,7 @@ pkgs=(
   buteo-syncfw-qml-git
   humanity-icon-theme
   ayatana-indicator-messages
+  libaccounts-qt5
   # Layer 2
   suru-icon-theme-git
   telepathy-qt-git
