@@ -45,6 +45,8 @@ pkgs=(
   dbus-test-runner
   cmake-extras-git
   qdjango-git
+  buteo-syncfw-qml-git
+  # humanity-icon-theme
   # Layer 2
   telepathy-qt-git
   lomiri-history-service-git
@@ -58,10 +60,8 @@ pkgs=(
   # lomiri-telephony-service-git
   # lomiri-app-launch-git
   # lomiri-url-dispatcher-git
-  # humanity-icon-theme
   # suru-icon-theme-git
   # lomiri-ui-toolkit-git
-  # buteo-syncfw-qml-git
 )
 
 for i in "${pkgs[@]}" ; do
