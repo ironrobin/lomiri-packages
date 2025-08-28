@@ -60,8 +60,9 @@ pkgs=(
   lomiri-app-launch-git
   lomiri-ui-toolkit-git
   # Layer 5
-  lomiri-telephony-service-git
   lomiri-url-dispatcher-git
+  # Layer 6
+  # lomiri-telephony-service-git
 )
 
 for i in "${pkgs[@]}" ; do
