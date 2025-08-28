@@ -39,8 +39,8 @@ sudo pacman -S base-devel --noconfirm --needed
 pkgs=(
   telepathy-farstream
   accountsservice-ubuntu
-  # qt5-pim-git
-  # telepathy-qt-git
+  qt5-pim-git
+  telepathy-qt-git
   # lomiri-history-service-git
   # properties-cpp
   # dbus-test-runner
