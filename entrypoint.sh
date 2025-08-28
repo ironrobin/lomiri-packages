@@ -54,9 +54,9 @@ pkgs=(
   # Layer 3
   libusermetrics-git
   lomiri-api-git
-  lomiri-app-launch-git
-  lomiri-telephony-service-git
   # Layer 4
+  # lomiri-telephony-service-git
+  # lomiri-app-launch-git
   # lomiri-url-dispatcher-git
   # humanity-icon-theme
   # suru-icon-theme-git
