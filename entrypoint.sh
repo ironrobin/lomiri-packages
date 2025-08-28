@@ -37,25 +37,26 @@ sudo pacman -Sy
 sudo pacman -S base-devel --noconfirm --needed
 
 pkgs=(
-  accountsservice-ubuntu
-  qt5-pim-git
-  telepathy-farstream
-  telepathy-qt-git
-  lomiri-history-service-git
-  properties-cpp
-  dbus-test-runner
-  click-git
-  cmake-extras-git
-  qdjango-git
-  libqtdbustest-git
-  libusermetrics-git
-  lomiri-api-git
-  lomiri-app-launch-git
-  lomiri-url-dispatcher-git
-  lomiri-notifications-git
-  lomiri-telephony-service-git
-  humanity-icon-theme
-  suru-icon-theme-git
+  # accountsservice-ubuntu
+  # qt5-pim-git
+  # telepathy-farstream
+  # telepathy-qt-git
+  # lomiri-history-service-git
+  # properties-cpp
+  # dbus-test-runner
+  # click-git
+  # cmake-extras-git
+  # qdjango-git
+  # libqtdbustest-git
+  # libusermetrics-git
+  # lomiri-api-git
+  # lomiri-app-launch-git
+  # lomiri-url-dispatcher-git
+  # lomiri-notifications-git
+  # lomiri-telephony-service-git
+  # humanity-icon-theme
+  # suru-icon-theme-git
+  lomiri-ui-toolkit-git
 )
 
 for i in "${pkgs[@]}" ; do
