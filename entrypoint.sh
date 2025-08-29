@@ -51,6 +51,7 @@ pkgs=(
   gsettings-qt-git
   qmenumodel-git
   geonames-git
+  libqofono-qt5
   # Layer 2
   suru-icon-theme-git
   telepathy-qt-git
