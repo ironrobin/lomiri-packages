@@ -52,7 +52,6 @@ pkgs=(
   suru-icon-theme-git
   telepathy-qt-git
   lomiri-notifications-git
-  lomiri-download-manager-git
   click-git
   libqtdbustest-git
   # Layer 3
@@ -60,6 +59,7 @@ pkgs=(
   libusermetrics-git
   lomiri-api-git
   # Layer 4
+  lomiri-download-manager-git
   lomiri-app-launch-git
   lomiri-ui-toolkit-git
   # Layer 5
