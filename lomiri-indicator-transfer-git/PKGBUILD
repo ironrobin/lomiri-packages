@@ -8,7 +8,7 @@ pkgdesc="Lomiri Transfer Indicator"
 arch=("i686" "x86_64" "aarch64")
 url="https://github.com/ubports/indicator-transfer"
 license=("GPL2" "GPL3")
-depends=("systemd" "libnotify" "dconf" "ubuntu-app-launch-git")
+depends=("systemd" "libnotify" "dconf" "lomiri-app-launch-git")
 makedepends=("cmake" "cmake-extras" "intltool" "glib2" "dbus" "debianutils" "properties-cpp" "click")
 source=("git+https://github.com/ubports/${_pkgname}.git"
         "fix-systemd.patch")

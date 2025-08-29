@@ -52,6 +52,7 @@ pkgs=(
   suru-icon-theme-git
   telepathy-qt-git
   lomiri-notifications-git
+  lomiri-download-manager-git
   click-git
   libqtdbustest-git
   # Layer 3
