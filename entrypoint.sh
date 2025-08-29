@@ -53,6 +53,7 @@ pkgs=(
   geonames-git
   libqofono-qt5
   # Layer 2
+  process-cpp
   suru-icon-theme-git
   telepathy-qt-git
   lomiri-notifications-git
