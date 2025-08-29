@@ -1,0 +1,34 @@
+# Maintainer: Furkan Kardame <furkan@fkardame.com>
+
+pkgname=lomiri-address-book-service-git
+_pkgname=lomiri-address-book-service
+pkgver=r1209.9c96731
+pkgrel=0
+pkgdesc='The Ubuntu Touch Address Book Service'
+url='https://gitlab.com/ubports/development/core/lomiri-address-book-service'
+arch=(x86_64 i686 armv7h aarch64)
+license=()
+depends=(libaccounts-qt5 folks libgee lomiri-url-dispatcher-git qt5-pim-git qt5-base lomiri-notifications-git libphonenumber lomiri-ui-toolkit-git buteo-syncfw-qml-git)
+makedepends=(git cmake vala ayatana-indicator-messages)
+source=('git+https://gitlab.com/ubports/development/core/lomiri-address-book-service.git')
+sha256sums=('SKIP')
+
+pkgver() {
+ cd ${_pkgname}
+ printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+}
+
+build() {
+  cd ${_pkgname}
+  mkdir -p build
+  cd build
+  cmake ../ -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_INSTALL_LIBDIR="lib/" -DCMAKE_INSTALL_SYSCONFDIR=/etc -DCMAKE_INSTALL_LOCALSTATEDIR=/var
+  make
+
+}
+
+package() {
+  cd ${_pkgname}/build
+  make DESTDIR="${pkgdir}/" install
+  mv "${pkgdir}/usr/lib/qt5/" "${pkgdir}/usr/lib/qt/"
+}
