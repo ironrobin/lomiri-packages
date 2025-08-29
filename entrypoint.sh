@@ -55,6 +55,7 @@ pkgs=(
   click-git
   libqtdbustest-git
   # Layer 3
+  libqtdbusmock-git
   lomiri-history-service-git
   libusermetrics-git
   lomiri-api-git
