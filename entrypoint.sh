@@ -50,6 +50,7 @@ pkgs=(
   libaccounts-qt5
   gsettings-qt-git
   qmenumodel-git
+  geonames-git
   # Layer 2
   suru-icon-theme-git
   telepathy-qt-git
