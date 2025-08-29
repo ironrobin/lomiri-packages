@@ -2,8 +2,8 @@
 
 pkgname=gsettings-qt-git
 _pkgname=gsettings-qt
-pkgver=r187.fa7454a
-pkgrel=1
+pkgver=r272.v1.0.0_14_g37e0dfa
+pkgrel=0
 pkgdesc='Library to access GSettings from Qt'
 url='https://github.com/ubports/gsettings-qt'
 arch=(x86_64 i686 armv7h aarch64)
@@ -19,18 +19,20 @@ sha256sums=('SKIP')
 
 pkgver() {
   cd ${_pkgname}
-  echo "r$(git rev-list --count HEAD).$(git describe --always)"
+  ver="r$(git rev-list --count HEAD).$(git describe --always)"
+  echo "${ver//-/_}"            # only: hyphens → underscores
 }
 
 build() {
   cd ${_pkgname}
-  qmake-qt5 PREFIX=/usr
-  make -j1 # Failing racing condition if built with -j > 1
+  mkdir -p build
+  cd build
+  cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_INSTALL_LIBDIR="lib/" -DCMAKE_INSTALL_SYSCONFDIR=/etc -DCMAKE_INSTALL_LOCALSTATEDIR=/var ..
 }
 
 package() {
-  cd ${_pkgname}
-  make INSTALL_ROOT="${pkgdir}" install
+  cd ${_pkgname}/build
+  make DESTDIR="${pkgdir}/" install
   rm -rf "${pkgdir}"/usr/tests
 }
 # vim:set ts=2 sw=2 et:

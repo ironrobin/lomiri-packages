@@ -48,6 +48,7 @@ pkgs=(
   humanity-icon-theme
   ayatana-indicator-messages
   libaccounts-qt5
+  gsettings-qt-git
   # Layer 2
   suru-icon-theme-git
   telepathy-qt-git
