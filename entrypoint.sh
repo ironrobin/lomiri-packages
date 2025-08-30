@@ -62,11 +62,11 @@ pkgs=(
   click-git
   libqtdbustest-git
   # Layer 3
-  # dbus-cpp
-  # libqtdbusmock-git
-  # lomiri-history-service-git
-  # libusermetrics-git
-  # lomiri-api-git
+  dbus-cpp
+  libqtdbusmock-git
+  lomiri-history-service-git
+  libusermetrics-git
+  lomiri-api-git
   # Layer 4
   # lomiri-download-manager-git
   # lomiri-app-launch-git
