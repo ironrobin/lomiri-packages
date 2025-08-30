@@ -38,45 +38,45 @@ sudo pacman -S base-devel --noconfirm --needed
 
 pkgs=(
   # Layer 1
-  # telepathy-farstream
+  telepathy-farstream
   accountsservice-ubuntu
   qt5-pim-git
   properties-cpp
   dbus-test-runner
-  # qdjango-git
-  # buteo-syncfw-qml-git
+  qdjango-git
+  buteo-syncfw-qml-git
   humanity-icon-theme
   ayatana-indicator-messages
   libaccounts-qt5
   gsettings-qt-git
   qmenumodel-git
-  # geonames-git
-  # libqofono-qt5
+  geonames-git
+  libqofono-qt5
   wlcs
   # Layer 2
-  mir
-  process-cpp
-  suru-icon-theme-git
-# telepathy-qt-git
-  lomiri-notifications-git
+  # mir
+  # process-cpp
+  # suru-icon-theme-git
+  # telepathy-qt-git
+  # lomiri-notifications-git
   # click-git
-  libqtdbustest-git
+  # libqtdbustest-git
   # Layer 3
-  dbus-cpp
-  libqtdbusmock-git
-# lomiri-history-service-git
-  libusermetrics-git
-  lomiri-api-git
+  # dbus-cpp
+  # libqtdbusmock-git
+  # lomiri-history-service-git
+  # libusermetrics-git
+  # lomiri-api-git
   # Layer 4
-  lomiri-download-manager-git
-  lomiri-app-launch-git
-  lomiri-ui-toolkit-git
+  # lomiri-download-manager-git
+  # lomiri-app-launch-git
+  # lomiri-ui-toolkit-git
   # Layer 5
-  lomiri-url-dispatcher-git
+  # lomiri-url-dispatcher-git
   # Layer 6
   # lomiri-telephony-service-git
   # lomiri-address-book-service-git
-#   lomiri-content-hub-git
+  # lomiri-content-hub-git
 )
 
 for i in "${pkgs[@]}" ; do
