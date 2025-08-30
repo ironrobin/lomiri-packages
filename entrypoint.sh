@@ -54,13 +54,13 @@ pkgs=(
   libqofono-qt5
   wlcs
   # Layer 2
-  # mir
-  # process-cpp
-  # suru-icon-theme-git
-  # telepathy-qt-git
-  # lomiri-notifications-git
-  # click-git
-  # libqtdbustest-git
+  mir
+  process-cpp
+  suru-icon-theme-git
+  telepathy-qt-git
+  lomiri-notifications-git
+  click-git
+  libqtdbustest-git
   # Layer 3
   # dbus-cpp
   # libqtdbusmock-git
