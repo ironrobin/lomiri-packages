@@ -1,0 +1,48 @@
+# Maintainer: Ivan Semkin (ivan at semkin dot ru)
+
+pkgname=gmenuharness-git
+_pkgname=gmenuharness
+pkgver=r106.a5241df
+pkgrel=0
+pkgdesc="Testing enablement library for projects exporting GiO's gmenu/gaction endpoints"
+url='https://gitlab.com/ubports/development/core/gmenuharness'
+arch=(x86_64 i686 armv7h aarch64)
+license=()
+conflicts=(gmenuharness)
+provides=(gmenuharness)
+depends=(lomiri-api-git gtest libqtdbustest-git)
+makedepends=(cmake cmake-extras doxygen python-dulwich)
+source=("git+https://gitlab.com/ubports/development/core/gmenuharness.git#branch=main")
+sha256sums=('SKIP')
+
+pkgver() {
+  ver="r$(git rev-list --count HEAD).$(git describe --always)"
+  echo "${ver//-/_}"            # only: hyphens → underscores
+}
+
+# prepare() {
+#   cd ${_pkgname}
+
+#   if [ ! -f ${srcdir}/patched ]; then
+#     patch -Np0 -i "${srcdir}/Functional1.patch"
+#     patch -Np0 -i "${srcdir}/Functional2.patch"
+#     touch ${srcdir}/patched
+#   fi
+# }
+
+build() {
+  cd ${_pkgname}
+  cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_INSTALL_LIBDIR="lib/" .
+  make
+}
+
+# check() {
+#   cd ${_pkgname}
+#   make ARGS+="--output-on-failure" check
+# }
+
+package() {
+  cd ${_pkgname}
+  make DESTDIR="${pkgdir}/" install
+}
+# vim:set ts=2 sw=2 et:
