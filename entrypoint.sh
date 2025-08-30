@@ -62,6 +62,7 @@ pkgs=(
   lomiri-notifications-git
   click-git
   libqtdbustest-git
+  repowerd-git
   # Layer 3
   dbus-cpp
   libqtdbusmock-git
