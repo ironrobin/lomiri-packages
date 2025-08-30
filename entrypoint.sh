@@ -64,7 +64,7 @@ pkgs=(
   # Layer 3
   dbus-cpp
   libqtdbusmock-git
-  lomiri-history-service-git
+# lomiri-history-service-git
   libusermetrics-git
   lomiri-api-git
   # Layer 4
