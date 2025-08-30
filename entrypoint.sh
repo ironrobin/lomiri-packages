@@ -53,6 +53,7 @@ pkgs=(
   geonames-git
   libqofono-qt5
   wlcs
+  deviceinfo-git
   # Layer 2
   mir
   process-cpp

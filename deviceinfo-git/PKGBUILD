@@ -2,10 +2,10 @@
 
 pkgname=deviceinfo-git
 _pkgname=deviceinfo
-pkgver=r66.aec1333
-pkgrel=1
+pkgver=r125.4423aab
+pkgrel=0
 pkgdesc='Device Info for Mir'
-url='https://github.com/ubports/deviceinfo/tree/xenial_-_edge'
+url='https://gitlab.com/ubports/development/core/deviceinfo'
 arch=(x86_64 i686 armv7h aarch64)
 license=()
 conflicts=(deviceinfo)
@@ -24,7 +24,7 @@ build() {
    cd ${_pkgname}
   mkdir -p build
   cd build
- cmake ../ -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_INSTALL_LIBDIR="lib/" -DCMAKE_INSTALL_SYSCONFDIR="/etc"
+ cmake ../ -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_INSTALL_LIBDIR="lib/" -DCMAKE_INSTALL_SYSCONFDIR="/etc"
   make
 
 }
