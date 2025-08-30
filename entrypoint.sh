@@ -54,7 +54,7 @@ pkgs=(
   libqofono-qt5
   wlcs
   # Layer 2
-  #mir
+  mir
   process-cpp
   suru-icon-theme-git
   telepathy-qt-git
