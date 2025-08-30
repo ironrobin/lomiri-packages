@@ -11,7 +11,7 @@ license=()
 conflicts=(deviceinfo)
 provides=(deviceinfo)
 depends=()
-makedepends=(git yaml-cpp)
+makedepends=(git yaml-cpp gtest)
 source=('git+https://gitlab.com/ubports/development/core/deviceinfo.git#branch=main')
 sha256sums=('SKIP')
 
