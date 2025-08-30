@@ -52,6 +52,7 @@ pkgs=(
   qmenumodel-git
   geonames-git
   libqofono-qt5
+  ofono-git
   wlcs
   deviceinfo-git
   # Layer 2
