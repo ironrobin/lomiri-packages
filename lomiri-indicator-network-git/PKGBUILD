@@ -1,16 +1,16 @@
 # Maintainer: Ivan Semkin (ivan at semkin dot ru)
 
-pkgname=indicator-network-git
+pkgname=lomiri-indicator-network-git
 _pkgname=lomiri-indicator-network
-pkgver=r2162.ea27f11
-pkgrel=1
+pkgver=r2597.1.1.1_31_gc07bab51
+pkgrel=0
 pkgdesc='Network indicator'
 url='https://gitlab.com/ubports/development/core/lomiri-indicator-network'
 arch=(x86_64 i686 armv7h aarch64)
 license=(LGPL3 GPL3)
 conflicts=(indicator-network)
 provides=(indicator-network)
-depends=(lcov gcovr gsettings-qt ofono lomiri-url-dispatcher-git libqofono-qt5 libqtdbustest-git libqtdbusmock-git gmenuharness-bzr)
+depends=(lcov gcovr gsettings-qt ofono-git lomiri-url-dispatcher-git libqofono-qt5 libqtdbustest-git libqtdbusmock-git gmenuharness-git)
 makedepends=(git cmake cmake-extras doxygen)
 checkdepends=()
 source=('git+https://gitlab.com/ubports/development/core/lomiri-indicator-network.git'
@@ -21,12 +21,14 @@ BUILDENV+=('!check') # Hangs
 
 pkgver() {
   cd ${_pkgname}
-  echo "r$(git rev-list --count HEAD).$(git describe --always)"
+  ver="r$(git rev-list --count HEAD).$(git describe --always)"
+  echo "${ver//-/_}"            # only: hyphens → underscores
 }
 
 prepare() {
   cd ${_pkgname}
-  patch -Np1 -i "${srcdir}/fix-systemd.patch"
+  # TODO: see if patch is still needed
+  # patch -Np1 -i "${srcdir}/fix-systemd.patch"
 }
 
 build() {
@@ -37,11 +39,11 @@ build() {
   make
 }
 
-check() {
-  cd ${_pkgname}/build
-  export PYTHONIOENCODING=UTF-8
-  make ARGS+="--output-on-failure" test
-}
+# check() {
+#   cd ${_pkgname}/build
+#   export PYTHONIOENCODING=UTF-8
+#   make ARGS+="--output-on-failure" test
+# }
 
 package() {
   cd ${_pkgname}/build

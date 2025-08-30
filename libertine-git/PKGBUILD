@@ -2,24 +2,23 @@
 
 pkgname=libertine-git
 _pkgname=libertine
-pkgver=r467.e1c5b7b
+pkgver=r1124.c1254d2
 pkgrel=1
-pkgdesc='A sandbox for running legacy deb-based X11 applications'
-url='https://github.com/ubports/libertine'
+pkgdesc='A sandbox for running legacy deb-based X11 applications on Ubuntu Touch'
+url='https://gitlab.com/ubports/development/core/libertine'
 arch=(x86_64 i686 armv7h aarch64)
 license=(GPL3)
 conflicts=(libertine)
 provides=(libertine)
 depends=(python3 gtest qt5-base qt5-quickcontrols)
-makedepends=(git cmake cmake-extras dbus-test-runner intltool)
-source=('git+https://github.com/ubports/libertine.git')
+makedepends=(git cmake cmake-extras dbus-test-runner intltool system-settings-git)
+source=('git+https://gitlab.com/ubports/development/core/libertine.git')
 sha256sums=('SKIP')
 
 BUILDENV+=('!check') # Some tests are broken
 
 prepare() {
   cd ${_pkgname}
-  git checkout bionic
 }
 
 pkgver() {
@@ -29,7 +28,7 @@ pkgver() {
 
 build() {
   cd ${_pkgname}
-  cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_INSTALL_LIBDIR="lib/" .
+  cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_INSTALL_LIBDIR="lib/" .
   make
 }
 
