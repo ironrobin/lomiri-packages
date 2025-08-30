@@ -9,13 +9,24 @@ pkgdesc="Canonical's display server"
 url='https://mir-server.io'
 arch=(x86_64 i686 aarch64)
 license=(GPL LGPL)
-depends=(gtest boost-libs capnproto google-glog gflags libglvnd  liburcu lttng-ust libepoxy libxml++2.6 nettle libinput libxkbcommon python-pillow freetype2 libevdev protobuf python-dbus python-gobject hicolor-icon-theme libxcursor yaml-cpp)
-makedepends=(libdisplay-info git glm doxygen cmake ninja boost gcovr gmock lcov valgrind python-dbusmock umockdev wlcs)
+depends=(boost-libs libglvnd lttng-ust libepoxy libxml++2.6 libinput yaml-cpp
+         libxkbcommon  freetype2  hicolor-icon-theme libxcursor
+         egl-wayland wayland
+         glib2 glibc gcc-libs util-linux-libs libxcb libxkbcommon-x11 libdrm mesa libx11 gtest glibmm
+         # explicit depends 
+         bash systemd-libs libdisplay-info pixman
+)
+makedepends=(glm doxygen graphviz cmake ninja boost umockdev wlcs glmark2
+             python-pillow python-dbus
+             #gcovr lcov valgrind
+             python-dbusmock
+             glib2-devel
+)
 optdepends=('qterminal: required for miral demos'
             'ttf-ubuntu-font-family: required for miral demos'
             'qt5-wayland: required for miral demos'
             'xcursor-dmz: opt requirement for miral demos'
-            'qtubuntu: opt requirement for miral demos')
+)
 source=("https://github.com/MirServer/mir/archive/v${pkgver}.tar.gz"
         "a701c3c9c1649a6959d4c0b1c7289ee83857633d.patch"
         "68480bc9654191b615b0e7b80c8a87599a417470.patch"
