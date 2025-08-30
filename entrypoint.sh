@@ -68,9 +68,9 @@ pkgs=(
   libusermetrics-git
   lomiri-api-git
   # Layer 4
-  # lomiri-download-manager-git
-  # lomiri-app-launch-git
-  # lomiri-ui-toolkit-git
+  lomiri-download-manager-git
+  lomiri-app-launch-git
+  lomiri-ui-toolkit-git
   # Layer 5
   # lomiri-url-dispatcher-git
   # Layer 6
