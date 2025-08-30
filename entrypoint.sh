@@ -72,7 +72,7 @@ pkgs=(
   lomiri-app-launch-git
   lomiri-ui-toolkit-git
   # Layer 5
-  # lomiri-url-dispatcher-git
+  lomiri-url-dispatcher-git
   # Layer 6
   # lomiri-telephony-service-git
   # lomiri-address-book-service-git
