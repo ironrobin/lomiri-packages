@@ -40,7 +40,7 @@ pkgs=(
   # Layer 1
   # telepathy-farstream
   accountsservice-ubuntu
-  # qt5-pim-git
+  qt5-pim-git
   properties-cpp
   dbus-test-runner
   # qdjango-git
@@ -57,7 +57,7 @@ pkgs=(
   mir
   process-cpp
   suru-icon-theme-git
-  # telepathy-qt-git
+# telepathy-qt-git
   lomiri-notifications-git
   # click-git
   libqtdbustest-git
@@ -76,8 +76,8 @@ pkgs=(
   # Layer 6
   # lomiri-telephony-service-git
   # lomiri-address-book-service-git
-  lomiri-content-hub-git
-)
+#   lomiri-content-hub-git
+# )
 
 for i in "${pkgs[@]}" ; do
 	status=13
