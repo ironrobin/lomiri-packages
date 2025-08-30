@@ -76,6 +76,7 @@ pkgs=(
   # Layer 6
   # lomiri-telephony-service-git
   # lomiri-address-book-service-git
+  lomiri-content-hub-git
 )
 
 for i in "${pkgs[@]}" ; do
