@@ -52,8 +52,9 @@ pkgs=(
   qmenumodel-git
   geonames-git
   libqofono-qt5
-  mir
+  wlcs
   # Layer 2
+  #mir
   process-cpp
   suru-icon-theme-git
   telepathy-qt-git
