@@ -38,28 +38,28 @@ sudo pacman -S base-devel --noconfirm --needed
 
 pkgs=(
   # Layer 1
-  telepathy-farstream
+  # telepathy-farstream
   accountsservice-ubuntu
-  qt5-pim-git
+  # qt5-pim-git
   properties-cpp
   dbus-test-runner
-  qdjango-git
-  buteo-syncfw-qml-git
+  # qdjango-git
+  # buteo-syncfw-qml-git
   humanity-icon-theme
   ayatana-indicator-messages
   libaccounts-qt5
   gsettings-qt-git
   qmenumodel-git
-  geonames-git
-  libqofono-qt5
+  # geonames-git
+  # libqofono-qt5
   wlcs
   # Layer 2
   mir
   process-cpp
   suru-icon-theme-git
-  telepathy-qt-git
+  # telepathy-qt-git
   lomiri-notifications-git
-  click-git
+  # click-git
   libqtdbustest-git
   # Layer 3
   dbus-cpp
@@ -74,8 +74,8 @@ pkgs=(
   # Layer 5
   lomiri-url-dispatcher-git
   # Layer 6
-  lomiri-telephony-service-git
-  lomiri-address-book-service-git
+  # lomiri-telephony-service-git
+  # lomiri-address-book-service-git
 )
 
 for i in "${pkgs[@]}" ; do
