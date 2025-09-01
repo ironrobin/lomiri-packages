@@ -2,8 +2,8 @@
 
 pkgname=lomiri-indicator-network-git
 _pkgname=lomiri-indicator-network
-pkgver=r2597.1.1.1_31_gc07bab51
-pkgrel=0
+pkgver=r2598.1.1.1_32_g745521d1
+pkgrel=1
 pkgdesc='Network indicator'
 url='https://gitlab.com/ubports/development/core/lomiri-indicator-network'
 arch=(x86_64 i686 armv7h aarch64)

@@ -1,0 +1,52 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index d4ebadc9..ccc0e074 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -79,6 +79,14 @@ find_package(Qt5Test 5.9 REQUIRED)
+ 
+ find_package(Threads REQUIRED)
+ 
++# Qt’s FontDatabaseSupport is static and needs Freetype explicitly.
++# Make Freetype available to subdirs and targets created after this point.
++find_package(Freetype REQUIRED)
++if (TARGET Freetype::Freetype)
++  link_libraries(Freetype::Freetype)
++endif()
++
++
+ pkg_check_modules(MIRSERVER mirserver>=0.26 REQUIRED)
+ if(WITH_MIR2)
+ pkg_check_modules(MIRSERVER mirserver REQUIRED)
+diff --git a/src/platforms/mirserver/CMakeLists.txt b/src/platforms/mirserver/CMakeLists.txt
+index 523fb996..07b574d6 100644
+--- a/src/platforms/mirserver/CMakeLists.txt
++++ b/src/platforms/mirserver/CMakeLists.txt
+@@ -41,6 +41,10 @@ set(QT5PLATFORMSUPPORT_LIBS
+     Qt5EglSupport::Qt5EglSupport
+     Qt5ServiceSupport::Qt5ServiceSupport
+ )
++# Qt’s FontDatabaseSupport is static and needs its deps explicitly.
++# FreeType via CMake, HarfBuzz via pkg-config (portable across distros).
++find_package(Freetype REQUIRED)
++pkg_check_modules(HARFBUZZ REQUIRED harfbuzz)
+ 
+ include_directories(
+     ${CMAKE_SOURCE_DIR}/include
+@@ -81,6 +85,8 @@ endif()
+ 
+     ${VALGRIND_INCLUDE_DIRS}
+ )
++# HarfBuzz headers (not strictly needed here, but harmless and clearer)
++include_directories(SYSTEM ${HARFBUZZ_INCLUDE_DIRS})
+ 
+ # We have to remove -pedantic for tracepoints.c
+ string (REPLACE " -pedantic " " " TRACEPOINTS_CMAKE_C_FLAGS ${CMAKE_C_FLAGS})
+@@ -217,6 +223,8 @@ target_link_libraries(qtmirserver
+         Qt5::Quick
+         Qt5::Sensors
+         ${QT5PLATFORMSUPPORT_LIBS}
++        Freetype::Freetype
++        ${HARFBUZZ_LIBRARIES}
+ )
+ 
+ set_target_properties(qtmirserver
