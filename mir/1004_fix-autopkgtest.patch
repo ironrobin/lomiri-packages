@@ -1,0 +1,18 @@
+Description: Load expected_wlcs_failures.list by its full path.
+Author: Mike Gabriel <mike.gabriel@das-netzwerkteam.de>
+Forwarded: https://github.com/canonical/mir/pull/3907
+Abstract:
+ Loading expected_wlcs_failures.list by its full path fixes
+ failing autopkgtests since Mir 2.20.2.
+
+--- a/tests/acceptance-tests/wayland/CMakeLists.txt
++++ b/tests/acceptance-tests/wayland/CMakeLists.txt
+@@ -42,7 +42,7 @@
+ 
+ # Pull list of expected failures
+ file(STRINGS
+-  expected_wlcs_failures.list
++  ${CMAKE_SOURCE_DIR}/tests/acceptance-tests/wayland/expected_wlcs_failures.list
+   RAW_EXPECTED_FAILURES
+ )
+ 

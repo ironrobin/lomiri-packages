@@ -1,0 +1,24 @@
+Description: Temporarily remove the package ABI check
+Author: Mike Gabriel <mike.gabriel@das-netzwerkteam.de>
+Reviewed-By: Simon Quigley <tsimonq2@debian.org>
+Forwarded: not-needed
+Origin: vendor
+Last-Update: 2025-02-20
+
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -310,10 +310,10 @@
+     COMMAND /bin/sh -c "! grep -rl --exclude-dir=protocol --exclude=org_kde* 'GNU Lesser' ${PROJECT_SOURCE_DIR}/src/server ${PROJECT_SOURCE_DIR}/include/server ${PROJECT_SOURCE_DIR}/src/include/server ${PROJECT_SOURCE_DIR}/tests ${PROJECT_SOURCE_DIR}/examples"
+   )
+ 
+-  if (IS_DIRECTORY "${PROJECT_SOURCE_DIR}/debian")
+-    mir_add_test(NAME package-abis
+-      COMMAND /bin/sh -c "cd ${PROJECT_SOURCE_DIR} && tools/update_package_abis.sh --check --verbose")
+-  endif ()
++#  if (IS_DIRECTORY "${PROJECT_SOURCE_DIR}/debian")
++#    mir_add_test(NAME package-abis
++#      COMMAND /bin/sh -c "cd ${PROJECT_SOURCE_DIR} && tools/update_package_abis.sh --check --verbose")
++#  endif ()
+ endif ()
+ 
+ enable_coverage_report(mirserver)

@@ -1,0 +1,15 @@
+Description: python -> python3 header
+Author: Simon Quigley <tsimonq2@debian.org>
+Origin: vendor
+Forwarded: no
+Last-Update: 2025-02-20
+---
+This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
+--- a/examples/miral-shell/spinner/png2header.py
++++ b/examples/miral-shell/spinner/png2header.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/env python3
+ # coding: utf-8
+ 
+ # Copyright © Canonical Ltd.

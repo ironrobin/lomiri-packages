@@ -1,0 +1,15 @@
+Description: Don't regenerate any debian/*.symbols files from the upstream side of things
+Author: Mike Gabriel <mike.gabriel@das-netzwerkteam.de>
+Forwarded: not-required, Debian-specific patch
+
+--- a/src/miral/CMakeLists.txt
++++ b/src/miral/CMakeLists.txt
+@@ -156,7 +156,7 @@ if (CMAKE_COMPILER_IS_GNUCXX   AND  # cl
+     MIR_USE_LD EQUAL "ld"      AND  # lld on 22.04 generates slightly different symbols (but we don't care)
+     MIR_DPKG_GENSYMBOLS)
+ 
+-    set(MIR_CHECK_MIRAL_SYMBOLS_DEFAULT ALL)
++#    set(MIR_CHECK_MIRAL_SYMBOLS_DEFAULT ALL)
+ endif()
+ 
+ add_custom_target(regenerate-miral-debian-symbols ${MIR_CHECK_MIRAL_SYMBOLS_DEFAULT}
