@@ -13,7 +13,6 @@ provides=(lomiri-thumbnailer)
 depends=(boost qt5-base qt5-quickcontrols gstreamer gst-plugins-base gdk-pixbuf2 libexif lomiri-api-git apparmor taglib persistent-cache-cpp)
 makedepends=(git cmake)
 source=('https://gitlab.com/ubports/development/core/lomiri-thumbnailer/-/archive/3.0.4/lomiri-thumbnailer-3.0.4.tar.gz'
-        'mark-inline.patch'
         '0001-work-with-new-cmake.patch'
         '0002-taglib-2.0-and-stdexcept-fixes.patch')
 sha256sums=('86f23a31fbada4eff41c4c87b53915d108df83a54be832b756a8cbe8f661de1d'
@@ -23,6 +22,7 @@ sha256sums=('86f23a31fbada4eff41c4c87b53915d108df83a54be832b756a8cbe8f661de1d'
 
 prepare() {
   cd ${_pkgname}-$pkgver
+  # TODO: See if these need to be applied upstream
   patch -Np1 -i "${srcdir}/0001-work-with-new-cmake.patch"
   patch -Np1 -i "${srcdir}/0002-taglib-2.0-and-stdexcept-fixes.patch"
 }
