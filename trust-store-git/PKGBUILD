@@ -46,6 +46,7 @@ check() {
   make ARGS+="--output-on-failure" test
 }
 
+# We don't need trust-store on desktop. We can build without system-settings without it.
 package() {
   cd ${_pkgname}
   make DESTDIR="${pkgdir}/" install

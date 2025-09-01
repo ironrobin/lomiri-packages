@@ -86,6 +86,7 @@ pkgs=(
   lomiri-telephony-service-git
   lomiri-address-book-service-git
   lomiri-content-hub-git
+  lomiri-system-settings
   qtmir-git
 )
 
