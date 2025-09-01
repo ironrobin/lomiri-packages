@@ -56,6 +56,7 @@ pkgs=(
   deviceinfo-git
   lomiri-settings-components
   lomiri-schemas
+  persistent-cache-cpp
   # Layer 2
   mir
   process-cpp

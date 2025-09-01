@@ -1,0 +1,12 @@
+diff --git a/tests/core/persistent_string_cache/speed_test.cpp b/tests/core/persistent_string_cache/speed_test.cpp
+index a816d0e..df6658b 100644
+--- a/tests/core/persistent_string_cache/speed_test.cpp
++++ b/tests/core/persistent_string_cache/speed_test.cpp
+@@ -29,6 +29,7 @@
+ #include <iostream>
+ #include <random>
+ #include <thread>
++#include <iomanip>
+ 
+ using namespace std;
+ using namespace core;
