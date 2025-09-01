@@ -2,8 +2,8 @@
 
 pkgname=trust-store-git
 _pkgname=trust-store
-pkgver=r423.0292700
-pkgrel=5
+pkgver=r554.2.0.2_19_g999232c
+pkgrel=1
 pkgdesc='C++11 library for persisting trust requests'
 url='https://gitlab.com/ubports/development/core/trust-store'
 arch=(x86_64 i686 armv7h aarch64)
@@ -12,24 +12,32 @@ conflicts=(trust-store)
 provides=(trust-store)
 depends=(qt5-base qt5-quickcontrols boost dbus-cpp gmock lcov gcovr mir apparmor properties-cpp)
 makedepends=(git cmake cmake-extras doxygen graphviz)
-source=('git+https://gitlab.com/ubports/development/core/trust-store.git')
-sha256sums=('SKIP')
+source=('git+https://gitlab.com/ubports/development/core/trust-store.git'
+        'fix-for-newer-boost-allow-test-with-no-AA.patch'
+)
+sha256sums=('SKIP' 'SKIP')
 
 BUILDENV+=('!check') # https://paste.ubuntu.com/p/NZr7FtGtWw/
 
 prepare() {
   cd ${_pkgname}
-  git checkout bionic
+  patch -Np1 -i "${srcdir}/fix-for-newer-boost-allow-test-with-no-AA.patch"
 }
 
 pkgver() {
   cd ${_pkgname}
-  echo "r$(git rev-list --count HEAD).$(git describe --always)"
+  ver="r$(git rev-list --count HEAD).$(git describe --always)"
+  echo "${ver//-/_}"            # only: hyphens → underscores
 }
 
 build() {
   cd ${_pkgname}
-  cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_INSTALL_LIBDIR="lib/" .
+  export CXXFLAGS+=" -Wno-error=pessimizing-move"
+  export CFLAGS+=" -Wno-error=pessimizing-move"
+  cmake -DTRUST_STORE_MIR_AGENT_ENABLED=false \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DCMAKE_INSTALL_PREFIX:PATH=/usr \
+  -DCMAKE_INSTALL_LIBDIR="lib/" .
   make
 }
 

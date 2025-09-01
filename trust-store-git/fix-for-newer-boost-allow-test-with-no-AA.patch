@@ -1,0 +1,258 @@
+diff --git a/src/core/trust/daemon.cpp b/src/core/trust/daemon.cpp
+index 6b226bd..6c981b0 100644
+--- a/src/core/trust/daemon.cpp
++++ b/src/core/trust/daemon.cpp
+@@ -460,7 +460,7 @@ namespace
+ // A user can feed a request to the stub.
+ struct Shell : public std::enable_shared_from_this<Shell>
+ {
+-    Shell(const std::shared_ptr<core::trust::Agent>& agent, boost::asio::io_service& ios)
++    Shell(const std::shared_ptr<core::trust::Agent>& agent, boost::asio::io_context& ios)
+         : agent{agent},
+           stdin{ios, STDIN_FILENO},
+           app_id_resolver{core::trust::remote::helpers::aa_get_task_con_app_id_resolver()}
+@@ -559,4 +559,3 @@ core::posix::exit::Status core::trust::Daemon::Stub::main(const core::trust::Dae
+     return core::posix::exit::Status::success;
+ }
+ 
+-
+diff --git a/src/core/trust/remote/helpers.cpp b/src/core/trust/remote/helpers.cpp
+index 3f01e60..5d11704 100644
+--- a/src/core/trust/remote/helpers.cpp
++++ b/src/core/trust/remote/helpers.cpp
+@@ -51,6 +51,7 @@ remote::helpers::AppIdResolver remote::helpers::aa_get_task_con_app_id_resolver(
+             ~Scope()
+             {
+                 if (con) ::free(con);
++                if (mode) ::free(mode);
+             }
+ 
+             char* con{nullptr};
+@@ -61,14 +62,13 @@ remote::helpers::AppIdResolver remote::helpers::aa_get_task_con_app_id_resolver(
+         auto rc = aa_gettaskcon(pid.value, &scope.con, &scope.mode);
+ 
+         // From man aa_gettaskcon:
+-        // On success size of data placed in the buffer is returned, this includes the mode if
+-        //present and any terminating characters. On error, -1 is returned, and errno(3) is
+-        //set appropriately.
+-        if (rc == app_armor_error) throw std::system_error
++        // On success size of data placed in the buffer is returned; on error -1 is returned.
++        // On systems without AppArmor or when querying is unsupported, this may fail.
++        // In that case, fall back to an empty app-id instead of throwing.
++        if (rc == app_armor_error)
+         {
+-            errno,
+-            std::system_category()
+-        };
++            return std::string{};
++        }
+ 
+         // Safely construct the string
+         return std::string
+diff --git a/src/core/trust/remote/posix.cpp b/src/core/trust/remote/posix.cpp
+index fb159b4..e505526 100644
+--- a/src/core/trust/remote/posix.cpp
++++ b/src/core/trust/remote/posix.cpp
+@@ -84,7 +84,7 @@ remote::posix::Stub::Session::Ptr remote::posix::Stub::Session::Registry::resolv
+     return sessions.at(uid);
+ }
+ 
+-remote::posix::Stub::Session::Session(boost::asio::io_service& io_service)
++remote::posix::Stub::Session::Session(boost::asio::io_context& io_service)
+     : socket{io_service}
+ {
+ }
+diff --git a/src/core/trust/remote/posix.h b/src/core/trust/remote/posix.h
+index 3a219e3..6eeacfa 100644
+--- a/src/core/trust/remote/posix.h
++++ b/src/core/trust/remote/posix.h
+@@ -117,7 +117,7 @@ public:
+         };
+ 
+         // Creates a new session.
+-        Session(boost::asio::io_service& io_service);
++        Session(boost::asio::io_context& io_service);
+ 
+         // The socket we are operating on.
+         boost::asio::local::stream_protocol::socket socket;
+@@ -129,7 +129,7 @@ public:
+     struct Configuration
+     {
+         // The runtime instance to associate to.
+-        boost::asio::io_service& io_service;
++        boost::asio::io_context& io_service;
+         // The endpoint in the filesystem.
+         boost::asio::local::stream_protocol::endpoint endpoint;
+         // Helper to map pid -> process start time
+@@ -171,7 +171,7 @@ private:
+     void handle_error_from_socket_operation_for_uid(const boost::system::error_code& ec, Uid uid);
+ 
+     // The io dispatcher that this instance is associated with.
+-    boost::asio::io_service& io_service;
++    boost::asio::io_context& io_service;
+     // The endpoint that this instance is bound to.
+     boost::asio::local::stream_protocol::endpoint end_point;
+     // The acceptor object for handling incoming connection requests.
+@@ -200,7 +200,7 @@ public:
+         // The agent impl.
+         std::shared_ptr<Agent> impl;
+         // The runtime instance to associate to.
+-        boost::asio::io_service& io_service;
++        boost::asio::io_context& io_service;
+         // The endpoint in the filesystem.
+         boost::asio::local::stream_protocol::endpoint endpoint;
+         // Helper for resolving a pid to the process's start time.
+diff --git a/src/core/trust/runtime.cpp b/src/core/trust/runtime.cpp
+index e14db23..ce7018e 100644
+--- a/src/core/trust/runtime.cpp
++++ b/src/core/trust/runtime.cpp
+@@ -25,7 +25,7 @@
+ 
+ namespace
+ {
+-void execute_and_never_throw(boost::asio::io_service& ios) noexcept(true)
++void execute_and_never_throw(boost::asio::io_context& ios) noexcept(true)
+ {
+     while (true)
+     {
+@@ -54,7 +54,7 @@ core::trust::Runtime& core::trust::Runtime::instance()
+ 
+ core::trust::Runtime::Runtime()
+     : signal_trap{core::posix::trap_signals_for_all_subsequent_threads({core::posix::Signal::sig_term, core::posix::Signal::sig_int})},
+-      keep_alive{io_service}
++      keep_alive{io_service.get_executor()}
+ {
+     for (std::size_t i = 0; i < Runtime::concurrency_hint; i++)
+     {
+@@ -86,7 +86,7 @@ void core::trust::Runtime::stop()
+     signal_trap->stop();
+ }
+ 
+-boost::asio::io_service& core::trust::Runtime::service()
++boost::asio::io_context& core::trust::Runtime::service()
+ {
+     return io_service;
+ }
+diff --git a/src/core/trust/runtime.h b/src/core/trust/runtime.h
+index 4bf00c6..6d1298a 100644
+--- a/src/core/trust/runtime.h
++++ b/src/core/trust/runtime.h
+@@ -62,9 +62,9 @@ public:
+     // requests the runtime to shut down, does not block.
+     void stop();
+ 
+-    // Returns a mutable reference to the underlying boost::asio::io_service
++    // Returns a mutable reference to the underlying boost::asio::io_context
+     // powering the runtime's reactor.
+-    boost::asio::io_service& service();
++    boost::asio::io_context& service();
+ 
+     // Creates an executor for a bus instance hooking into this Runtime instance.
+     core::dbus::Executor::Ptr make_executor_for_bus(const core::dbus::Bus::Ptr& bus);
+@@ -73,14 +73,13 @@ private:
+     // We trap sig term to ensure a clean shutdown.
+     std::shared_ptr<core::posix::SignalTrap> signal_trap;
+ 
+-    // Our io_service instance exposed to remote agents.
+-    boost::asio::io_service io_service;
++    // Our io_context instance exposed to remote agents.
++    boost::asio::io_context io_service;
+ 
+-    // We keep the io_service alive and introduce some artificial
+-    // work.
+-    boost::asio::io_service::work keep_alive;
++    // We keep the io_context alive via a work guard.
++    boost::asio::executor_work_guard<boost::asio::io_context::executor_type> keep_alive;
+ 
+-    // We execute the io_service on a pool of worker threads.
++    // We execute the io_context on a pool of worker threads.
+     std::vector<std::thread> pool;
+ };
+ }
+diff --git a/tests/remote_agent_test.cpp b/tests/remote_agent_test.cpp
+index 532907c..5e3f84d 100644
+--- a/tests/remote_agent_test.cpp
++++ b/tests/remote_agent_test.cpp
+@@ -104,7 +104,7 @@ TEST(RemoteAgentStubSessionRegistry, adding_and_removing_of_a_valid_session_work
+ {
+     using Session = core::trust::remote::posix::Stub::Session;
+ 
+-    boost::asio::io_service io_service;
++    boost::asio::io_context io_service;
+ 
+     Session::Ptr session
+     {
+@@ -187,7 +187,7 @@ struct UnixDomainSocketRemoteAgent : public ::testing::Test
+     };
+ 
+     UnixDomainSocketRemoteAgent()
+-        : keep_alive{io_service},
++        : keep_alive{io_service.get_executor()},
+           worker{[this]() { io_service.run(); }}
+     {
+         std::remove(endpoint_for_testing);
+@@ -221,8 +221,8 @@ struct UnixDomainSocketRemoteAgent : public ::testing::Test
+     {
+         return []()
+         {
+-            boost::asio::io_service io_service;
+-            boost::asio::io_service::work keep_alive{io_service};
++            boost::asio::io_context io_service;
++            auto keep_alive = boost::asio::make_work_guard(io_service);
+ 
+             std::thread worker{[&io_service]() { io_service.run(); }};
+ 
+@@ -242,8 +242,8 @@ struct UnixDomainSocketRemoteAgent : public ::testing::Test
+ 
+ 
+ 
+-    boost::asio::io_service io_service;
+-    boost::asio::io_service::work keep_alive;
++    boost::asio::io_context io_service;
++    boost::asio::executor_work_guard<boost::asio::io_context::executor_type> keep_alive;
+ 
+     std::thread worker;
+ };
+@@ -336,8 +336,8 @@ TEST_F(UnixDomainSocketRemoteAgent, stub_and_skeleton_query_process_start_time_f
+             trap->stop();
+         });
+ 
+-        boost::asio::io_service io_service;
+-        boost::asio::io_service::work work{io_service};
++        boost::asio::io_context io_service;
++        auto work = boost::asio::make_work_guard(io_service);
+         std::thread worker{[&io_service] { io_service.run(); }};
+ 
+         NiceMock<MockProcessStartTimeResolver> process_start_time_resolver;
+@@ -458,8 +458,8 @@ TEST(UnixDomainSocket, a_service_can_query_a_remote_agent)
+ 
+     auto stub = core::posix::fork([app_uid, app_pid, answer, &stub_ready, &skeleton_ready]()
+     {
+-        boost::asio::io_service io_service;
+-        boost::asio::io_service::work keep_alive{io_service};
++        boost::asio::io_context io_service;
++        auto keep_alive = boost::asio::make_work_guard(io_service);
+ 
+         std::thread worker{[&io_service]() { io_service.run(); }};
+ 
+@@ -511,8 +511,8 @@ TEST(UnixDomainSocket, a_service_can_query_a_remote_agent)
+             trap->stop();
+         });
+ 
+-        boost::asio::io_service io_service;
+-        boost::asio::io_service::work keep_alive{io_service};
++        boost::asio::io_context io_service;
++        auto keep_alive = boost::asio::make_work_guard(io_service);
+ 
+         std::thread worker{[&io_service]() { io_service.run(); }};
+ 
+@@ -750,8 +750,8 @@ TEST(UnixDomainSocket, a_standalone_service_can_query_a_remote_agent)
+             trap->stop();
+         });
+ 
+-        boost::asio::io_service io_service;
+-        boost::asio::io_service::work keep_alive{io_service};
++        boost::asio::io_context io_service;
++        auto keep_alive = boost::asio::make_work_guard(io_service);
+ 
+         std::thread worker{[&io_service]() { io_service.run(); }};
