@@ -57,6 +57,7 @@ pkgs=(
   lomiri-settings-components
   lomiri-schemas
   persistent-cache-cpp
+  hfd-service
   # Layer 2
   mir
   process-cpp
