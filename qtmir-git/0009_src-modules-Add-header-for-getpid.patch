@@ -1,0 +1,27 @@
+From e2af137c0e778e6e3c1440d0b782456793a9b5e3 Mon Sep 17 00:00:00 2001
+From: Alfred Neumayer <dev.beidl@gmail.com>
+Date: Thu, 8 Aug 2024 22:04:41 +0200
+Subject: [PATCH 09/14] src/modules: Add header for getpid()
+
+Signed-off-by: Mike Gabriel <mike.gabriel@das-netzwerkteam.de>
+---
+ src/modules/QtMir/Application/application.cpp | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/src/modules/QtMir/Application/application.cpp b/src/modules/QtMir/Application/application.cpp
+index ef9e15cd..07d1aa92 100644
+--- a/src/modules/QtMir/Application/application.cpp
++++ b/src/modules/QtMir/Application/application.cpp
+@@ -36,6 +36,9 @@
+ // std
+ #include <csignal>
+ 
++// Linux
++#include <unistd.h>
++
+ namespace shellapp = lomiri::shell::application;
+ 
+ #define DEBUG_MSG qCDebug(QTMIR_APPLICATIONS).nospace() << "Application[" << appId() <<"]::" << __func__
+-- 
+2.47.2
+

@@ -1,7 +1,7 @@
 # Maintainer: Ivan Semkin (ivan at semkin dot ru)
 # Contributor: kikadf <kikadf.01@gmail.com>
 
-pkgbase=mir
+pkgbase=mir1.8
 pkgname=(mir mir-demos)
 pkgver=1.8.3
 pkgrel=0

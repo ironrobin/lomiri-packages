@@ -1,0 +1,54 @@
+From ca5e7399ca86280afcedf14f8ee5e09689c94abc Mon Sep 17 00:00:00 2001
+From: Alfred Neumayer <dev.beidl@gmail.com>
+Date: Fri, 4 Jul 2025 10:49:52 +0200
+Subject: [PATCH 11/14] src/platforms: Wrap window activity change in a
+ try-catch
+
+Selecting the active window can lead to a range exception,
+so avoid a crash by wrapping this in a try-catch.
+
+Signed-off-by: Mike Gabriel <mike.gabriel@das-netzwerkteam.de>
+---
+ .../mirserver/wrappedwindowmanagementpolicy.cpp      | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
+
+diff --git a/src/platforms/mirserver/wrappedwindowmanagementpolicy.cpp b/src/platforms/mirserver/wrappedwindowmanagementpolicy.cpp
+index b303b39f..d04813d3 100644
+--- a/src/platforms/mirserver/wrappedwindowmanagementpolicy.cpp
++++ b/src/platforms/mirserver/wrappedwindowmanagementpolicy.cpp
+@@ -619,7 +619,9 @@ void WrappedWindowManagementPolicy::deliver_keyboard_event(const MirKeyboardEven
+     if (mir_keyboard_event_action(event) == mir_keyboard_action_down) {
+         tools.invoke_under_lock([&]() {
+             if (tools.active_window() != window) {
+-                tools.select_active_window(window);
++                try {
++                    tools.select_active_window(window);
++                } catch (const std::exception& e) { }
+             }
+         });
+     }
+@@ -631,7 +633,9 @@ void WrappedWindowManagementPolicy::deliver_touch_event(const MirTouchEvent *eve
+ {
+     tools.invoke_under_lock([&]() {
+         if (tools.active_window() != window) {
+-            tools.select_active_window(window);
++            try {
++                tools.select_active_window(window);
++            } catch (const std::exception& e) { }
+         }
+     });
+ 
+@@ -644,7 +648,9 @@ void WrappedWindowManagementPolicy::deliver_pointer_event(const MirPointerEvent
+     if (mir_pointer_event_action(event) == mir_pointer_action_button_down) {
+         tools.invoke_under_lock([&]() {
+             if (tools.active_window() != window) {
+-                tools.select_active_window(window);
++                try {
++                    tools.select_active_window(window);
++                } catch (const std::exception& e) { }
+             }
+         });
+     }
+-- 
+2.47.2
+

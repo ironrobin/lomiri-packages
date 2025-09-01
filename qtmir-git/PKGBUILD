@@ -12,8 +12,24 @@ conflicts=(qtmir)
 provides=(qtmir)
 depends=(qt5-base qt5-quickcontrols qt5-sensors mir process-cpp lomiri-app-launch-git gsettings-qt libqtdbustest-git libqtdbusmock-git lomiri-url-dispatcher-git glm valgrind)
 makedepends=(git cmake cmake-extras gtest)
-source=('git+https://gitlab.com/ubports/development/core/qtmir.git')
-sha256sums=('SKIP')
+source=('git+https://gitlab.com/ubports/development/core/qtmir.git#branch=personal/sunweaver/debian-upstream'
+        '0002_src-modules-Re-introduce-lost-workaround-for-font-re.patch'
+        '0009_src-modules-Add-header-for-getpid.patch'
+        '0011_src-platforms-Wrap-window-activity-change-in-a-try-c.patch'
+        '0012_src-modules-Partial-revert-of-e73ef71622ad3202b77bf6.patch'
+        '0022_modules-MirSurface-try-to-let-Mir-forceClose-dead-su.patch'
+        '2002_no-requires-provides-check.patch'
+        '2003_disable-benchmarks.patch'
+)
+sha256sums=('SKIP'
+            'SKIP'
+            'SKIP'
+            'SKIP'
+            'SKIP'
+            'SKIP'
+            'SKIP'
+            'SKIP'
+)
 
 BUILDENV+=('!check')
 

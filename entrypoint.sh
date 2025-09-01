@@ -81,6 +81,7 @@ pkgs=(
   lomiri-telephony-service-git
   lomiri-address-book-service-git
   lomiri-content-hub-git
+  qtmir-git
 )
 
 for i in "${pkgs[@]}" ; do

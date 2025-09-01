@@ -1,0 +1,38 @@
+From c6bee71ba608570ca8417399f32f5f5cf7796f0a Mon Sep 17 00:00:00 2001
+From: Alfred Neumayer <dev.beidl@gmail.com>
+Date: Tue, 22 Jul 2025 12:47:38 +0200
+Subject: [PATCH 12/14] src/modules: Partial revert of
+ e73ef71622ad3202b77bf6005f73134726d6394a
+
+Signed-off-by: Mike Gabriel <mike.gabriel@das-netzwerkteam.de>
+---
+ src/modules/QtMir/Application/windowmodel.cpp | 11 ++---------
+ 1 file changed, 2 insertions(+), 9 deletions(-)
+
+diff --git a/src/modules/QtMir/Application/windowmodel.cpp b/src/modules/QtMir/Application/windowmodel.cpp
+index c95adc73..0d65d7f5 100644
+--- a/src/modules/QtMir/Application/windowmodel.cpp
++++ b/src/modules/QtMir/Application/windowmodel.cpp
+@@ -81,17 +81,10 @@ void WindowModel::onWindowAdded(const NewWindow &window)
+     beginInsertRows(QModelIndex(), index, index);
+ 
+ #if MIR_SERVER_VERSION >= MIR_VERSION_NUMBER(2, 20, 0)
+-    auto mirSurface = new MirSurface(window, m_windowController, *m_glProvider);
++    m_windowModel.append(new MirSurface(window, m_windowController, *m_glProvider));
+ #else
+-    auto mirSurface = new MirSurface(window, m_windowController);
++    m_windowModel.append(new MirSurface(window, m_windowController));
+ #endif
+-    connect(mirSurface, &MirSurface::isBeingDisplayedChanged, this, [=, this](){
+-        if (mirSurface->isBeingDisplayed())
+-            return;
+-        onWindowRemoved(window.windowInfo);
+-    });
+-
+-    m_windowModel.append(mirSurface);
+     endInsertRows();
+     Q_EMIT countChanged();
+ }
+-- 
+2.47.2
+
