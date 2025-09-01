@@ -88,6 +88,8 @@ pkgs=(
   lomiri-content-hub-git
   lomiri-system-settings
   qtmir-git
+  # Layer 7
+  lomiri
 )
 
 for i in "${pkgs[@]}" ; do
