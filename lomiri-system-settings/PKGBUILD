@@ -18,6 +18,7 @@ source=('https://gitlab.com/ubports/development/core/lomiri-system-settings/-/ar
         '2011_build-without-trust-store.patch'
 )
 sha256sums=('SKIP'
+            'SKIP'
 )
 
 BUILDENV+=('!check') # Some tests fail
