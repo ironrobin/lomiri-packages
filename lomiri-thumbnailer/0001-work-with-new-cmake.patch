@@ -1,0 +1,12 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 464ac70..6e3db63 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -11,7 +11,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
+ 
+ 
+ # Suppress complaints by cmake about COMPILE_DEFINITIONS_<Config> caused by qt5 cmake macros.
+-cmake_policy(SET CMP0043 OLD)
++# cmake_policy(SET CMP0043 OLD)
+ 
+ string(TOLOWER "${CMAKE_BUILD_TYPE}" cmake_build_type_lower) # Build types should always be lower case

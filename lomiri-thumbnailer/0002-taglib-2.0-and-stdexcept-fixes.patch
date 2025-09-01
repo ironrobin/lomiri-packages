@@ -1,0 +1,39 @@
+diff --git a/src/local_album_art.cpp b/src/local_album_art.cpp
+index 2325888..0ca2cfa 100644
+--- a/src/local_album_art.cpp
++++ b/src/local_album_art.cpp
+@@ -38,6 +38,7 @@
+ #include <taglib/vorbisfile.h>
+ 
+ #include <cassert>
++#include <stdexcept>
+ #include <memory>
+ 
+ using namespace std;
+@@ -336,7 +337,7 @@ string MP4Extractor::get_album_art() const
+     if (tag)
+     {
+         // Despite the name, this returns a map<String, Item>, not map<String, ItemList>.
+-        auto const& map = const_cast<TagLib::MP4::Tag*>(tag)->itemListMap();
++        auto const& map = const_cast<TagLib::MP4::Tag*>(tag)->itemMap();
+         auto const it = map.find("covr");
+         if (it != map.end())
+         {
+@@ -371,7 +372,7 @@ unique_ptr<ArtExtractor> make_extractor(string const& filename, TagLib::FileRef
+     {
+         return unique_ptr<ArtExtractor>(new MP4Extractor(filename, fileref));
+     }
+-    throw runtime_error(filename + ": unknown container format");
++    throw std::runtime_error(filename + ": unknown container format");
+ }
+ 
+ }  // namespace
+@@ -382,7 +383,7 @@ string extract_local_album_art(string const& filename)
+     if (fileref.isNull())
+     {
+         // Unfortunately, this happens for all files without a file extension.
+-        throw runtime_error(filename + ": cannot create TagLib::FileRef");
++        throw std::runtime_error(filename + ": cannot create TagLib::FileRef");
+     }
+ 
+     return make_extractor(filename, fileref)->get_album_art();

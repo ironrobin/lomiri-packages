@@ -77,6 +77,7 @@ pkgs=(
   lomiri-app-launch-git
   lomiri-ui-toolkit-git
   gmenuharness-git
+  lomiri-thumbnailer
   # Layer 5
   lomiri-url-dispatcher-git
   # Layer 6
