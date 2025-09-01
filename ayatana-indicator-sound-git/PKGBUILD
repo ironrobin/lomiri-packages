@@ -8,8 +8,8 @@ pkgdesc="Ayatana system sound indicator"
 arch=("i686" "x86_64" "aarch64")
 url="https://github.com/AyatanaIndicators"
 license=("GPL3")
-depends=("pulseaudio" "libayatana-indicator" "glib2" "accountsservice" "dconf" "libnotify" "libgee")
-makedepends=("cmake" "cmake-extras" "dbus" "accountsservice" "mate-common" "gsettings-desktop-schemas" "intltool" "vala" "glib2" "libpulse" "libnotify" "libgee" "libxml2" "pulseaudio" "qt5-base" "qt5-declarative" "systemd" "gobject-introspection" "git")
+depends=("pulseaudio" "libayatana-indicator" "glib2" "accountsservice-ubuntu" "dconf" "libnotify" "libgee")
+makedepends=("cmake" "cmake-extras" "dbus" "accountsservice-ubuntu" "mate-common" "gsettings-desktop-schemas" "intltool" "vala" "glib2" "libpulse" "libnotify" "libgee" "libxml2" "pulseaudio" "qt5-base" "qt5-declarative" "systemd" "gobject-introspection" "git")
 optdepends=("pavucontrol" "mate-media")
 source=("git+https://github.com/AyatanaIndicators/${_pkgname}.git" 
           )

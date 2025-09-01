@@ -100,7 +100,7 @@ package_lightdm-lomiri() {
     polkit
   )
   optdepends=(
-    'accountsservice: Enhanced user accounts handling'
+    'accountsservice-ubuntu: Enhanced user accounts handling'
     'lightdm-gtk-greeter: GTK greeter'
     'xorg-server-xephyr: LightDM test mode'
   )
