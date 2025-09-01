@@ -18,7 +18,7 @@ index d4ebadc9..ccc0e074 100644
  if(WITH_MIR2)
  pkg_check_modules(MIRSERVER mirserver REQUIRED)
 diff --git a/src/platforms/mirserver/CMakeLists.txt b/src/platforms/mirserver/CMakeLists.txt
-index 523fb996..07b574d6 100644
+index 523fb996..3a4c6e00 100644
 --- a/src/platforms/mirserver/CMakeLists.txt
 +++ b/src/platforms/mirserver/CMakeLists.txt
 @@ -41,6 +41,10 @@ set(QT5PLATFORMSUPPORT_LIBS
@@ -50,3 +50,41 @@ index 523fb996..07b574d6 100644
  )
  
  set_target_properties(qtmirserver
+@@ -232,6 +240,19 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/qtmirserver.pc.in
+     @ONLY
+ )
+ 
++# Provide compatibility pkg-config name expected by Lomiri when building against Mir 2.x
++if (WITH_MIR2)
++  configure_file(
++    ${CMAKE_CURRENT_SOURCE_DIR}/qt5mir2server.pc.in
++    ${CMAKE_CURRENT_BINARY_DIR}/qt5mir2server.pc
++    @ONLY
++  )
++  install(
++    FILES ${CMAKE_CURRENT_BINARY_DIR}/qt5mir2server.pc
++    DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
++  )
++endif()
++
+ install(
+   TARGETS qtmirserver
+   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+diff --git a/src/platforms/mirserver/qt5mir2server.pc.in b/src/platforms/mirserver/qt5mir2server.pc.in
+new file mode 100644
+index 00000000..0ef4dfba
+--- /dev/null
++++ b/src/platforms/mirserver/qt5mir2server.pc.in
+@@ -0,0 +1,12 @@
++prefix=@CMAKE_INSTALL_PREFIX@
++exec_prefix=${prefix}
++libdir=@LIBDIR@
++includedir=@INCLUDEDIR@
++
++Name: qt5mir2server
++Description: QtMir server library (built against Mir 2.x)
++Version: @QTMIR_VERSION@
++# Keep it simple: consumers get include & link to qtmirserver, which carries its own deps
++Requires: qtmirserver
++Libs: -L${libdir} -lqtmirserver
++Cflags: -I${includedir}
