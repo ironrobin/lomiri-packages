@@ -54,6 +54,7 @@ pkgs=(
   ofono-git
   wlcs
   deviceinfo-git
+  lomiri-settings-components
   # Layer 2
   mir
   process-cpp
