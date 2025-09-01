@@ -3,7 +3,7 @@
 pkgbase=lomiri-url-dispatcher
 pkgname=(lomiri-url-dispatcher-git lomiri-url-dispatcher-gui-git)
 _pkgname=lomiri-url-dispatcher
-pkgver=r1030.0.1.4.r9.g372410d
+pkgver=r1031.0.1.4.r10.gf763aac
 pkgrel=1
 pkgdesc='Service to allow sending of URLs and get handlers started'
 url='https://gitlab.com/ubports/development/core/lomiri-url-dispatcher'

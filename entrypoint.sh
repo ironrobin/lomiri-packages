@@ -55,6 +55,7 @@ pkgs=(
   wlcs
   deviceinfo-git
   lomiri-settings-components
+  lomiri-schemas
   # Layer 2
   mir
   process-cpp

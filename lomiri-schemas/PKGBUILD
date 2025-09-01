@@ -1,8 +1,8 @@
 # Maintainer: Ivan Semkin (ivan at semkin dot ru)
 
-pkgname=lomiri-schemas-git
+pkgname=lomiri-schemas
 _pkgname=lomiri-schemas
-pkgver=r13.0.1.1.r2.g60e0cdb
+pkgver=0.1.8
 pkgrel=1
 pkgdesc='GSettings desktop-wide schemas for Ubuntu Touch'
 url='https://github.com/ubports/gsettings-ubuntu-touch-schemas'
@@ -12,22 +12,22 @@ conflicts=(gsettings-ubuntu-touch-schemas lomiri-schemas)
 provides=(gsettings-ubuntu-touch-schemas lomiri-schemas)
 depends=(dconf)
 makedepends=(git gnome-common intltool)
-source=('git+https://gitlab.com/ubports/development/core/lomiri-schemas.git')
-sha256sums=('SKIP')
+source=('https://gitlab.com/ubports/development/core/lomiri-schemas/-/archive/0.1.8/lomiri-schemas-0.1.8.tar.gz')
+sha256sums=('3161f2cd454529c965f035b04622b0c3a57bb8d28140dfd72a10ba506feec999')
 
-pkgver() {
-  cd ${_pkgname}
-  echo "r$(git rev-list --count HEAD).$(git describe --always)" | sed 's/\([^-]*-g\)/r\1/;s/-/./g'
-}
+# pkgver() {
+#   cd ${_pkgname}
+#   echo "r$(git rev-list --count HEAD).$(git describe --always)" | sed 's/\([^-]*-g\)/r\1/;s/-/./g'
+# }
 
 build() {
-  cd ${_pkgname}
-  cmake .
+  cd ${_pkgname}-${pkgver}
+  cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5 .
   make
 }
 
 package() {
-  cd ${_pkgname}
+  cd ${_pkgname}-${pkgver}
   make DESTDIR="${pkgdir}/" install
 }
 # vim:set ts=2 sw=2 et:
