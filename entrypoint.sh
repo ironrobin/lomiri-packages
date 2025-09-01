@@ -57,8 +57,8 @@ pkgs=(
   lomiri-settings-components
   lomiri-schemas
   persistent-cache-cpp
-  hfd-service
   # Layer 2
+  hfd-service
   mir
   process-cpp
   suru-icon-theme-git
