@@ -1,0 +1,316 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 50289c0949..6fd7a03e9b 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -276,8 +276,12 @@ find_package(GLESv2 REQUIRED)
+ find_package(GLM REQUIRED)
+ find_package(Protobuf REQUIRED )
+ find_package(CapnProto REQUIRED)
+-find_package(GLog REQUIRED)
+-find_package(GFlags REQUIRED)
++# Examples & demo server (require glog/gflags)
++option(MIR_BUILD_EXAMPLES "Build demo server and other examples" OFF)
++if (MIR_BUILD_EXAMPLES)
++  find_package(GLog REQUIRED)
++  find_package(GFlags REQUIRED)
++endif()
+ 
+ pkg_check_modules(LTTNG_UST REQUIRED lttng-ust)
+ pkg_check_modules(UDEV REQUIRED libudev)
+@@ -395,7 +399,9 @@ else ()
+   add_definitions(-DMIR_LIBINPUT_HAS_ACCEL_PROFILE=1)
+ endif ()
+ 
+-add_subdirectory(examples/)
++if (MIR_BUILD_EXAMPLES)
++  add_subdirectory(examples/)
++endif()
+ if (MIR_EGL_SUPPORTED)
+   add_subdirectory(playground/)
+ endif()
+diff --git a/src/protobuf/CMakeLists.txt b/src/protobuf/CMakeLists.txt
+index c0263e01e5..ddae98fd33 100644
+--- a/src/protobuf/CMakeLists.txt
++++ b/src/protobuf/CMakeLists.txt
+@@ -1,3 +1,4 @@
++find_package(Protobuf REQUIRED)
+ include_directories(
+   ${PROTOBUF_INCLUDE_DIRS}
+   ${CMAKE_CURRENT_BINARY_DIR})
+@@ -21,11 +22,35 @@ add_library(mirprotobuf SHARED
+   ${GENERATED_PROTOBUF_HDRS}
+ )
+ 
+-target_link_libraries(
+-  mirprotobuf
+-  ${PROTOBUF_LITE_LIBRARIES}
++# Abseil is needed by newer protobuf codegen (log/check ops).
++find_package(absl CONFIG REQUIRED)
++
++# Build an explicit list of Abseil libs. Start with the public ones,
++# then append internals only if they exist in the local Abseil build.
++set(MIR_ABSL_LIBS
++  absl::log
++  absl::check
++  absl::strings
+ )
+ 
++# Frequently needed by recent protobuf (Cord-backed fields / helpers)
++foreach(_t
++  absl::cord
++  absl::raw_logging_internal
++  absl::log_internal_check_op
++  absl::log_internal_message
++)
++  if(TARGET ${_t})
++    list(APPEND MIR_ABSL_LIBS ${_t})
++  endif()
++endforeach()
++
++# Use full protobuf; headers used by dependents require these to be PUBLIC.
++target_link_libraries(mirprotobuf
++  PUBLIC
++    ${PROTOBUF_LIBRARIES}
++    ${MIR_ABSL_LIBS}
++)
+ set(MIRPROTOBUF_ABI 3)
+ 
+ set_target_properties(
+diff --git a/src/protobuf/symbols.map b/src/protobuf/symbols.map
+index 474e02574c..78a846f091 100644
+--- a/src/protobuf/symbols.map
++++ b/src/protobuf/symbols.map
+@@ -40,6 +40,7 @@ MIR_PROTOBUF_3 {
+     mir::protobuf::Buffer::MergeFrom*;
+     mir::protobuf::Buffer::MergePartialFromCodedStream*;
+     mir::protobuf::Buffer::New*;
++    mir::protobuf::BufferOperation_internal_data_*;
+     mir::protobuf::BufferOperation_IsValid*;
+     mir::protobuf::BufferOperation_MIN*;
+     mir::protobuf::BufferOperation_ARRAYSIZE*;
+@@ -1134,6 +1135,7 @@ MIR_PROTOBUF_0.27 {
+     mir::protobuf::Extension::kNameFieldNumber*;
+     mir::protobuf::Extension::DiscardUnknownFields*;
+     mir::protobuf::RequestOperation_IsValid*;
++    mir::protobuf::RequestOperation_internal_data_*;
+     mir::protobuf::RequestWithAuthority::ByteSize*;
+     mir::protobuf::RequestWithAuthority::CheckTypeAndMergeFrom*;
+     mir::protobuf::RequestWithAuthority::Clear*;
+diff --git a/src/server/frontend/message_receiver.h b/src/server/frontend/message_receiver.h
+index 3620e2b915..c4629f3ff2 100644
+--- a/src/server/frontend/message_receiver.h
++++ b/src/server/frontend/message_receiver.h
+@@ -34,8 +34,8 @@ class MessageReceiver
+ public:
+     //receive message from the socket. 'handler' will be called when 'buffer' has been filled with exactly 'size'
+     typedef std::function<void(boost::system::error_code const&, size_t)> MirReadHandler;
+-    virtual void async_receive_msg(MirReadHandler const& handler, boost::asio::mutable_buffers_1 const& buffer) = 0;
+-    virtual boost::system::error_code receive_msg(boost::asio::mutable_buffers_1 const& buffer) = 0;
++    virtual void async_receive_msg(MirReadHandler const& handler, boost::asio::mutable_buffer const& buffer) = 0;
++    virtual boost::system::error_code receive_msg(boost::asio::mutable_buffer const& buffer) = 0;
+     virtual size_t available_bytes() = 0;
+     virtual SessionCredentials client_creds() = 0;
+     virtual void receive_fds(std::vector<Fd>& fds) = 0;
+diff --git a/src/server/frontend/published_socket_connector.cpp b/src/server/frontend/published_socket_connector.cpp
+index 33ceaf3ff9..119a9f9f2e 100644
+--- a/src/server/frontend/published_socket_connector.cpp
++++ b/src/server/frontend/published_socket_connector.cpp
+@@ -98,26 +98,26 @@ std::string remove_if_stale(std::string const& socket_name)
+     return socket_name;
+ }
+ 
+-std::shared_ptr<boost::asio::local::stream_protocol::socket> make_socket_self_contained(
+-    std::shared_ptr<boost::asio::io_service> const &io_service,
+-    std::shared_ptr<boost::asio::local::stream_protocol::socket> const &socket)
++std::shared_ptr<ba::local::stream_protocol::socket> make_socket_self_contained(
++    std::shared_ptr<ba::io_context> const& io,
++    std::shared_ptr<ba::local::stream_protocol::socket> const& socket)
+ {
+     struct SelfContainedSocket {
+         SelfContainedSocket(
+-            std::shared_ptr<boost::asio::io_service> const& io_service,
+-            std::shared_ptr<boost::asio::local::stream_protocol::socket> const& socket)
+-            : io_service{io_service},
++            std::shared_ptr<ba::io_context> const& io,
++            std::shared_ptr<ba::local::stream_protocol::socket> const& socket)
++            : io{io},
+               socket{socket}
+         {
+         }
+ 
+-        std::shared_ptr<boost::asio::io_service> const io_service;
+-        std::shared_ptr<boost::asio::local::stream_protocol::socket> const socket;
++        std::shared_ptr<ba::io_context> const io;
++        std::shared_ptr<ba::local::stream_protocol::socket> const socket;
+     };
+ 
+-    auto holder = std::make_shared<SelfContainedSocket>(io_service, socket);
++    auto holder = std::make_shared<SelfContainedSocket>(io, socket);
+ 
+-    return std::shared_ptr<boost::asio::local::stream_protocol::socket>(
++    return std::shared_ptr<ba::local::stream_protocol::socket>(
+         holder,
+         holder->socket.get());
+ }
+@@ -130,7 +130,7 @@ mf::PublishedSocketConnector::PublishedSocketConnector(
+     std::shared_ptr<ConnectorReport> const& report)
+ :   BasicConnector(connection_creator, report),
+     socket_file(remove_if_stale(socket_file)),
+-    acceptor(*io_service, socket_file)
++    acceptor(*io, ba::local::stream_protocol::endpoint(this->socket_file))
+ {
+     emergency_cleanup_registry.add(
+         [socket_file] { std::remove(socket_file.c_str()); });
+@@ -146,14 +146,14 @@ void mf::PublishedSocketConnector::start_accept()
+ {
+     report->listening_on(socket_file);
+ 
+-    auto socket = std::make_shared<boost::asio::local::stream_protocol::socket>(*io_service);
++    auto socket = std::make_shared<ba::local::stream_protocol::socket>(*io);
+ 
+     acceptor.async_accept(
+         *socket,
+         [
+             this,
+             socket,
+-            maybe_service = std::weak_ptr<boost::asio::io_service>(io_service)
++            maybe_service = std::weak_ptr<ba::io_context>(io)
+         ](boost::system::error_code const& ec)
+         {
+             /*
+@@ -192,8 +192,8 @@ auto mir::frontend::PublishedSocketConnector::socket_name() const -> optional_va
+ mf::BasicConnector::BasicConnector(
+     std::shared_ptr<ConnectionCreator> const& connection_creator,
+     std::shared_ptr<ConnectorReport> const& report)
+-:   io_service(std::make_shared<boost::asio::io_service>()),
+-    work(*io_service),
++:   io(std::make_shared<ba::io_context>()),
++    work(ba::make_work_guard(*io)),
+     report(report),
+     connection_creator{connection_creator}
+ {
+@@ -208,7 +208,7 @@ void mf::BasicConnector::start()
+         try
+         {
+             report->thread_start();
+-            io_service->run();
++            io->run();
+             report->thread_end();
+             return;
+         }
+@@ -224,14 +224,14 @@ void mf::BasicConnector::start()
+ void mf::BasicConnector::stop()
+ {
+     /* Stop processing new requests */
+-    io_service->stop();
++    io->stop();
+ 
+     /* Wait for io processing thread to finish */
+     if (io_service_thread.joinable())
+         io_service_thread.join();
+ 
+     /* Prepare for a potential restart */
+-    io_service->reset();
++    io->restart();
+ }
+ 
+ void mf::BasicConnector::create_session_for(
+@@ -266,13 +266,13 @@ int mf::BasicConnector::client_socket_fd(std::function<void(std::shared_ptr<scen
+     }
+ 
+     auto const server_socket = std::make_shared<boost::asio::local::stream_protocol::socket>(
+-        *io_service,
++        *io,
+         boost::asio::local::stream_protocol(),
+         socket_fd[server]);
+ 
+     report->creating_socket_pair(socket_fd[server], socket_fd[client]);
+ 
+-    create_session_for(make_socket_self_contained(io_service, server_socket), connect_handler);
++    create_session_for(make_socket_self_contained(io, server_socket), connect_handler);
+ 
+     return socket_fd[client];
+ }
+diff --git a/src/server/frontend/published_socket_connector.h b/src/server/frontend/published_socket_connector.h
+index 53ffdca0b1..ba31ab16de 100644
+--- a/src/server/frontend/published_socket_connector.h
++++ b/src/server/frontend/published_socket_connector.h
+@@ -64,8 +64,8 @@ protected:
+         std::shared_ptr<boost::asio::local::stream_protocol::socket> const& server_socket,
+         std::function<void(std::shared_ptr<scene::Session> const& session)> const& connect_handler) const;
+ 
+-    std::shared_ptr<boost::asio::io_service> const io_service;
+-    boost::asio::io_service::work work;
++    std::shared_ptr<boost::asio::io_context> const io;
++    boost::asio::executor_work_guard<boost::asio::io_context::executor_type> work;
+     std::shared_ptr<ConnectorReport> const report;
+ 
+ private:
+diff --git a/src/server/frontend/socket_messenger.cpp b/src/server/frontend/socket_messenger.cpp
+index 36dae28466..a4071c5c25 100644
+--- a/src/server/frontend/socket_messenger.cpp
++++ b/src/server/frontend/socket_messenger.cpp
+@@ -95,7 +95,7 @@ void mfd::SocketMessenger::send(char const* data, size_t length, FdSets const& f
+ 
+ void mfd::SocketMessenger::async_receive_msg(
+     MirReadHandler const& handler,
+-    ba::mutable_buffers_1 const& buffer)
++    ba::mutable_buffer const& buffer)
+ {
+     boost::asio::async_read(
+          *socket,
+@@ -105,19 +105,16 @@ void mfd::SocketMessenger::async_receive_msg(
+ }
+ 
+ bs::error_code mfd::SocketMessenger::receive_msg(
+-    ba::mutable_buffers_1 const& buffer)
++    ba::mutable_buffer const& buffer)
+ {
+     bs::error_code e;
+-    size_t nread = 0;
+-
+-    while (nread < ba::buffer_size(buffer))
++    std::size_t nread = 0;
++    const std::size_t total = ba::buffer_size(buffer);
++    while (nread < total)
+     {
+-        nread += boost::asio::read(
+-             *socket,
+-             ba::mutable_buffers_1{buffer + nread},
+-             e);
+-
+-        if (e && e != ba::error::would_block)
++        // buffer + nread advances the start and shrinks the size
++         nread += boost::asio::read(*socket, buffer + nread, e);
++         if (e && e != ba::error::would_block)
+             break;
+     }
+ 
+diff --git a/src/server/frontend/socket_messenger.h b/src/server/frontend/socket_messenger.h
+index 2c7b3eb754..19ec0ea829 100644
+--- a/src/server/frontend/socket_messenger.h
++++ b/src/server/frontend/socket_messenger.h
+@@ -37,8 +37,8 @@ public:
+ 
+     void send(char const* data, size_t length, FdSets const& fds) override;
+ 
+-    void async_receive_msg(MirReadHandler const& handler, boost::asio::mutable_buffers_1 const& buffer) override;
+-    boost::system::error_code receive_msg(boost::asio::mutable_buffers_1 const& buffer) override;
++    void async_receive_msg(MirReadHandler const& handler, boost::asio::mutable_buffer const& buffer) override;
++    boost::system::error_code receive_msg(boost::asio::mutable_buffer const& buffer) override;
+     size_t available_bytes() override;
+     SessionCredentials client_creds() override;
+     void receive_fds(std::vector<Fd>& fds) override;
+diff --git a/src/server/frontend_wayland/wayland_utils.h b/src/server/frontend_wayland/wayland_utils.h
+index 635607fa00..3fb704e79e 100644
+--- a/src/server/frontend_wayland/wayland_utils.h
++++ b/src/server/frontend_wayland/wayland_utils.h
+@@ -33,7 +33,7 @@ struct wl_array;
+ 
+ struct wl_display * wl_client_get_display(struct wl_client *client);
+ uint32_t wl_display_next_serial(struct wl_display *display);
+-uint32_t wl_display_get_serial(struct wl_display *display);
++uint32_t wl_display_get_serial(const struct wl_display *display);
+ 
+ void wl_array_init(struct wl_array *array);
+ void wl_array_release(struct wl_array *array);

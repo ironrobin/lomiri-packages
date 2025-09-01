@@ -1,0 +1,240 @@
+[1m[32m==>(B[m[1m Making package: mir 1.8.3-0 (Sat 30 Aug 2025 09:56:44 PM CDT)(B[m
+[1m[32m==>(B[m[1m Checking runtime dependencies...(B[m
+[1m[32m==>(B[m[1m Checking buildtime dependencies...(B[m
+[1m[32m==>(B[m[1m Retrieving sources...(B[m
+[1m[34m  ->(B[m[1m Found v1.8.3.tar.gz(B[m
+[1m[34m  ->(B[m[1m Found a701c3c9c1649a6959d4c0b1c7289ee83857633d.patch(B[m
+[1m[34m  ->(B[m[1m Found 68480bc9654191b615b0e7b80c8a87599a417470.patch(B[m
+[1m[34m  ->(B[m[1m Found b8c2da5871a805602f40fc30abe1a6ac619916e2.patch(B[m
+[1m[34m  ->(B[m[1m Found 0dfb6d76d04031441fb4d4fcb2e986f2874004a0.patch(B[m
+[1m[34m  ->(B[m[1m Found de9b340d823f4effff4c8d2b14b6c30e1f1c3097.patch(B[m
+[1m[34m  ->(B[m[1m Found 30.patch(B[m
+[1m[34m  ->(B[m[1m Found wayland_header_fix.patch(B[m
+[1m[34m  ->(B[m[1m Found 0f06a760676b9e5aa8320d0cb8e9c23a3419286d.patch(B[m
+[1m[34m  ->(B[m[1m Found c457acd78a73e19d4f9129e7a18a9a59db2ed46c.patch(B[m
+[1m[32m==>(B[m[1m Validating source files with sha256sums...(B[m
+[1m[32m==>(B[m[1m Extracting sources...(B[m
+[1m[34m  ->(B[m[1m Extracting v1.8.3.tar.gz with bsdtar(B[m
+[1m[32m==>(B[m[1m Starting prepare()...(B[m
+patching file src/platforms/mesa/server/display_helpers.cpp
+patching file src/server/shell/default_configuration.cpp
+patching file src/platforms/wayland/display.cpp
+patching file src/platforms/wayland/display.h
+patching file src/platforms/wayland/displayclient.cpp
+patching file src/platforms/wayland/displayclient.h
+patching file src/platforms/wayland/platform.cpp
+patching file src/gl/tessellation_helpers.cpp
+patching file src/include/server/mir/compositor/buffer_stream.h
+patching file src/server/compositor/stream.cpp
+patching file src/server/compositor/stream.h
+patching file src/server/frontend_wayland/output_manager.cpp
+patching file src/server/frontend_wayland/wl_surface.cpp
+patching file src/server/frontend_wayland/wl_surface.h
+patching file src/platform/graphics/display_configuration.cpp
+patching file src/platforms/wayland/displayclient.cpp
+patching file src/platforms/wayland/displayclient.cpp
+patching file src/protobuf/CMakeLists.txt
+patching file src/server/frontend/message_receiver.h
+patching file src/server/frontend/published_socket_connector.cpp
+patching file src/server/frontend/published_socket_connector.h
+patching file src/server/frontend/socket_messenger.cpp
+patching file src/server/frontend/socket_messenger.h
+patching file src/server/frontend_wayland/wayland_utils.h
+[1m[32m==>(B[m[1m Removing existing $pkgdir/ directory...(B[m
+[1m[32m==>(B[m[1m Starting build()...(B[m
+-- doxygen 1.14.0 (>= 1.8.0) available - enabling make target doc
+-- Checking for module 'wayland-eglstream'
+--   Package 'wayland-eglstream' not found
+-- Up-to-date: /home/alex/src/git/lomiri-packages/mir/src/mir-1.8.3/build/mir_gtest/fail_on_success.sh
+-- Configuring done (0.8s)
+-- Generating done (0.6s)
+-- Build files have been written to: /home/alex/src/git/lomiri-packages/mir/src/mir-1.8.3/build
+[  1%] Built target mirsharedmesa-static
+[  1%] Built target client_platform_common
+[  1%] Built target mirudev
+[  2%] Built target wrapper
+[  3%] Built target mircookie
+[  3%] Built target kms_utils
+[  4%] Built target mircapnproto
+[  4%] Built target mircore
+[  4%] Built target mirtime
+[  4%] Built target mirsharedenv
+[  5%] Built target mirsharedfd
+[  5%] Built target mirsharedlttng
+[  6%] Built target mirsharedsharedlibrary
+[  7%] Built target mirplatformgraphicsmesakmsobjects
+[  7%] Built target mirsharedlogging
+[  7%] Built target mirplatformservermesax11sharedresources
+[  7%] Built target mirsharedthread
+[  7%] Built target miroptions
+[  7%] Building CXX object src/platform/graphics/CMakeFiles/mirplatformgraphicscommon.dir/display_configuration.cpp.o
+[  7%] Built target mirplatforminputmesax11objects-symbols
+[  7%] Built target mirplatformgraphicsmesax11objects-symbols
+[  7%] Built target mirplatforminputmesax11objects
+[  7%] Building CXX object src/platforms/wayland/CMakeFiles/mirplatformwayland-input.dir/input_platform.cpp.o
+[  8%] Built target mirprotobuf
+[  9%] Built target mirplatformgraphicsmesax11objects
+[  9%] Built target mirevdevutilsobjects
+[  9%] Built target mirclientplatformmesaobjects
+[  9%] Built target mirplatforminputevdevobjects
+[  9%] Building CXX object src/gl/CMakeFiles/mirgl.dir/tessellation_helpers.cpp.o
+[ 10%] Built target mirserverobjects
+[ 11%] Built target mir_wayland_generator
+[ 11%] Building CXX object src/server/compositor/CMakeFiles/mircompositor.dir/buffer_stream_factory.cpp.o
+[ 11%] Building CXX object src/server/compositor/CMakeFiles/mircompositor.dir/default_display_buffer_compositor.cpp.o
+[ 11%] Built target mirgraphics
+[ 12%] Built target mirnestedgraphics
+[ 12%] Built target miroffscreengraphics
+[ 12%] Built target mirreport
+[ 12%] Building CXX object src/server/compositor/CMakeFiles/mircompositor.dir/stream.cpp.o
+[ 14%] Built target mirlogging
+[ 15%] Built target mirinput
+[ 16%] Built target mirnullreport
+[ 17%] Built target mirlttng
+[ 17%] Building CXX object src/server/scene/CMakeFiles/mirscene.dir/application_session.cpp.o
+[ 17%] Building CXX object src/server/frontend/CMakeFiles/mirfrontend.dir/session_mediator.cpp.o
+[ 18%] Built target mirgl
+[ 18%] Building CXX object src/server/frontend/CMakeFiles/mirfrontend.dir/protobuf_responder.cpp.o
+[ 18%] Building CXX object src/server/frontend/CMakeFiles/mirfrontend.dir/published_socket_connector.cpp.o
+[ 18%] Building CXX object src/server/frontend/CMakeFiles/mirfrontend.dir/protobuf_connection_creator.cpp.o
+[ 19%] Built target mirplatformgraphicscommon
+[ 19%] Building CXX object src/server/frontend_wayland/CMakeFiles/mirfrontend-wayland.dir/wayland_connector.cpp.o
+[ 19%] Linking CXX static library libmirplatformwayland-input.a
+[ 19%] Built target mirplatformwayland-input
+[ 19%] Building CXX object src/server/scene/CMakeFiles/mirscene.dir/basic_surface.cpp.o
+[ 20%] Built target mircompositor
+[ 21%] Building CXX object src/server/frontend/CMakeFiles/mirfrontend.dir/socket_connection.cpp.o
+[ 21%] Building CXX object src/server/scene/CMakeFiles/mirscene.dir/surface_allocator.cpp.o
+[ 21%] Building CXX object src/server/scene/CMakeFiles/mirscene.dir/surface_creation_parameters.cpp.o
+[ 21%] Building CXX object src/server/frontend/CMakeFiles/mirfrontend.dir/socket_messenger.cpp.o
+[ 21%] Building CXX object src/server/frontend_wayland/CMakeFiles/mirfrontend-wayland.dir/wayland_surface_observer.cpp.o
+[ 21%] Building CXX object src/server/scene/CMakeFiles/mirscene.dir/threaded_snapshot_strategy.cpp.o
+[ 21%] Building CXX object src/server/frontend_wayland/CMakeFiles/mirfrontend-wayland.dir/wayland_input_dispatcher.cpp.o
+[ 21%] Building CXX object src/server/frontend_wayland/CMakeFiles/mirfrontend-wayland.dir/output_manager.cpp.o
+[ 24%] Built target mirscene
+[ 24%] Building CXX object src/server/frontend_xwayland/CMakeFiles/mirfrontend-xwayland.dir/xwayland_wm.cpp.o
+[ 24%] Building CXX object src/server/frontend_wayland/CMakeFiles/mirfrontend-wayland.dir/wl_subcompositor.cpp.o
+[ 24%] Building CXX object src/server/frontend/CMakeFiles/mirfrontend.dir/default_configuration.cpp.o
+[ 24%] Building CXX object src/server/shell/CMakeFiles/mirshell.dir/default_configuration.cpp.o
+[ 24%] Building CXX object src/server/frontend/CMakeFiles/mirfrontend.dir/basic_mir_client_session.cpp.o
+[ 24%] Building CXX object src/server/frontend_wayland/CMakeFiles/mirfrontend-wayland.dir/window_wl_surface_role.cpp.o
+[ 24%] Building CXX object src/server/frontend_wayland/CMakeFiles/mirfrontend-wayland.dir/wl_surface.cpp.o
+[ 24%] Building CXX object src/server/frontend_wayland/CMakeFiles/mirfrontend-wayland.dir/wl_seat.cpp.o
+[ 24%] Building CXX object src/server/frontend_wayland/CMakeFiles/mirfrontend-wayland.dir/wl_keyboard.cpp.o
+[ 25%] Built target mirshell
+[ 25%] Building CXX object src/server/shell/decoration/CMakeFiles/mirshelldecoration.dir/basic_decoration.cpp.o
+[ 25%] Built target mirthread
+[ 25%] Building CXX object src/server/frontend_xwayland/CMakeFiles/mirfrontend-xwayland.dir/xwayland_surface.cpp.o
+[ 26%] Built target mirconsole
+[ 26%] Building CXX object src/server/frontend_xwayland/CMakeFiles/mirfrontend-xwayland.dir/xwayland_surface_role.cpp.o
+[ 27%] Building CXX object src/server/frontend_wayland/CMakeFiles/mirfrontend-wayland.dir/wl_pointer.cpp.o
+[ 27%] Building CXX object src/server/frontend_wayland/CMakeFiles/mirfrontend-wayland.dir/wl_touch.cpp.o
+[ 27%] Building CXX object src/server/frontend_xwayland/CMakeFiles/mirfrontend-xwayland.dir/xwayland_surface_observer.cpp.o
+[ 29%] Built target mirfrontend
+[ 29%] Building CXX object src/renderers/gl/CMakeFiles/mirrenderergl.dir/renderer.cpp.o
+[ 29%] Building CXX object src/server/frontend_wayland/CMakeFiles/mirfrontend-wayland.dir/xdg_shell_v6.cpp.o
+[ 29%] Building CXX object src/server/frontend_wayland/CMakeFiles/mirfrontend-wayland.dir/xdg_shell_stable.cpp.o
+[ 29%] Building CXX object src/server/frontend_xwayland/CMakeFiles/mirfrontend-xwayland.dir/xwayland_wm_shell.cpp.o
+[ 29%] Building CXX object src/server/frontend_wayland/CMakeFiles/mirfrontend-wayland.dir/xdg_output_v1.cpp.o
+[ 30%] Built target mirshelldecoration
+[ 30%] Built target mirserverlttng
+[ 30%] Built target mirclientlttng
+[ 30%] Built target mirout-wrapped
+[ 30%] Built target mirin-wrapped
+[ 30%] Built target mirscreencast-wrapped
+[ 30%] Built target miral-app
+[ 30%] Built target miral-terminal
+[ 30%] Built target miral-shell-wrapped
+[ 30%] Built target mir_demo_client_wayland_egl_spinner-wrapped
+[ 30%] Built target mir-shell
+[ 30%] Built target miral-kiosk-wrapped
+[ 30%] Built target miral-system-compositor-wrapped
+[ 31%] Built target mir_demo_server-wrapped
+[ 31%] Built target mirdraw
+[ 31%] Building CXX object src/server/frontend_wayland/CMakeFiles/mirfrontend-wayland.dir/layer_shell_v1.cpp.o
+[ 31%] Built target mir_demo_client_basic-wrapped
+[ 31%] Built target mir_demo_client_release_at_exit-wrapped
+[ 31%] Built target mir_demo_client_multiwin-wrapped
+[ 31%] Built target mir_demo_client_fingerpaint-wrapped
+[ 31%] Built target mir_demo_client_progressbar-wrapped
+[ 31%] Built target mir_demo_client_flicker-wrapped
+[ 31%] Built target mir_demo_client_prompt_session-wrapped
+[ 31%] Built target mir_demo_client_prerendered_frames-wrapped
+[ 31%] Built target mir_demo_client_chain_jumping_buffers-wrapped
+[ 31%] Built target mir_demo_client_wayland-wrapped
+[ 31%] Built target mir_demo_client_screencast-wrapped
+[ 31%] Built target mir-public-test-doubles
+[ 32%] Built target mir-public-test
+[ 33%] Built target mir-public-test-doubles-platform
+[ 33%] Built target GMock
+[ 36%] Built target mir-public-test-framework
+[ 36%] Built target mir_acceptance_tests-wrapped
+[ 36%] Built target mir_acceptance_tests_pch
+[ 36%] Built target mir_umock_acceptance_tests-wrapped
+[ 37%] Built target mir-protected-test-framework
+[ 37%] Built target mir-umock-test-framework
+[ 37%] Built target mir_performance_tests-wrapped
+[ 37%] Built target mir-smoke-test-runner
+[ 37%] Built target miral-test-internal-wrapped
+[ 37%] Built target mir_privileged_tests-wrapped
+[ 38%] Built target mir-test-static
+[ 38%] Built target miral-test-wrapped
+[ 38%] Built target mir_integration_tests-wrapped
+[ 38%] Built target mir_integration_tests_pch
+[ 38%] Built target mir_integration_tests_mesa-x11-wrapped
+[ 38%] Built target mir_integration_tests_mesa-kms-wrapped
+[ 38%] Built target mir-test-doubles-udev
+[ 38%] Built target mir_unit_tests_pch
+[ 38%] Built target mir_unit_tests-wrapped
+[ 38%] Built target loadable_test_dso
+[ 38%] Built target mir_umock_unit_tests-wrapped
+[ 38%] Built target mir-libinput-test-framework
+[ 38%] Built target mir-test-input-framework
+[ 38%] Built target mir_unit_tests_mesa-kms-wrapped
+[ 38%] Built target mir_unit_tests_mesa-x11-wrapped
+[ 38%] Built target mir_unit_tests_nested-wrapped
+[ 38%] Built target mir_platform_graphics_test_harness-wrapped
+[ 38%] Built target client-language-test-c99-wrapped
+[ 38%] Built target mir_stress-wrapped
+[ 38%] Built target mir_test_client_impolite_shutdown-wrapped
+[ 38%] Built target mir_test_reload_protobuf-wrapped
+[ 38%] Built target frame_uniformity_test_client-wrapped
+[ 38%] Built target server_platform_common
+[ 38%] Built target mirsharedinput
+[ 39%] Built target mirevents
+[ 40%] Built target mirclientlttng-static
+[ 41%] Built target mir_demo_client_wayland
+[ 42%] Built target mirclientrpc
+[ 43%] Built target mir-test-doubles-platform-static
+[ 44%] Built target mir_test_reload_protobuf
+[ 44%] Built target client-language-test-c99
+[ 49%] Built target mirclientobjects
+[ 49%] Building CXX object src/platforms/mesa/server/CMakeFiles/mirsharedmesaservercommon-static.dir/display_helpers.cpp.o
+[ 51%] Built target mircommon
+[ 51%] Linking CXX shared library ../../lib/libmirplatform.so
+[ 51%] Linking CXX shared library ../../lib/libmirclient.so
+[ 52%] Built target mirwayland
+[ 52%] Built target example
+[ 52%] Built target mirplatforminputstub
+[ 52%] Built target benchmark_multiplexing_dispatchable
+[ 52%] Built target mirrenderergl
+[ 53%] Built target mirfrontend-wayland
+[ 54%] Built target mirfrontend-xwayland
+[ 54%] Built target mirplatform
+[ 54%] Linking CXX static library libmirsharedmesaservercommon-static.a
+[ 54%] Built target mirsharedmesaservercommon-static
+[ 54%] Building CXX object src/platforms/wayland/CMakeFiles/mirplatformwayland-graphics.dir/platform.cpp.o
+[ 55%] Linking CXX shared module ../../../lib/server-modules/input-evdev.so.7
+[ 55%] Linking CXX shared module ../../lib/server-modules/graphics-throw.so
+[ 55%] Built target mirplatformgraphicsthrow
+[ 55%] Building CXX object src/platforms/wayland/CMakeFiles/mirplatformwayland-graphics.dir/display.cpp.o
+[ 55%] Linking CXX shared module ../../../../../lib/server-modules/graphics-mesa-kms.so.16
+[ 56%] Linking CXX shared module ../../../../../lib/server-modules/server-mesa-x11.so.16
+[ 56%] Building CXX object src/platforms/wayland/CMakeFiles/mirplatformwayland-graphics.dir/buffer_allocator.cpp.o
+[ 56%] Building CXX object src/platforms/wayland/CMakeFiles/mirplatformwayland-graphics.dir/displayclient.cpp.o
+[ 57%] Building CXX object src/platforms/wayland/CMakeFiles/mirplatformwayland-graphics.dir/cursor.cpp.o
+[ 57%] Built target mirplatforminputevdev
+[ 57%] Linking CXX static library libmirplatformwayland-graphics.a
+[ 57%] Built target mirplatformservermesax11
+[ 57%] Built target mirplatformwayland-graphics
+[ 57%] Built target mirplatformgraphicsmesakms

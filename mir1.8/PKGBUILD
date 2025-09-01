@@ -1,0 +1,115 @@
+# Maintainer: Ivan Semkin (ivan at semkin dot ru)
+# Contributor: kikadf <kikadf.01@gmail.com>
+
+pkgbase=mir
+pkgname=(mir mir-demos)
+pkgver=1.8.3
+pkgrel=0
+pkgdesc="Canonical's display server"
+url='https://mir-server.io'
+arch=(x86_64 i686 aarch64)
+license=(GPL LGPL)
+depends=(gtest boost-libs capnproto google-glog gflags libglvnd  liburcu lttng-ust libepoxy libxml++2.6 nettle libinput libxkbcommon python-pillow freetype2 libevdev protobuf python-dbus python-gobject hicolor-icon-theme libxcursor yaml-cpp)
+# Might need protobuf-21 from AUR
+makedepends=(git glm doxygen cmake boost gcovr gmock lcov valgrind python-dbusmock umockdev wlcs)
+optdepends=('qterminal: required for miral demos'
+            'ttf-ubuntu-font-family: required for miral demos'
+            'qt5-wayland: required for miral demos'
+            'xcursor-dmz: opt requirement for miral demos'
+            'qtubuntu: opt requirement for miral demos')
+source=("https://github.com/MirServer/mir/archive/v${pkgver}.tar.gz"
+        "a701c3c9c1649a6959d4c0b1c7289ee83857633d.patch"
+        "68480bc9654191b615b0e7b80c8a87599a417470.patch"
+        "b8c2da5871a805602f40fc30abe1a6ac619916e2.patch"
+        "0dfb6d76d04031441fb4d4fcb2e986f2874004a0.patch"
+        "de9b340d823f4effff4c8d2b14b6c30e1f1c3097.patch"
+        "30.patch"
+        "wayland_header_fix.patch"
+        "https://github.com/MirServer/mir/commit/0f06a760676b9e5aa8320d0cb8e9c23a3419286d.patch"
+        "https://github.com/MirServer/mir/commit/c457acd78a73e19d4f9129e7a18a9a59db2ed46c.patch")
+sha256sums=('47409843564623389bd3c84fbd9f919d07b62c3f06844d3abaef83b20e661ba1'
+            '4c319549aaeda3c0f783f9d0515148f9fa2a13a9b02d025c6f235bc1bfd97523'
+            '042862c7007c7fe2dd8f5407331fb1ae4dfba3894f5640d79e8b171659625246'
+            '88f5aece46b599c8caa614390ee2a513d0db2c87f9a5400cf9e65bfece8489b6'
+            '5135fd23978493ae73093b4c6b74f8865a3f419f0f799c4e8a7ed5e98fef9d2b'
+            'f2769d8994f6c2c0ee29427575318e505a6fec7c0bca5fe199f0eb3c0df07fed'
+            '2c1728fef9657fb2e21ee5894ed5cd96aadafd12a527309349b65d3f42d150f7'
+            'SKIP'
+            'SKIP'
+            'SKIP'
+)
+
+build() {
+    cd ${pkgname}-${pkgver}
+    mkdir -p build
+    cd build
+    # Don't treat warnings as errors
+    CXXFLAGS+=" -Wno-error=deprecated-declarations -Wno-error=range-loop-construct -Wno-error=unused-result -Wno-error=calloc-transposed-args -Wno-error=missing-field-initializers -Wno-error=array-bounds"
+    CFLAGS+=" -Wno-error=deprecated-declarations"
+    cmake -DCMAKE_C_FLAGS="$CFLAGS" \
+      -DCMAKE_CXX_FLAGS="$CXXFLAGS" \
+      -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+      -DCMAKE_INSTALL_PREFIX=/usr \
+      -DCMAKE_BUILD_TYPE=None \
+      -DCMAKE_INSTALL_SYSCONFDIR=/etc \
+      -DCMAKE_INSTALL_LOCALSTATEDIR=/var \
+      -DCMAKE_INSTALL_LIBEXECDIR=lib/mir \
+      -DMIR_BUILD_INTERPROCESS_TESTS=OFF \
+      -DMIR_ENABLE_WLCS_TESTS=OFF \
+      -DMIR_LINK_TIME_OPTIMIZATION=ON \
+      -DMIR_ENABLE_TESTS=OFF \
+      -DCMAKE_DISABLE_FIND_PACKAGE_GTest=ON \
+      -DCMAKE_DISABLE_FIND_PACKAGE_GLog=ON \
+      -DCMAKE_DISABLE_FIND_PACKAGE_Gmock=ON \
+      -DMIR_BUILD_EXAMPLES=OFF \
+      -DMIR_USE_LD=ld \
+      -DMIR_PLATFORM=mesa-kms\;mesa-x11\;wayland ..
+    cmake --build ./ -- -j8
+}
+
+prepare() {
+    cd ${pkgname}-${pkgver}
+    patch -Np1 -i "${srcdir}/a701c3c9c1649a6959d4c0b1c7289ee83857633d.patch"
+    patch -Np1 -i "${srcdir}/68480bc9654191b615b0e7b80c8a87599a417470.patch"
+    patch -Np1 -i "${srcdir}/b8c2da5871a805602f40fc30abe1a6ac619916e2.patch"
+    patch -Np1 -i "${srcdir}/0dfb6d76d04031441fb4d4fcb2e986f2874004a0.patch"
+    patch -Np1 -i "${srcdir}/de9b340d823f4effff4c8d2b14b6c30e1f1c3097.patch"
+    patch -Np1 -i "${srcdir}/30.patch"
+    patch -Np1 -i "${srcdir}/wayland_header_fix.patch"
+
+    # patch -Np1 -i "${srcdir}/0f06a760676b9e5aa8320d0cb8e9c23a3419286d.patch"
+    # patch -Np1 -i "${srcdir}/c457acd78a73e19d4f9129e7a18a9a59db2ed46c.patch"
+}
+
+#check() {
+#    cd ${pkgname}-${pkgver}/build
+#    GTEST_OUTPUT=xml:./
+#    bin/mir_acceptance_tests
+#    bin/mir_integration_tests
+#    bin/mir_unit_tests
+#}
+
+package_mir() {
+    cd ${pkgname}-${pkgver}/build
+    make DESTDIR="${pkgdir}/" install
+
+    # cleanup
+    rm -f ${pkgdir}/usr/bin/miral-{shell,kiosk,app,terminal,shell,system-compositor}
+    rm -f ${pkgdir}/usr/bin/{mir-shell,mir-smoke-test-runner}
+    rm -f ${pkgdir}/usr/bin/fake-mir-kiosk
+    rm -f ${pkgdir}/usr/share/{applications,wayland-sessions}/miral-shell.desktop
+    rm -f ${pkgdir}/usr/share/icons/hicolor/scalable/apps/ubuntu-logo.svg
+}
+
+package_mir-demos() {
+    pkgdesc="Canonical's display server (Demos)"
+    depends=(mir)
+    cd mir-${pkgver}/build
+    make DESTDIR="${pkgdir}/" install
+
+    # cleanup
+    rm -rf ${pkgdir}/usr/share/{mir-perf-framework,wayland-sessions}
+    rm -rf ${pkgdir}/usr/{lib,include}
+    rm -f ${pkgdir}/usr/bin/mir_*
+    rm -f ${pkgdir}/usr/bin/mir{screencast,out,in}
+}

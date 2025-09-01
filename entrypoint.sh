@@ -48,7 +48,6 @@ pkgs=(
   humanity-icon-theme
   ayatana-indicator-messages
   libaccounts-qt5
-  gsettings-qt-git
   qmenumodel-git
   geonames-git
   libqofono-qt5

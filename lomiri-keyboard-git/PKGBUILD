@@ -9,7 +9,7 @@ arch=('aarch64')
 url="https://github.com/ubports/keyboard-component"
 license=('GPL')
 groups=()
-depends=('maliit-framework-git' 'qt5-feedback' 'qt5-multimedia' 'gsettings-qt-git'
+depends=('maliit-framework-git' 'qt5-feedback' 'qt5-multimedia' 'gsettings-qt'
          'hunspell' 'libchewing' 'presage-git' 'libpinyin' 'sqlite' 'anthy')
 makedepends=('git' 'cmake')
 #provides=(maliit-keyboard)

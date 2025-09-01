@@ -3,14 +3,14 @@
 pkgbase=qtmir-git
 pkgname=(qtmir-git)
 _pkgname=qtmir
-pkgver=r2708.0.7.0
-pkgrel=1
-url='https://github.com/ubports/qtmir'
+pkgver=r2827.0.7.2.r33.g218fc23f
+pkgrel=0
+url='https://gitlab.com/ubports/development/core/qtmir'
 arch=(x86_64 i686 armv7h aarch64)
 license=(LGPL)
 conflicts=(qtmir)
 provides=(qtmir)
-depends=(qt5-base qt5-quickcontrols qt5-sensors mir process-cpp lomiri-app-launch-git gsettings-qt-git libqtdbustest-git libqtdbusmock-git lomiri-url-dispatcher-git glm valgrind)
+depends=(qt5-base qt5-quickcontrols qt5-sensors mir process-cpp lomiri-app-launch-git gsettings-qt libqtdbustest-git libqtdbusmock-git lomiri-url-dispatcher-git glm valgrind)
 makedepends=(git cmake cmake-extras gtest)
 source=('git+https://gitlab.com/ubports/development/core/qtmir.git')
 sha256sums=('SKIP')
@@ -32,7 +32,15 @@ build() {
   cd ${_pkgname}
   mkdir -p ${BUILD_DIR}
   cd ${BUILD_DIR}
-  cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr -DNO_TESTS=1 -DCMAKE_INSTALL_LIBDIR="lib/" ..
+  cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+    -DCMAKE_INSTALL_PREFIX:PATH=/usr \
+    -DNO_TESTS=1 \
+    -DCMAKE_INSTALL_LIBDIR="lib/" \
+    -DBUILD_TESTING=OFF \
+    -DCMAKE_CXX_STANDARD=20 \
+    -DCMAKE_CXX_STANDARD_REQUIRED=ON \
+    -DCMAKE_CXX_EXTENSIONS=ON \
+    ..
   make
 }
 
