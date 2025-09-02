@@ -1,8 +1,8 @@
 # Maintainer: You <you@example.com>
 pkgname=biometryd-git
 _pkgname=biometryd
-pkgver=0.3.1
-pkgrel=3
+pkgver=r263.0.3.2
+pkgrel=0
 pkgdesc="Biometric mediation/aggregation daemon + QML bindings for Lomiri (UBports)"
 arch=('x86_64' 'aarch64' 'armv7h')
 url="https://salsa.debian.org/ubports-team/biometryd"
@@ -31,7 +31,13 @@ source=("git+https://gitlab.com/ubports/development/core/biometryd.git#branch=ma
 )
 sha256sums=('SKIP'
             'SKIP'
-)  # replace with the actual checksum if you want reproducible builds
+)
+
+pkgver() {
+  cd ${_pkgname}
+  ver="r$(git rev-list --count HEAD).$(git describe --always)"
+  echo "${ver//-/_}"            # only: hyphens → underscores
+}
 
 prepare() {
   cd "${srcdir}/${_pkgname}"
@@ -58,4 +64,7 @@ package() {
 
   # License
   install -Dm644 COPYING "$pkgdir/usr/share/licenses/$pkgname/COPYING"
+
+  # Move qt5 to qt
+  mv "${pkgdir}/usr/lib/qt5/" "${pkgdir}/usr/lib/qt/"
 }
