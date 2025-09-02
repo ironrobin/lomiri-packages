@@ -90,6 +90,8 @@ pkgs=(
   qtmir-git
   # Layer 7
   lomiri
+  # Layer 8
+  lomiri-session
 )
 
 for i in "${pkgs[@]}" ; do

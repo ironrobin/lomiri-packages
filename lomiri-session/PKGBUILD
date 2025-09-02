@@ -1,0 +1,32 @@
+# Maintainer: you <alex@ironrobin.net>
+pkgname=lomiri-session
+pkgver=0.3
+pkgrel=1
+pkgdesc="Lomiri desktop session integration (Wayland session, units, defaults)"
+arch=('any')
+url="https://salsa.debian.org/ubports-team/lomiri-session"
+license=('GPL3')  # adjust if upstream lists differently
+depends=(dbus systemd lomiri)   # keep minimal; add more if the package ships hard runtime hooks
+makedepends=(cmake pkgconf)
+# Debian hosts the pristine orig tarball; mirror it or vendor it if you prefer
+source=("https://deb.debian.org/debian/pool/main/l/lomiri-session/lomiri-session_${pkgver}.orig.tar.bz2")
+sha256sums=('b2dab5cf78dcc56739f7e72bb93ebab879be69d1308b85907434e7d4a9e1bede')  # replace with real sum
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  cmake -S . -B build \
+        -DENABLE_TOUCH_SESSION=OFF \
+        -DCMAKE_BUILD_TYPE=None \
+        -DCMAKE_INSTALL_PREFIX=/usr \
+        -DCMAKE_INSTALL_LIBEXECDIR=lib \
+        -DCMAKE_INSTALL_SYSCONFDIR=/etc
+  cmake --build build
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  DESTDIR="${pkgdir}" cmake --install build
+
+  # If Debian splits defaults vs session, you can choose to keep them together,
+  # or later create a split package (see notes below).
+}

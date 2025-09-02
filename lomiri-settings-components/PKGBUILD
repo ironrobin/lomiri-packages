@@ -28,7 +28,7 @@ build() {
   mkdir -p ${BUILD_DIR}
   cd ${BUILD_DIR}
   cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_INSTALL_LIBDIR="lib/" ..
-  make -j8
+  make
 }
 
 check() {

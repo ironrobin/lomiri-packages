@@ -1,3 +1,10 @@
-Do we really need to carry cmake-extras-git? can we get away with cmake-extras from extra?
+TODO: 
 
-Do we really need gsettings-qt-git? Can't we just use gsettings-qt?
+- Install Lomarchi
+- Find out what is needed to minimally boot Lomarchi on desktop
+- Figure out touch
+- For those minimal packages
+- Discern runtime deps vs buildtime deps
+Runtime dependency (depends): something the program needs when installed/used by the end user.
+
+Build-time dependency (makedepends): something that is only needed to compile or generate the package, but isn’t required after installation.
