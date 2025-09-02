@@ -74,6 +74,7 @@ pkgs=(
   libusermetrics-git
   lomiri-api-git
   # Layer 4
+  biometryd-git
   lomiri-download-manager-git
   lomiri-app-launch-git
   lomiri-ui-toolkit-git

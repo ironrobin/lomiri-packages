@@ -1,46 +1,61 @@
-# Maintainer: Marius Gripsgard <marius@ubports.com>
-
+# Maintainer: You <you@example.com>
 pkgname=biometryd-git
 _pkgname=biometryd
-pkgver=r130.d91741b
-pkgrel=1
-pkgdesc='Fingerprint deamon'
-url='https://github.com/ubports/biometryd'
-arch=(x86_64 i686 armv7h aarch64)
-license=(LGPL GPL)
-conflicts=(biometryd)
-provides=(biometryd)
-depends=(qt5-base qt5-declarative dbus-cpp apparmor process-cpp properties-cpp boost-libs libelf sqlite)
-makedepends=(git cmake boost cmake-extras gtest gmock)
-checkdepends=()
-source=('git+https://github.com/ubports/biometryd.git#branch=xenial'
-        'fix-new-gcc-and-boost.patch')
+pkgver=0.3.1
+pkgrel=3
+pkgdesc="Biometric mediation/aggregation daemon + QML bindings for Lomiri (UBports)"
+arch=('x86_64' 'aarch64' 'armv7h')
+url="https://salsa.debian.org/ubports-team/biometryd"
+license=('GPL3')
+depends=(
+  dbus
+  sqlite
+  qt5-base
+  qt5-declarative
+)
+makedepends=(
+  nlohmann-json
+  cmake
+  dbus-cpp
+  ninja
+  pkgconf
+  qt5-tools
+  boost
+  libelf
+  apparmor
+  process-cpp  
+)
+optdepends=('apparmor: confinement support')
+source=("git+https://gitlab.com/ubports/development/core/biometryd.git#branch=main"
+        "fix-boost.patch"
+)
 sha256sums=('SKIP'
-            'SKIP')
-
-BUILD_DIR=build
-
-pkgver() {
-  cd ${_pkgname}
-  echo "r$(git rev-list --count HEAD).$(git describe --always)"
-}
+            'SKIP'
+)  # replace with the actual checksum if you want reproducible builds
 
 prepare() {
-  cd ${_pkgname}
-
-  patch -Np1 -i "${srcdir}/fix-new-gcc-and-boost.patch"
+  cd "${srcdir}/${_pkgname}"
+  patch -Np1 -i "${srcdir}/fix-boost.patch"
 }
 
 build() {
-  cd ${_pkgname}
-  mkdir -p ${BUILD_DIR}
-  cd ${BUILD_DIR}
-  cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_INSTALL_LIBDIR="lib/" ..
-  make
+  cd "$srcdir/${_pkgname}"
+  cmake -B build -G Ninja \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+  cmake --build build -- -j$(nproc)
+}
+
+check() {
+  # Upstream tests may be headless-unfriendly; skip by default
+  true
 }
 
 package() {
-  cd ${_pkgname}/${BUILD_DIR}
-  make DESTDIR="${pkgdir}/" install
-  mv ${pkgdir}/usr/lib/qt5/ ${pkgdir}/usr/lib/qt/
+  cd "$srcdir/${_pkgname}"
+  DESTDIR="$pkgdir" cmake --install build
+
+  # License
+  install -Dm644 COPYING "$pkgdir/usr/share/licenses/$pkgname/COPYING"
 }
