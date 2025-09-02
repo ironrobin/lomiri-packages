@@ -1,0 +1,145 @@
+diff --git a/src/biometry/qml/Biometryd/plugin.cpp b/src/biometry/qml/Biometryd/plugin.cpp
+index 64798ec..690f0ca 100644
+--- a/src/biometry/qml/Biometryd/plugin.cpp
++++ b/src/biometry/qml/Biometryd/plugin.cpp
+@@ -77,18 +77,18 @@ public:
+ 
+     void dispatch(const std::function<void()>& f)
+     {
+-        service.post(f);
++        boost::asio::post(service, f);
+     }
+ 
+ private:
+     Dispatcher()
+-        : keep_alive{service},
++        : keep_alive{boost::asio::make_work_guard(service)},
+           t{[this]() { service.run(); }}
+     {
+     }
+ 
+-    boost::asio::io_service service;
+-    boost::asio::io_service::work keep_alive;
++    boost::asio::io_context service;
++    boost::asio::executor_work_guard<boost::asio::io_context::executor_type> keep_alive;
+     std::thread t;
+ 
+ };
+diff --git a/src/biometry/runtime.cpp b/src/biometry/runtime.cpp
+index fa1b338..76cf161 100644
+--- a/src/biometry/runtime.cpp
++++ b/src/biometry/runtime.cpp
+@@ -19,6 +19,7 @@
+ #include <biometry/runtime.h>
+ 
+ #include <iostream>
++#include <utility>
+ 
+ namespace
+ {
+@@ -28,7 +29,7 @@ namespace
+ // TODO(tvoss): Catching all exceptions is risky as they might signal unrecoverable
+ // errors. We should enable calling code to decide whether an exception should be considered
+ // fatal or not.
+-void exception_safe_run(boost::asio::io_service& service)
++void exception_safe_run(boost::asio::io_context& service)
+ {
+     while (true)
+     {
+@@ -46,7 +47,7 @@ void exception_safe_run(boost::asio::io_service& service)
+         }
+         catch (...)
+         {
+-            std::cerr << "Unknown exception caught while executing boost::asio::io_service";
++            std::cerr << "Unknown exception caught while executing boost::asio::io_context";
+         }
+     }
+ }
+@@ -60,8 +61,8 @@ std::shared_ptr<biometry::Runtime> biometry::Runtime::create(std::uint16_t pool_
+ biometry::Runtime::Runtime(std::uint16_t pool_size)
+     : pool_size_{pool_size},
+       service_{pool_size_},
+-      strand_{service_},
+-      keep_alive_{service_}
++      strand_{boost::asio::make_strand(service_)},
++      keep_alive_{boost::asio::make_work_guard(service_)}
+ {
+ }
+ 
+@@ -98,11 +99,11 @@ std::function<void(std::function<void()>)> biometry::Runtime::to_dispatcher_func
+     auto sp = shared_from_this();
+     return [sp](std::function<void()> task)
+     {
+-        sp->strand_.post(task);
++        boost::asio::post(sp->strand_, std::move(task));
+     };
+ }
+ 
+-boost::asio::io_service& biometry::Runtime::service()
++boost::asio::io_context& biometry::Runtime::service()
+ {
+     return service_;
+ }
+diff --git a/src/biometry/runtime.h b/src/biometry/runtime.h
+index 3d3ef6c..3f4f2a0 100644
+--- a/src/biometry/runtime.h
++++ b/src/biometry/runtime.h
+@@ -53,7 +53,7 @@ public:
+     Runtime& operator=(const Runtime&) = delete;
+     Runtime& operator=(Runtime&&) = delete;
+ 
+-    // start executes the underlying io_service on a thread pool with
++    // start executes the underlying io_context on a thread pool with
+     // the size configured at creation time.
+     void start();
+ 
+@@ -65,9 +65,9 @@ public:
+     // with components that expect a dispatcher for operation.
+     std::function<void(std::function<void()>)> to_dispatcher_functional();
+ 
+-    // service returns the underlying boost::asio::io_service that is executed
++    // service returns the underlying boost::asio::io_context that is executed
+     // by the Runtime.
+-    boost::asio::io_service& service();
++    boost::asio::io_context& service();
+ 
+ private:
+     // Runtime constructs a new instance, firing up pool_size
+@@ -75,9 +75,9 @@ private:
+     Runtime(std::uint16_t pool_size);
+ 
+     std::uint16_t pool_size_;
+-    boost::asio::io_service service_;
+-    boost::asio::io_service::strand strand_;
+-    boost::asio::io_service::work keep_alive_;
++    boost::asio::io_context service_;
++    boost::asio::strand<boost::asio::io_context::executor_type> strand_;
++    boost::asio::executor_work_guard<boost::asio::io_context::executor_type> keep_alive_;
+     std::vector<std::thread> workers_;
+ };
+ }
+diff --git a/src/biometry/util/dispatcher.cpp b/src/biometry/util/dispatcher.cpp
+index 97d56c0..6b78dbd 100644
+--- a/src/biometry/util/dispatcher.cpp
++++ b/src/biometry/util/dispatcher.cpp
+@@ -26,18 +26,18 @@ struct AsioStrandDispatcher : public biometry::util::Dispatcher
+ public:
+     AsioStrandDispatcher(const std::shared_ptr<biometry::Runtime>& rt)
+         : rt{rt},
+-          strand{rt->service()}
++          strand{boost::asio::make_strand(rt->service())}
+     {
+     }
+ 
+     void dispatch(const Task &task) override
+     {
+-        strand.post(task);
++        boost::asio::post(strand, task);
+     }
+ 
+ private:
+     std::shared_ptr<biometry::Runtime> rt;
+-    boost::asio::io_service::strand strand;
++    boost::asio::strand<boost::asio::io_context::executor_type> strand;
+ };
+ }
