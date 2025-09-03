@@ -2,8 +2,8 @@
 
 pkgname=libqtdbusmock-git
 _pkgname=libqtdbusmock
-pkgver=r138.0.9.1
-pkgrel=0
+pkgver=r139.0.9.1_1_gf6f266a
+pkgrel=1
 pkgdesc='Library for mocking DBus interactions using Qt'
 url='https://gitlab.com/ubports/development/core/libqtdbusmock'
 arch=(x86_64 i686 armv7h aarch64)
@@ -18,7 +18,8 @@ sha256sums=('SKIP')
 
 pkgver() {
   cd ${_pkgname}
-  echo "r$(git rev-list --count HEAD).$(git describe --always)"
+  ver="r$(git rev-list --count HEAD).$(git describe --always)"
+  echo "${ver//-/_}"            # only: hyphens → underscores
 }
 
 build() {
