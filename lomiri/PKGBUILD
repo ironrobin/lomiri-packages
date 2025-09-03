@@ -6,18 +6,22 @@ pkgbase=lomiri
 pkgname=(lomiri)
 _pkgname=lomiri
 pkgver=0.5.0
-pkgrel=1
+pkgrel=2
 url='https://gitlab.com/ubports/development/core/lomiri'
 arch=(x86_64 i686 armv7h aarch64)
 license=(LGPL3)
 depends=(dbus-cpp biometryd-git xorg-xwayland lcov gcovr geonames-git lomiri-system-settings lomiri-api-git qmenumodel-git gnome-desktop lomiri-app-launch-git lomiri-ui-toolkit-git libqtdbustest-git libqtdbusmock-git lomiri-indicator-network-git libusermetrics-git liblightdm-qt5 lomiri-settings-components lomiri-schemas deviceinfo-git qtmir-git lomiri-telephony-service-git lomiri-notifications-git lomiri-thumbnailer hfd-service lomiri-download-manager-git)
 makedepends=(git cmake cmake-extras doxygen)
 checkdepends=(xorg-server-xvfb)
-source=('https://gitlab.com/ubports/development/core/lomiri/-/archive/0.5.0/lomiri-0.5.0.tar.gz'
-  "force-CXX_20.patch"
+source=(
+  'https://gitlab.com/ubports/development/core/lomiri/-/archive/0.5.0/lomiri-0.5.0.tar.gz'
+  'debian-patches.tar.gz::https://salsa.debian.org/ubports-team/lomiri/-/archive/debian/0.5.0-6/lomiri-debian-0.5.0-6.tar.gz'
+  'force-CXX_20.patch'
 )
-sha256sums=('SKIP'
-            'SKIP'
+sha256sums=(
+  'SKIP'
+  'SKIP'
+  'SKIP'
 )
 
 BUILDENV+=('!check') # https://paste.ubuntu.com/p/2d33RJX4W8/
@@ -28,8 +32,20 @@ BUILDENV+=('!check') # https://paste.ubuntu.com/p/2d33RJX4W8/
 # }
 
 prepare() {
-  cd ${_pkgname}-${pkgver}
-  patch -Np1 -i "${srcdir}/force-CXX_20.patch"
+  cd "${_pkgname}-${pkgver}"
+
+  # Apply Debian patches from the specified tag (debian/0.5.0-6)
+  local patches_dir
+  patches_dir=$(find "${srcdir}" -type d -path '*/debian/patches' -print -quit)
+  if [[ -n "${patches_dir}" && -f "${patches_dir}/series" ]]; then
+    while IFS= read -r p; do
+      [[ -z "${p}" || "${p}" =~ ^# ]] && continue
+      patch -Np1 -i "${patches_dir}/${p}"
+    done < "${patches_dir}/series"
+  fi
+
+  # Apply local adjustments
+  #patch -Np1 -i "${srcdir}/force-CXX_20.patch"
 }
 
 build() {
