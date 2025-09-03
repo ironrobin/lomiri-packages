@@ -3,8 +3,8 @@
 pkgbase=qtmir-git
 pkgname=(qtmir-git)
 _pkgname=qtmir
-pkgver=r2920.0.7.2.r126.gca9e9a26
-pkgrel=2
+pkgver=r2907.0.7.2.r113.gea2f4774
+pkgrel=1
 url='https://gitlab.com/ubports/development/core/qtmir'
 arch=(x86_64 i686 armv7h aarch64)
 license=(LGPL)
@@ -12,11 +12,15 @@ conflicts=(qtmir)
 provides=(qtmir)
 depends=(qt5-base qt5-quickcontrols qt5-sensors mir process-cpp lomiri-app-launch-git gsettings-qt libqtdbustest-git libqtdbusmock-git lomiri-url-dispatcher-git glm valgrind)
 makedepends=(git cmake cmake-extras gtest)
-source=('git+https://gitlab.com/ubports/development/core/qtmir.git#branch=personal/sunweaver/debian-upstream'
-        '3001_link-freetype-harfbuzz-add-qt5mir2server.patch'
+source=('git+https://gitlab.com/ubports/development/core/qtmir.git#commit=ea2f4774b1a109fec3e22a021fb21ff60da80626'
+        'qtmir-debian-pkg.tar.gz::https://salsa.debian.org/ubports-team/qtmir/-/archive/debian/0.8.0_git20250407.ea2f477-2/qtmir-debian-0.8.0_git20250407.ea2f477-2.tar.gz'
+        '3001_link_freetype_harfbuzz.patch'
+        '3002_add-qt5mir2server.patch'
 )
 sha256sums=('SKIP'
-            '8dfafa6d84ad48cd8f7d056e8e078e7565c9bd5abe1abdbea68c498a5888a51d'
+            'SKIP'
+            'SKIP'
+            'SKIP'
 )
 
 BUILDENV+=('!check')
@@ -25,8 +29,20 @@ BUILD_DIR=build
 
 prepare() {
   cd ${_pkgname}
-  # TODO: See if this patch should be applied upstream
-  patch -p1 < ../3001_link-freetype-harfbuzz-add-qt5mir2server.patch
+
+  # Apply Debian patches from the provided packaging tarball
+  local debian_dir
+  debian_dir=$(ls -d ../qtmir-debian-*/debian 2>/dev/null | head -n1)
+  if [[ -n "$debian_dir" && -f "$debian_dir/patches/series" ]]; then
+    echo "Applying Debian patch series from: $debian_dir"
+    while read -r p; do
+      [[ -z "$p" || "$p" =~ ^# ]] && continue
+      patch -Np1 -i "$debian_dir/patches/$p"
+    done < "$debian_dir/patches/series"
+  fi
+  patch -Np1 -i "${srcdir}/3001_link_freetype_harfbuzz.patch"
+  patch -Np1 -i "${srcdir}/3002_add-qt5mir2server.patch"
+
 }
 
 pkgver() {
