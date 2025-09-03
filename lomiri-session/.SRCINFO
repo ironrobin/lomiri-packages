@@ -1,0 +1,16 @@
+pkgbase = lomiri-session
+	pkgdesc = Lomiri desktop session integration (Wayland session, units, defaults)
+	pkgver = 0.3
+	pkgrel = 1
+	url = https://salsa.debian.org/ubports-team/lomiri-session
+	arch = any
+	license = GPL3
+	makedepends = cmake
+	makedepends = pkgconf
+	depends = dbus
+	depends = systemd
+	depends = lomiri
+	source = https://deb.debian.org/debian/pool/main/l/lomiri-session/lomiri-session_0.3.orig.tar.bz2
+	sha256sums = b2dab5cf78dcc56739f7e72bb93ebab879be69d1308b85907434e7d4a9e1bede
+
+pkgname = lomiri-session

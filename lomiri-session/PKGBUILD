@@ -1,16 +1,41 @@
 # Maintainer: you <alex@ironrobin.net>
 pkgname=lomiri-session
 pkgver=0.3
-pkgrel=1
+pkgrel=2
 pkgdesc="Lomiri desktop session integration (Wayland session, units, defaults)"
 arch=('any')
 url="https://salsa.debian.org/ubports-team/lomiri-session"
 license=('GPL3')  # adjust if upstream lists differently
 depends=(dbus systemd lomiri)   # keep minimal; add more if the package ships hard runtime hooks
 makedepends=(cmake pkgconf)
-# Debian hosts the pristine orig tarball; mirror it or vendor it if you prefer
+# Debian hosts the pristine orig tarball; patches are fetched on-the-fly
 source=("https://deb.debian.org/debian/pool/main/l/lomiri-session/lomiri-session_${pkgver}.orig.tar.bz2")
 sha256sums=('b2dab5cf78dcc56739f7e72bb93ebab879be69d1308b85907434e7d4a9e1bede')  # replace with real sum
+
+prepare() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  # Fetch Debian packaging repo to get the latest debian/patches series
+  local debrepo="${srcdir}/debian-upstream"
+  if [[ ! -d "$debrepo/.git" ]]; then
+    git clone --depth=1 https://salsa.debian.org/ubports-team/lomiri-session.git "$debrepo"
+  else
+    git -C "$debrepo" fetch --depth=1 origin
+    git -C "$debrepo" reset --hard origin/HEAD
+  fi
+
+  local series_file="$debrepo/debian/patches/series"
+  if [[ ! -f "$series_file" ]]; then
+    echo "debian/patches/series not found in $debrepo" >&2
+    return 1
+  fi
+
+  # Apply patches in series order
+  while IFS= read -r p || [[ -n "$p" ]]; do
+    [[ -z "$p" || "$p" =~ ^# ]] && continue
+    echo "Applying patch: $p"
+    patch -Np1 -i "$debrepo/debian/patches/$p"
+  done < "$series_file"
+}
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
