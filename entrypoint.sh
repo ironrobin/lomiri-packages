@@ -26,8 +26,8 @@ echo "checking out root key"
 gpg --homedir /root/.gnupg --list-keys
 
 # add the ironrobin-lomiri repo to the end of /etc/pacman.conf
-# echo '[ironrobin-lomiri]' >> /etc/pacman.conf
-# echo 'Server = https://github.com/ironrobin/lomiri-packages/releases/download/packages' >> /etc/pacman.conf
+echo '[ironrobin-lomiri]' >> /etc/pacman.conf
+echo 'Server = https://github.com/ironrobin/lomiri-packages/releases/download/packages' >> /etc/pacman.conf
 
 sudo pacman-key --recv-keys 6ED02751500A833A
 sudo pacman-key --lsign-key 6ED02751500A833A
@@ -57,15 +57,15 @@ pkgs=(
   lomiri-schemas
   persistent-cache-cpp
   # # Layer 2
-  # hfd-service
-  # mir
-  # process-cpp
-  # suru-icon-theme-git
-  # telepathy-qt-git
-  # lomiri-notifications-git
-  # click-git
-  # libqtdbustest-git
-  # repowerd-git
+  hfd-service
+  mir
+  process-cpp
+  suru-icon-theme-git
+  telepathy-qt-git
+  lomiri-notifications-git
+  click-git
+  libqtdbustest-git
+  repowerd-git
   # # Layer 3
   # dbus-cpp
   # libqtdbusmock-git
