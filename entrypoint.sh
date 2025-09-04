@@ -79,7 +79,7 @@ pkgs=(
   gmenuharness-git
   lomiri-thumbnailer
   # # Layer 5
-  # lomiri-url-dispatcher-git
+  lomiri-url-dispatcher-git
   # # Layer 6
   # libayatana-common-git
   # lomiri-indicator-network-git
