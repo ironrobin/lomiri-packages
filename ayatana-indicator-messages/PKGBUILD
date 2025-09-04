@@ -25,7 +25,7 @@ makedepends=(
 )
 
 source=("https://github.com/AyatanaIndicators/${pkgname}/archive/${pkgver}.tar.gz")
-sha256sums=('dda2b04c3ce315fee00fba839f5a75f059db40a2be29367e916df408da9f3eb0')
+sha256sums=('bbefac4a0c280b78f015d2afddc6d108f20cf6f8bfb1a35bd5e7fb0c6912a9bd')
 
 build() {
   cmake -B build -S "${pkgname}-${pkgver}" \
