@@ -2,14 +2,14 @@
 
 pkgname="ayatana-indicator-datetime-git"
 _pkgname="ayatana-indicator-datetime"
-pkgver=git_r2273
+pkgver=git_r2899
 pkgrel=1
 pkgdesc="Ayatana Indicator providing clock and calendar"
 arch=("i686" "x86_64" "aarch64")
 url="https://github.com/AyatanaIndicators"
 license=("GPL3")
 depends=("glib2" "evolution-data-server" "libaccounts-glib" "properties-cpp")
-makedepends=("cmake" "dbus" "intltool" "glib2" "libnotify" "gstreamer" "libical" "evolution-data-server" "gsettings-desktop-schemas" "evolution-data-server" "git")
+makedepends=("libayatana-common-git" "cmake" "dbus" "intltool" "glib2" "libnotify" "gstreamer" "libical" "evolution-data-server" "gsettings-desktop-schemas" "evolution-data-server" "git")
 optdepends=("mate-ayatana-indicator-applet" "geoclue")
 source=("git+https://github.com/AyatanaIndicators/${_pkgname}.git"
        )

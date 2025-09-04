@@ -38,6 +38,9 @@ source=("https://github.com/canonical/mir/releases/download/v${pkgver}/mir-${pkg
         "2004_python_to_python3.patch"
         "2005_skip-check-miroil-symbols.patch"
 )
+# 0xxx: Grabbed from upstream development.
+# 1xxx: Possibly relevant for upstream adoption.
+# 2xxx: Only relevant for official Debian release.
 sha256sums=('c8994ba14d986d484daaec6c0ccb5f4ca7eb52746167899991a0983772c0fda8'
             'a779cead843cd71ca480fadf3511db52e8849b5f5093a2847ce204839e32f52f'
             'a50fc9a95642e3ada0d6a70e97bee9fdfa113bfcf5bd070f1680fe2e818b25cd'

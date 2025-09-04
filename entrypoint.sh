@@ -59,6 +59,7 @@ pkgs=(
   persistent-cache-cpp
   libayatana-common-git
   # Layer 2
+  ayatana-indicator-datetime-git
   hfd-service
   mir
   process-cpp
