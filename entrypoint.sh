@@ -26,7 +26,6 @@ echo "checking out root key"
 gpg --homedir /root/.gnupg --list-keys
 
 # add the ironrobin-lomiri repo to the end of /etc/pacman.conf
-# need it for telepathy-farstream
 # echo '[ironrobin-lomiri]' >> /etc/pacman.conf
 # echo 'Server = https://github.com/ironrobin/lomiri-packages/releases/download/packages' >> /etc/pacman.conf
 
@@ -47,7 +46,6 @@ pkgs=(
   qdjango-git
   buteo-syncfw-qml-git
   humanity-icon-theme
-  ayatana-indicator-messages
   libaccounts-qt5
   qmenumodel-git
   geonames-git
@@ -60,6 +58,7 @@ pkgs=(
   persistent-cache-cpp
   libayatana-common-git
   # # Layer 2
+  # ayatana-indicator-messages
   # ayatana-indicator-datetime-git
   # hfd-service
   # mir
