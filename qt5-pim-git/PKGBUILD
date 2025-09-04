@@ -2,7 +2,7 @@
 
 pkgname=qt5-pim-git
 _pkgname=qtpim
-pkgver=v5.0.0.beta1.r227.gc2026b9f
+pkgver=v5.0.0.beta1.r264.g713bb697
 pkgrel=1
 pkgdesc='Qt Personal Information Management'
 url='http://code.qt.io/cgit/qt/qtpim.git'

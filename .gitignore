@@ -39,3 +39,5 @@ ofono-git/ell/
 **/biometryd/
 **/libayatana-common/
 **/ayatana-indicator-datetime/
+**/lomiri-history-service/
+**/lomiri-address-book-service/
