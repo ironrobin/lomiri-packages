@@ -39,26 +39,26 @@ sudo pacman -S base-devel --noconfirm --needed
 # Removed accountsservice-ubuntu from layer 1
 
 pkgs=(
-  # # Layer 1
-  # telepathy-farstream
-  # qt5-pim-git
-  # properties-cpp
-  # dbus-test-runner
-  # qdjango-git
-  # buteo-syncfw-qml-git
-  # humanity-icon-theme
-  # ayatana-indicator-messages
-  # libaccounts-qt5
-  # qmenumodel-git
-  # geonames-git
-  # libqofono-qt5
-  # ofono-git
-  # wlcs
-  # deviceinfo-git
-  # lomiri-settings-components
-  # lomiri-schemas
-  # persistent-cache-cpp
-  # libayatana-common-git
+  # Layer 1
+  telepathy-farstream
+  qt5-pim-git
+  properties-cpp
+  dbus-test-runner
+  qdjango-git
+  buteo-syncfw-qml-git
+  humanity-icon-theme
+  ayatana-indicator-messages
+  libaccounts-qt5
+  qmenumodel-git
+  geonames-git
+  libqofono-qt5
+  ofono-git
+  wlcs
+  deviceinfo-git
+  lomiri-settings-components
+  lomiri-schemas
+  persistent-cache-cpp
+  libayatana-common-git
   # # Layer 2
   # ayatana-indicator-datetime-git
   # hfd-service
