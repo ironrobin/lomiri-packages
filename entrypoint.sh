@@ -58,7 +58,6 @@ pkgs=(
   persistent-cache-cpp
   ayatana-indicator-messages
   # Layer 2
-  lomiri-notifications-git
   ayatana-indicator-datetime-git
   hfd-service
   mir
@@ -94,6 +93,7 @@ pkgs=(
   # # Layer 7
   # lomiri
   # # Layer 8
+  # lomiri-notifications-git
   # lomiri-session
 )
 
