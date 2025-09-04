@@ -57,16 +57,17 @@ pkgs=(
   lomiri-schemas
   persistent-cache-cpp
   ayatana-indicator-messages
+  libayatana-common-git
   # Layer 2
-  ayatana-indicator-datetime-git
-  hfd-service
-  mir
-  process-cpp
-  suru-icon-theme-git
-  telepathy-qt-git
-  click-git
-  libqtdbustest-git
-  repowerd-git
+  # ayatana-indicator-datetime-git
+  # hfd-service
+  # mir
+  # process-cpp
+  # suru-icon-theme-git
+  # telepathy-qt-git
+  # click-git
+  # libqtdbustest-git
+  # repowerd-git
   # # Layer 3
   # dbus-cpp
   # libqtdbusmock-git
@@ -83,7 +84,6 @@ pkgs=(
   # # Layer 5
   # lomiri-url-dispatcher-git
   # # # Layer 6
-  # libayatana-common-git
   # lomiri-indicator-network-git
   # lomiri-telephony-service-git
   # lomiri-address-book-service-git
