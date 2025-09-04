@@ -62,7 +62,6 @@ pkgs=(
   process-cpp
   suru-icon-theme-git
   telepathy-qt-git
-  lomiri-notifications-git
   click-git
   libqtdbustest-git
   repowerd-git
@@ -94,6 +93,7 @@ pkgs=(
   # ayatana-indicator-datetime-git
   # lomiri
   # # Layer 8
+  # lomiri-notifications-git
   # lomiri-session
 )
 
