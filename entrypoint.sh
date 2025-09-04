@@ -56,10 +56,7 @@ pkgs=(
   lomiri-settings-components
   lomiri-schemas
   persistent-cache-cpp
-  libayatana-common-git
   # # Layer 2
-  # ayatana-indicator-messages
-  # ayatana-indicator-datetime-git
   # hfd-service
   # mir
   # process-cpp
@@ -85,6 +82,7 @@ pkgs=(
   # # Layer 5
   # lomiri-url-dispatcher-git
   # # Layer 6
+  # libayatana-common-git
   # lomiri-indicator-network-git
   # lomiri-telephony-service-git
   # lomiri-address-book-service-git
@@ -92,6 +90,8 @@ pkgs=(
   # lomiri-system-settings
   # qtmir-git
   # # Layer 7
+  # ayatana-indicator-messages
+  # ayatana-indicator-datetime-git
   # lomiri
   # # Layer 8
   # lomiri-session
