@@ -1,33 +1,41 @@
 # Maintainer: Furkan Kardame <furkan@fkardame.com>
 
-pkgname="ayatana-indicator-messages"
-_pkgname="ayatana-indicator-messages"
-pkgver="24.5.1"
-pkgrel="0"
+pkgname=ayatana-indicator-messages
+pkgver=24.5.1
+pkgrel=1
 pkgdesc="Ayatana Indicator Messages Applet"
-arch=("i686" "x86_64" "aarch64")
-url="https://github.com/AyatanaIndicators"
-license=("GPL3")
-depends=("glib2" "libayatana-indicator" "accountsservice")
-makedepends=("intltool" "libayatana-indicator" "accountsservice" "glib2" "gdk-pixbuf2" "gtk3" "mate-common" "vala")
-source=("https://github.com/AyatanaIndicators/${_pkgname}/archive/${pkgver}.tar.gz")
-md5sums=("65f4d12358e67254b2cd5518b99664cd")
-options=("!emptydirs")
+arch=(x86_64 aarch64 i686)
+url="https://github.com/AyatanaIndicators/${pkgname}"
+license=(GPL-3.0-or-later)
 
-# prepare()
-# {
-#     cd ${_pkgname}
-# }
+depends=(
+  glib2                  # runtime + brings gdbus libs
+  libayatana-indicator
+  accountsservice
+)
+makedepends=(
+  cmake                  # you call cmake in build()
+  python                 # /usr/bin/gdbus-codegen is a Python script
+  glib2                  # provides /usr/bin/gdbus-codegen at build time
+  gdk-pixbuf2
+  gtk3
+  mate-common
+  vala
+  pkgconf                # good practice for pkg-config
+)
 
-build()
-{
-    cd ${_pkgname}-${pkgver}
-    cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBEXECDIR=lib -Denable_tests=OFF
-    make
+source=("https://github.com/AyatanaIndicators/${pkgname}/archive/${pkgver}.tar.gz")
+sha256sums=('dda2b04c3ce315fee00fba839f5a75f059db40a2be29367e916df408da9f3eb0')
+
+build() {
+  cmake -B build -S "${pkgname}-${pkgver}" \
+    -DCMAKE_BUILD_TYPE=None \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_INSTALL_LIBEXECDIR=lib \
+    -Denable_tests=OFF
+  cmake --build build
 }
 
-package()
-{
-    cd ${_pkgname}-${pkgver}
-    make DESTDIR="${pkgdir}" install
+package() {
+  DESTDIR="${pkgdir}" cmake --install build
 }
