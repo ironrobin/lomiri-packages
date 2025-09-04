@@ -16,7 +16,7 @@ depends=(
 makedepends=(
   cmake                  # you call cmake in build()
   python                 # /usr/bin/gdbus-codegen is a Python script
-  glib2                  # provides /usr/bin/gdbus-codegen at build time
+  glib2-devel                  # provides /usr/bin/gdbus-codegen at build time
   gdk-pixbuf2
   gtk3
   mate-common
