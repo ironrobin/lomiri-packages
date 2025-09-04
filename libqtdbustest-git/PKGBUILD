@@ -2,8 +2,8 @@
 
 pkgname=libqtdbustest-git
 _pkgname=libqtdbustest
-pkgver=r114.0.3.3_7_g4504fa2
-pkgrel=1
+pkgver=r115.0.4.0
+pkgrel=0
 pkgdesc='Library for testing DBus interactions using Qt'
 url='https://gitlab.com/ubports/development/core/libqtdbustest'
 arch=(x86_64 i686 armv7h aarch64)
