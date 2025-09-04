@@ -37,3 +37,5 @@ ofono-git/ell/
 **/qtmir/
 **/trust-store/
 **/biometryd/
+**/libayatana-common/
+**/ayatana-indicator-datetime/

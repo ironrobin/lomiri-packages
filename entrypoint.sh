@@ -57,6 +57,7 @@ pkgs=(
   lomiri-settings-components
   lomiri-schemas
   persistent-cache-cpp
+  libayatana-common-git
   # Layer 2
   hfd-service
   mir
