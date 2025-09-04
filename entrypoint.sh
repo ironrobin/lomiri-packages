@@ -36,65 +36,66 @@ sudo pacman-key --lsign-key 6ED02751500A833A
 sudo pacman -Sy
 sudo pacman -S base-devel --noconfirm --needed
 
+# Removed accountsservice-ubuntu from layer 1
+
 pkgs=(
-  # Layer 1
-  telepathy-farstream
-  accountsservice-ubuntu
-  qt5-pim-git
-  properties-cpp
-  dbus-test-runner
-  qdjango-git
-  buteo-syncfw-qml-git
-  humanity-icon-theme
-  ayatana-indicator-messages
-  libaccounts-qt5
-  qmenumodel-git
-  geonames-git
-  libqofono-qt5
-  ofono-git
-  wlcs
-  deviceinfo-git
-  lomiri-settings-components
-  lomiri-schemas
-  persistent-cache-cpp
-  libayatana-common-git
-  # Layer 2
-  ayatana-indicator-datetime-git
-  hfd-service
-  mir
-  process-cpp
-  suru-icon-theme-git
-  telepathy-qt-git
-  lomiri-notifications-git
-  click-git
-  libqtdbustest-git
-  repowerd-git
-  # Layer 3
-  dbus-cpp
-  libqtdbusmock-git
-  lomiri-history-service-git
-  libusermetrics-git
-  lomiri-api-git
-  # Layer 4
-  biometryd-git
-  lomiri-download-manager-git
-  lomiri-app-launch-git
-  lomiri-ui-toolkit-git
-  gmenuharness-git
-  lomiri-thumbnailer
-  # Layer 5
-  lomiri-url-dispatcher-git
-  # Layer 6
-  lomiri-indicator-network-git
-  lomiri-telephony-service-git
-  lomiri-address-book-service-git
-  lomiri-content-hub-git
-  lomiri-system-settings
-  qtmir-git
-  # Layer 7
-  lomiri
-  # Layer 8
-  lomiri-session
+  # # Layer 1
+  # telepathy-farstream
+  # qt5-pim-git
+  # properties-cpp
+  # dbus-test-runner
+  # qdjango-git
+  # buteo-syncfw-qml-git
+  # humanity-icon-theme
+  # ayatana-indicator-messages
+  # libaccounts-qt5
+  # qmenumodel-git
+  # geonames-git
+  # libqofono-qt5
+  # ofono-git
+  # wlcs
+  # deviceinfo-git
+  # lomiri-settings-components
+  # lomiri-schemas
+  # persistent-cache-cpp
+  # libayatana-common-git
+  # # Layer 2
+  # ayatana-indicator-datetime-git
+  # hfd-service
+  # mir
+  # process-cpp
+  # suru-icon-theme-git
+  # telepathy-qt-git
+  # lomiri-notifications-git
+  # click-git
+  # libqtdbustest-git
+  # repowerd-git
+  # # Layer 3
+  # dbus-cpp
+  # libqtdbusmock-git
+  # lomiri-history-service-git
+  # libusermetrics-git
+  # lomiri-api-git
+  # # Layer 4
+  # biometryd-git
+  # lomiri-download-manager-git
+  # lomiri-app-launch-git
+  # lomiri-ui-toolkit-git
+  # gmenuharness-git
+  # lomiri-thumbnailer
+  # # Layer 5
+  # lomiri-url-dispatcher-git
+  # # Layer 6
+  # lomiri-indicator-network-git
+  # lomiri-telephony-service-git
+  # lomiri-address-book-service-git
+  # lomiri-content-hub-git
+  # lomiri-system-settings
+  # qtmir-git
+  # # Layer 7
+  # lomiri
+  # # Layer 8
+  # lomiri-session
 )
 
 for i in "${pkgs[@]}" ; do

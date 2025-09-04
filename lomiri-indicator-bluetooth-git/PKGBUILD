@@ -9,8 +9,8 @@ pkgdesc="Bluetooth Indicator"
 arch=("i686" "x86_64" "aarch64")
 url="https://github.com/ubports/indicator-bluetooth"
 license=("GPL3")
-depends=("glib2" "accountsservice-ubuntu" "hicolor-icon-theme" "dconf" "lomiri-url-dispatcher-git")
-makedepends=("debianutils" "gnome-common" "systemd" "intltool" "accountsservice-ubuntu" "vala" "glib2" "gio-qt" "git")
+depends=("glib2" "accountsservice" "hicolor-icon-theme" "dconf" "lomiri-url-dispatcher-git")
+makedepends=("debianutils" "gnome-common" "systemd" "intltool" "accountsservice" "vala" "glib2" "gio-qt" "git")
 optdepends=("")
 source=("git+https://github.com/ubports/${_pkgname}.git"
         "fix-systemd.patch"
