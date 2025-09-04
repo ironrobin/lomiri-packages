@@ -57,7 +57,6 @@ pkgs=(
   lomiri-schemas
   persistent-cache-cpp
   ayatana-indicator-messages
-  libayatana-common-git
   # Layer 2
   # ayatana-indicator-datetime-git
   # hfd-service
@@ -84,6 +83,7 @@ pkgs=(
   # # Layer 5
   # lomiri-url-dispatcher-git
   # # # Layer 6
+  libayatana-common-git
   # lomiri-indicator-network-git
   # lomiri-telephony-service-git
   # lomiri-address-book-service-git
