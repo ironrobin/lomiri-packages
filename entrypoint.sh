@@ -66,29 +66,29 @@ pkgs=(
   click-git
   libqtdbustest-git
   repowerd-git
-  # # Layer 3
+  # Layer 3
   dbus-cpp
   libqtdbusmock-git
   lomiri-history-service-git
   libusermetrics-git
   lomiri-api-git
-  # # Layer 4
+  # Layer 4
   biometryd-git
   lomiri-download-manager-git
   lomiri-app-launch-git
   lomiri-ui-toolkit-git
   gmenuharness-git
   lomiri-thumbnailer
-  # # Layer 5
+  # Layer 5
   lomiri-url-dispatcher-git
-  # # # Layer 6
-  # libayatana-common-git
-  # lomiri-indicator-network-git
-  # lomiri-telephony-service-git
-  # lomiri-address-book-service-git
-  # lomiri-content-hub-git
-  # lomiri-system-settings
-  # qtmir-git
+  # Layer 6
+  libayatana-common-git
+  lomiri-indicator-network-git
+  lomiri-telephony-service-git
+  lomiri-address-book-service-git
+  lomiri-content-hub-git
+  lomiri-system-settings
+  qtmir-git
   # # Layer 7
   # ayatana-indicator-datetime-git
   # lomiri
