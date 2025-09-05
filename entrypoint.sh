@@ -60,6 +60,7 @@ pkgs=(
   lomiri-wallpapers
   humanity-icon-theme
   # Layer 2
+  suru-icon-theme-git
   hfd-service
   mir
   process-cpp
