@@ -2,7 +2,7 @@
 
 pkgname=gmenuharness-git
 _pkgname=gmenuharness
-pkgver=r156.c00db2e
+pkgver=r172.1e7c322
 pkgrel=1
 pkgdesc="Testing enablement library for projects exporting GiO's gmenu/gaction endpoints"
 url='https://gitlab.com/ubports/development/core/gmenuharness'
