@@ -58,6 +58,7 @@ pkgs=(
   persistent-cache-cpp
   ayatana-indicator-messages
   lomiri-wallpapers
+  humanity-icon-theme
   # Layer 2
   hfd-service
   mir
