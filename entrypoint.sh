@@ -73,12 +73,12 @@ pkgs=(
   libusermetrics-git
   lomiri-api-git
   # # Layer 4
-  # biometryd-git
-  # lomiri-download-manager-git
-  # lomiri-app-launch-git
-  # lomiri-ui-toolkit-git
-  # gmenuharness-git
-  # lomiri-thumbnailer
+  biometryd-git
+  lomiri-download-manager-git
+  lomiri-app-launch-git
+  lomiri-ui-toolkit-git
+  gmenuharness-git
+  lomiri-thumbnailer
   # # Layer 5
   # lomiri-url-dispatcher-git
   # # # Layer 6
