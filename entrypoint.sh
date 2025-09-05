@@ -79,9 +79,9 @@ pkgs=(
   lomiri-ui-toolkit-git
   gmenuharness-git
   lomiri-thumbnailer
-  # Layer 5
-  lomiri-url-dispatcher-git
   lomiri-notifications-git
+  # Layer 5
+  # lomiri-url-dispatcher-git
   # Layer 6
   # libayatana-common-git
   # lomiri-indicator-network-git
@@ -94,7 +94,6 @@ pkgs=(
   # ayatana-indicator-datetime-git
   # lomiri
   # # Layer 8
-  # lomiri-notifications-git
   # lomiri-session
 )
 

@@ -35,6 +35,7 @@ check() {
   make ARGS+="--output-on-failure" test
 }
 
+# Provides lomiri-shell-notification
 package() {
   cd ${_pkgname}/build
   make DESTDIR="${pkgdir}/" install
