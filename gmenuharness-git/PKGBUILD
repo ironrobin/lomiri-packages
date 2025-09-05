@@ -2,7 +2,7 @@
 
 pkgname=gmenuharness-git
 _pkgname=gmenuharness
-pkgver=r172.1e7c322
+pkgver=r93.0.1.4_13_gfcebe1f
 pkgrel=1
 pkgdesc="Testing enablement library for projects exporting GiO's gmenu/gaction endpoints"
 url='https://gitlab.com/ubports/development/core/gmenuharness'
@@ -11,11 +11,12 @@ license=()
 conflicts=(gmenuharness)
 provides=(gmenuharness)
 depends=(lomiri-api-git gtest libqtdbustest-git)
-makedepends=(cmake cmake-extras doxygen python-dulwich)
+makedepends=(gtest cmake cmake-extras doxygen python-dulwich)
 source=("git+https://gitlab.com/ubports/development/core/gmenuharness.git#branch=main")
 sha256sums=('SKIP')
 
 pkgver() {
+  cd ${_pkgname}
   ver="r$(git rev-list --count HEAD).$(git describe --always)"
   echo "${ver//-/_}"            # only: hyphens → underscores
 }
