@@ -1,0 +1,33 @@
+# Maintainer: Alex R <alex@ironrobin.net>
+
+pkgname=lomiri-wallpapers
+pkgver=20.04.0
+pkgrel=0
+pkgdesc="Wallpapers for the Lomiri environment"
+arch=(any)
+url="https://gitlab.com/ubports/development/core/lomiri-wallpapers"
+license=('CC0-1.0' 'CC-BY-4.0' 'CC-BY-SA-3.0' 'CC-BY-SA-4.0' 'MIT')
+source=("${pkgname}-${pkgver}.tar.gz::${url}/-/archive/${pkgver}/${pkgname}-${pkgver}.tar.gz?ref_type=tags")
+sha256sums=('SKIP')
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  install -d "${pkgdir}/usr/share/backgrounds"
+
+  # Install wallpaper sets
+  cp -a 16.04 20.04 22.04 "${pkgdir}/usr/share/backgrounds/"
+
+  # Install default wallpapers
+  install -m644 warty-final-ubuntu.png lomiri-default-background.png \
+    "${pkgdir}/usr/share/backgrounds/"
+
+  # Licenses and docs
+  install -d "${pkgdir}/usr/share/licenses/${pkgname}"
+  install -m644 COPYING.* LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/"
+
+  install -d "${pkgdir}/usr/share/doc/${pkgname}"
+  install -m644 AUTHORS ChangeLog README.md \
+    "${pkgdir}/usr/share/doc/${pkgname}/"
+}
+

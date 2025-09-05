@@ -57,6 +57,7 @@ pkgs=(
   lomiri-schemas
   persistent-cache-cpp
   ayatana-indicator-messages
+  lomiri-wallpapers
   # Layer 2
   hfd-service
   mir
