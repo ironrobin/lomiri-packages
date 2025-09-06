@@ -85,7 +85,7 @@ pkgs=(
   lomiri-url-dispatcher-git
   # Layer 6
   libayatana-common-git
-  lomiri-indicator-network-git
+  lomiri-indicator-network
   lomiri-telephony-service-git
   lomiri-address-book-service-git
   lomiri-content-hub-git
