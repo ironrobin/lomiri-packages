@@ -1,0 +1,70 @@
+# Maintainer: Ivan Semkin (ivan at semkin dot ru)
+
+pkgname=lomiri-indicator-network
+_pkgname=lomiri-indicator-network
+pkgver=1.1.2
+pkgrel=0
+pkgdesc='Network indicator'
+url='https://gitlab.com/ubports/development/core/lomiri-indicator-network'
+arch=(x86_64 i686 armv7h aarch64)
+license=(LGPL3 GPL3)
+conflicts=(indicator-network)
+provides=(indicator-network)
+depends=(lcov gcovr gsettings-qt ofono-git lomiri-url-dispatcher-git libqofono-qt5 libqtdbustest-git libqtdbusmock-git gmenuharness-git)
+makedepends=(git cmake cmake-extras doxygen)
+checkdepends=()
+source=(
+  'https://gitlab.com/ubports/development/core/lomiri-indicator-network/-/archive/1.1.2/lomiri-indicator-network-1.1.2.tar.gz'
+  'debian-patches.tar.gz::https://salsa.debian.org/ubports-team/lomiri-indicator-network/-/archive/master/lomiri-indicator-network-master.tar.gz'
+  'fix-systemd.patch'
+)
+sha256sums=(
+  'SKIP'
+  'SKIP'
+  'c56f15c39832d62cbf6c7e158a08293c3e9764cdb16b6e1e841201c940dfc6cb'
+)
+BUILDENV+=('!check') # Hangs
+
+# pkgver() {
+#   cd ${_pkgname}
+#   ver="r$(git rev-list --count HEAD).$(git describe --always)"
+#   echo "${ver//-/_}"            # only: hyphens → underscores
+# }
+
+prepare() {
+  cd "${_pkgname}-${pkgver}"
+
+  # Apply Debian patches discovered from the downloaded archive
+  local patches_dir
+  patches_dir=$(find "${srcdir}" -type d -path '*/debian/patches' -print -quit)
+  if [[ -n "${patches_dir}" && -f "${patches_dir}/series" ]]; then
+    while IFS= read -r p; do
+      [[ -z "${p}" || "${p}" =~ ^# ]] && continue
+      patch -Np1 -i "${patches_dir}/${p}"
+    done < "${patches_dir}/series"
+  fi
+
+  # TODO: see if this local patch is still needed after Debian patches
+  #patch -Np1 -i "${srcdir}/fix-systemd.patch"
+}
+
+build() {
+  cd "${_pkgname}-${pkgver}"
+  mkdir -p build
+  cd build
+  cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_INSTALL_LIBDIR="lib/" -DCMAKE_INSTALL_LIBEXECDIR="lib/" ..
+  make
+}
+
+# check() {
+#   cd ${_pkgname}/build
+#   export PYTHONIOENCODING=UTF-8
+#   make ARGS+="--output-on-failure" test
+# }
+
+package() {
+  cd "${_pkgname}-${pkgver}/build"
+  make DESTDIR="${pkgdir}/" install
+  mv ${pkgdir}/usr/lib/qt5/ ${pkgdir}/usr/lib/qt/
+}
+# vim:set ts=2 sw=2 et:
