@@ -78,7 +78,7 @@ pkgs=(
   lomiri-download-manager-git
   lomiri-app-launch-git
   lomiri-ui-toolkit-git
-  gmenuharness-git
+  gmenuharness
   lomiri-thumbnailer
   lomiri-notifications-git
   # Layer 5
