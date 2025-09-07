@@ -47,7 +47,7 @@ pkgs=(
   buteo-syncfw-qml-git
   humanity-icon-theme
   libaccounts-qt5
-  qmenumodel-git
+  qmenumodel
   geonames-git
   libqofono-qt5
   ofono-git
