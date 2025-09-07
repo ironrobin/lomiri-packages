@@ -23,7 +23,7 @@ options=(!strip)
 # }
 
 build() {
-  cd ${_pkgname}
+  cd ${_pkgname}-${pkgver}
   # adding -g to CFLAGS and CXXFLAGS to include debug symbols in the build
   CFLAGS="-O2 -g" CXXFLAGS="-O2 -g" \
   cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_INSTALL_LIBDIR="lib/" .
@@ -31,7 +31,7 @@ build() {
 }
 
 package() {
-  cd ${_pkgname}
+  cd ${_pkgname}-${pkgver}
   make DESTDIR="${pkgdir}/" install
   mv ${pkgdir}/usr/lib/qt5/ ${pkgdir}/usr/lib/qt/
 }
