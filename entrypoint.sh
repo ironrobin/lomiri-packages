@@ -39,24 +39,24 @@ sudo pacman -S base-devel --noconfirm --needed
 
 pkgs=(
   # Layer 1
-  telepathy-farstream
-  qt5-pim-git
-  properties-cpp
-  dbus-test-runner
-  qdjango-git
-  buteo-syncfw-qml
-  humanity-icon-theme
-  libaccounts-qt5
-  qmenumodel
-  geonames
-  libqofono-qt5
-  ofono-git
-  wlcs
-  deviceinfo
-  lomiri-settings-components
-  lomiri-schemas
-  persistent-cache-cpp
-  ayatana-indicator-messages
+  # telepathy-farstream
+  # qt5-pim-git
+  # properties-cpp
+  # dbus-test-runner
+  # qdjango-git
+  # buteo-syncfw-qml
+  # humanity-icon-theme
+  # libaccounts-qt5
+  # qmenumodel
+  # geonames
+  # libqofono-qt5
+  # ofono-git
+  # wlcs
+  # deviceinfo
+  # lomiri-settings-components
+  # lomiri-schemas
+  # persistent-cache-cpp
+  # ayatana-indicator-messages
   lomiri-wallpapers
   # # Layer 2
   # suru-icon-theme-git
