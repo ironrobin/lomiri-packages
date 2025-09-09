@@ -44,15 +44,15 @@ pkgs=(
   properties-cpp
   dbus-test-runner
   qdjango-git
-  buteo-syncfw-qml-git
+  buteo-syncfw-qml
   humanity-icon-theme
   libaccounts-qt5
   qmenumodel
-  geonames-git
+  geonames
   libqofono-qt5
   ofono-git
   wlcs
-  deviceinfo-git
+  deviceinfo
   lomiri-settings-components
   lomiri-schemas
   persistent-cache-cpp

@@ -1,0 +1,58 @@
+# Maintainer: Ivan Semkin (ivan at semkin dot ru)
+
+pkgname=geonames
+_pkgname=geonames
+pkgver=0.3.1
+pkgrel=1
+pkgdesc='Parse and query the geonames database dump'
+url='https://gitlab.com/ubports/development/core/geonames'
+arch=(x86_64 i686 armv7h aarch64)
+license=(LGPL3)
+conflicts=(geonames)
+provides=(geonames)
+makedepends=(git gtk-doc curl)
+source=('https://gitlab.com/ubports/development/core/geonames/-/archive/0.3.1/geonames-0.3.1.tar.gz')
+sha256sums=('SKIP')
+
+BUILDENV+=('!check') # Weird locale issues
+
+# pkgver() {
+#   cd ${_pkgname}
+#   echo "r$(git rev-list --count HEAD).$(git describe --always)"
+# }
+
+prepare() {
+  cd ${_pkgname}-${pkgver}
+  # Fetch and apply Debian patches dynamically
+  local baseurl='https://salsa.debian.org/ubports-team/geonames/-/raw/master/debian/patches'
+  local series_url="$baseurl/series"
+  local patchdir="$srcdir/debian-patches"
+  mkdir -p "$patchdir"
+
+  # Download series file
+  curl -fsSL "$series_url" -o "$patchdir/series"
+
+  # Download and apply each patch listed in series (skip comments/empties)
+  while IFS= read -r p; do
+    [[ -z "$p" || "$p" =~ ^# ]] && continue
+    curl -fsSL "$baseurl/$p" -o "$patchdir/$p"
+    patch -Np1 -i "$patchdir/$p"
+  done < "$patchdir/series"
+}
+
+build() {
+  cd ${_pkgname}-${pkgver}
+  cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_INSTALL_LIBDIR='lib/' .
+  make CMAKE_POLICY_VERSION_MINIMUM=3.5
+}
+
+# check() {
+#   cd ${_pkgname}
+#   make check
+# }
+
+package() {
+  cd ${_pkgname}-${pkgver}
+  make CMAKE_POLICY_VERSION_MINIMUM=3.5 DESTDIR="${pkgdir}/" install
+}
+# vim:set ts=2 sw=2 et:

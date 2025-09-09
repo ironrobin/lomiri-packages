@@ -19,15 +19,12 @@
 **/lomiri-telephony-service/
 **/suru-icon-theme/
 **/lomiri-ui-toolkit/
-**/buteo-syncfw-qml/
 **/libaccounts-qt/
 **/lomiri-download-manager/
 **/libertine/
 **/lomiri-content-hub/
 **/libqtdbusmock/
 **/gsettings-qt/
-**/geonames/
-**/deviceinfo/
 **/repowerd/
 ofono-git/ofono-git/
 ofono-git/ell/

@@ -9,4 +9,9 @@ Runtime dependency (depends): something the program needs when installed/used by
 
 Build-time dependency (makedepends): something that is only needed to compile or generate the package, but isn’t required after installation.
 
-TODO: Every time i start an ayatana / lomiri indicator, lomiri crashes. I think it might have to do with gmenuharness but not sure.
+TODO: move all git packages to tag release packages
+# Exceptions:
+# - qt5pim-git
+# - qtmir-git
+# - qdjango-git (trying to get rid of this)
+# - ofono-git (debian doesn't package ofono)

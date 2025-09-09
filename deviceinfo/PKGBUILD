@@ -1,8 +1,8 @@
 # Maintainer: Furkan Kardame <furkan@fkardame.com>
 
-pkgname=deviceinfo-git
+pkgname=deviceinfo
 _pkgname=deviceinfo
-pkgver=r125.4423aab
+pkgver=0.2.4
 pkgrel=0
 pkgdesc='Device Info for Mir'
 url='https://gitlab.com/ubports/development/core/deviceinfo'
@@ -12,24 +12,23 @@ conflicts=(deviceinfo)
 provides=(deviceinfo)
 depends=()
 makedepends=(git yaml-cpp gtest)
-source=('git+https://gitlab.com/ubports/development/core/deviceinfo.git#branch=main')
+source=('https://gitlab.com/ubports/development/core/deviceinfo/-/archive/0.2.4/deviceinfo-0.2.4.tar.gz')
 sha256sums=('SKIP')
 
-pkgver() {
-  cd ${_pkgname}
- printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
-}
+# pkgver() {
+#   cd ${_pkgname}-${pkgver}
+#  printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+# }
 
 build() {
-   cd ${_pkgname}
+   cd ${_pkgname}-${pkgver}
   mkdir -p build
   cd build
  cmake ../ -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_INSTALL_LIBDIR="lib/" -DCMAKE_INSTALL_SYSCONFDIR="/etc"
   make
-
 }
 
 package() {
-  cd ${_pkgname}/build
+  cd ${_pkgname}-${pkgver}/build
   make DESTDIR="${pkgdir}/" install
 }
