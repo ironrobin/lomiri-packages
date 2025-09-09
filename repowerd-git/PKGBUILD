@@ -9,7 +9,7 @@ arch=("i686" "x86_64" "aarch64")
 url="https://gitlab.com/ubports/development/core/repowerd"
 license=("GPL3")
 depends=("glib2" "systemd" "qt5-base" "deviceinfo" "dbus")
-makedepends=("cmake" "cmake-extras" "gmock")
+makedepends=("yaml-cpp" "cmake" "cmake-extras" "gmock")
 source=("git+https://gitlab.com/ubports/development/core/repowerd.git"
 )
 md5sums=("SKIP"
