@@ -9,7 +9,7 @@ url='https://gitlab.com/ubports/development/core/lib-cpp/dbus-cpp'
 arch=(x86_64 aarch64)
 license=(LGPL3)
 depends=(process-cpp dbus libxml2)
-makedepends=(gtest cmake gmock properties-cpp boost lcov gcovr)
+makedepends=(gtest cmake cmake-extras gmock properties-cpp boost lcov gcovr)
 source=("https://gitlab.com/ubports/development/core/lib-cpp/dbus-cpp/-/archive/5.0.5/dbus-cpp-5.0.5.tar.gz"
         '0001-ironrobin.patch')
 sha256sums=('SKIP'
