@@ -114,6 +114,9 @@ for i in "${pkgs[@]}" ; do
 
   if pacman -Si $PKGNAME &> /dev/null; then
     REPO_VERSION=$(pacman -Si $PKGNAME | grep Version | awk '{print $3}')
+    echo "REPO_VERSION: $REPO_VERSION"
+    echo "VERSION: $VERSION"
+    echo "PKGNAME: $PKGNAME"
     if (( $(vercmp "$VERSION" < "$REPO_VERSION") < 0 )); then
       echo "Package $PKGNAME of version $VERSION is older than the version ($REPO_VERSION) in the $REPONAME repo. Not building."
     elif [ "$REPO_VERSION" == "$VERSION" ]; then
