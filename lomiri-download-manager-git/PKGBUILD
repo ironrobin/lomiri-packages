@@ -11,7 +11,7 @@ license=(LGPL)
 conflicts=(ubuntu-download-manager lomiri-download-manager)
 provides=(lomiri-download-manager)
 depends=(boost dbus-test-runner gmock qt5-base qt5-declarative libnih google-glog clang)
-makedepends=(git doxygen cmake cmake-extras gcovr lcov lomiri-api-git)
+makedepends=(apparmor git doxygen cmake cmake-extras gcovr lcov lomiri-api-git)
 source=('git+https://gitlab.com/ubports/development/core/lomiri-download-manager.git#branch=main')
 sha256sums=('SKIP')
 
