@@ -67,12 +67,12 @@ pkgs=(
   click-git
   libqtdbustest-git
   repowerd-git
-  # # Layer 3
-  # dbus-cpp
-  # libqtdbusmock-git
-  # lomiri-history-service-git
-  # libusermetrics-git
-  # lomiri-api-git
+  # Layer 3
+  dbus-cpp
+  libqtdbusmock-git
+  lomiri-history-service-git
+  libusermetrics-git
+  lomiri-api-git
   # # Layer 4
   # biometryd-git
   # lomiri-download-manager-git
