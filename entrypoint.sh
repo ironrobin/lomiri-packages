@@ -58,15 +58,15 @@ pkgs=(
   persistent-cache-cpp
   ayatana-indicator-messages
   lomiri-wallpapers
-  # # Layer 2
-  # suru-icon-theme-git
-  # hfd-service
-  # mir
-  # process-cpp
-  # telepathy-qt-git
-  # click-git
-  # libqtdbustest-git
-  # repowerd-git
+  # Layer 2
+  suru-icon-theme-git
+  hfd-service
+  mir
+  process-cpp
+  telepathy-qt-git
+  click-git
+  libqtdbustest-git
+  repowerd-git
   # # Layer 3
   # dbus-cpp
   # libqtdbusmock-git
