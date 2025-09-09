@@ -58,42 +58,42 @@ pkgs=(
   persistent-cache-cpp
   ayatana-indicator-messages
   lomiri-wallpapers
-  # Layer 2
-  suru-icon-theme-git
-  hfd-service
-  mir
-  process-cpp
-  telepathy-qt-git
-  click-git
-  libqtdbustest-git
-  repowerd-git
-  # Layer 3
-  dbus-cpp
-  libqtdbusmock-git
-  lomiri-history-service-git
-  libusermetrics-git
-  lomiri-api-git
-  # Layer 4
-  biometryd-git
-  lomiri-download-manager-git
-  lomiri-app-launch-git
-  lomiri-ui-toolkit-git
-  gmenuharness
-  lomiri-thumbnailer
-  lomiri-notifications-git
-  # Layer 5
-  lomiri-url-dispatcher-git
-  # Layer 6
-  libayatana-common-git
-  lomiri-indicator-network
-  lomiri-telephony-service-git
-  lomiri-address-book-service-git
-  lomiri-content-hub-git
-  lomiri-system-settings
-  qtmir-git
-  # Layer 7
-  ayatana-indicator-datetime-git
-  lomiri
+  # # Layer 2
+  # suru-icon-theme-git
+  # hfd-service
+  # mir
+  # process-cpp
+  # telepathy-qt-git
+  # click-git
+  # libqtdbustest-git
+  # repowerd-git
+  # # Layer 3
+  # dbus-cpp
+  # libqtdbusmock-git
+  # lomiri-history-service-git
+  # libusermetrics-git
+  # lomiri-api-git
+  # # Layer 4
+  # biometryd-git
+  # lomiri-download-manager-git
+  # lomiri-app-launch-git
+  # lomiri-ui-toolkit-git
+  # gmenuharness
+  # lomiri-thumbnailer
+  # lomiri-notifications-git
+  # # Layer 5
+  # lomiri-url-dispatcher-git
+  # # Layer 6
+  # libayatana-common-git
+  # lomiri-indicator-network
+  # lomiri-telephony-service-git
+  # lomiri-address-book-service-git
+  # lomiri-content-hub-git
+  # lomiri-system-settings
+  # qtmir-git
+  # # Layer 7
+  # ayatana-indicator-datetime-git
+  # lomiri
   # # Layer 8
   # lomiri-session
 )
@@ -119,8 +119,10 @@ for i in "${pkgs[@]}" ; do
     echo "PKGNAME: $PKGNAME"
     if (( $(vercmp "$VERSION" "$REPO_VERSION") < 0 )); then
       echo "Package $PKGNAME of version $VERSION is older than the version ($REPO_VERSION) in the $REPONAME repo. Not building."
+      wget https://github.com/$repo_full/releases/download/packages/$PKGNAME-$REPO_VERSION-aarch64.pkg.tar.xz
     elif [ "$REPO_VERSION" == "$VERSION" ]; then
       echo "Package $PKGNAME of version $VERSION already exists in the $REPONAME repo. Not building."
+      wget https://github.com/$repo_full/releases/download/packages/$PKGNAME-$REPO_VERSION-aarch64.pkg.tar.xz
     else
       echo "Package $PKGNAME exists but with a different version ($REPO_VERSION) in the $REPONAME repo. Building new version $VERSION."
       sudo -u builduser bash -c 'export MAKEFLAGS=-j$(nproc) && makepkg --sign -s --noconfirm'||status=$?
