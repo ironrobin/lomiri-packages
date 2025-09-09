@@ -93,7 +93,7 @@ pkgs=(
   qtmir-git
   # Layer 7
   ayatana-indicator-datetime-git
-  # lomiri
+  lomiri
   # # Layer 8
   # lomiri-session
 )
