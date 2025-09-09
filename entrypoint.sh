@@ -93,24 +93,39 @@ pkgs=(
   qtmir-git
   # Layer 7
   ayatana-indicator-datetime-git
-  # lomiri
+  lomiri
   # # Layer 8
   # lomiri-session
 )
 
 for i in "${pkgs[@]}" ; do
-	status=13
-	git submodule update --init $i
-	cd $i
+  status=13
+  git submodule update --init $i
+  cd $i
+  REPONAME="$repo_owner-lomiri"
+  PKGNAME=$(basename $i)
 
-	for i in $(sudo -u builduser makepkg --packagelist); do
-		package=$(basename $i)
-		wget https://github.com/$repo_owner/$repo_name/releases/download/packages/$package \
-			&& echo "Warning: $package already built, did you forget to bump the pkgver and/or pkgrel? It will not be rebuilt."
-	done
-	sudo -u builduser bash -c 'export MAKEFLAGS=-j$(nproc) && makepkg --sign -s --noconfirm'||status=$?
+  # Extract version from PKGBUILD
+  PKGVERLINE=$(grep -E '^pkgver=' PKGBUILD)
+  PKGVER="${PKGVERLINE#*=}"
+  PKGRELLINE=$(grep -E '^pkgrel=' PKGBUILD)
+  PKGREL="${PKGRELLINE#*=}"
+  VERSION="${PKGVER}-${PKGREL}"
 
-	# Package already built is fine.
+  if pacman -Si $PKGNAME &> /dev/null; then
+    REPO_VERSION=$(pacman -Si $PKGNAME | grep Version | awk '{print $3}')
+    if (( $(vercmp $VERSION < $REPO_VERSION) < 0 )); then
+      echo "Package $PKGNAME of version $VERSION is older than the version ($REPO_VERSION) in the $REPONAME repo. Not building."
+    elif [ "$REPO_VERSION" == "$VERSION" ]; then
+      echo "Package $PKGNAME of version $VERSION already exists in the $REPONAME repo. Not building."
+    else
+      echo "Package $PKGNAME exists but with a different version ($REPO_VERSION) in the $REPONAME repo. Building new version $VERSION."
+      sudo -u builduser bash -c 'export MAKEFLAGS=-j$(nproc) && makepkg --sign -s --noconfirm'||status=$?
+    fi
+  else
+     echo "Package $PKGNAME does not exist in the $REPONAME repo. Adding it."
+     sudo -u builduser bash -c 'export MAKEFLAGS=-j$(nproc) && makepkg --sign -s --noconfirm'||status=$?
+  fi
 	if [ $status != 13 ]; then
 		exit 1
 	fi
