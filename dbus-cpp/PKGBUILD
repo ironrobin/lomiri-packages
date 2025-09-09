@@ -3,27 +3,27 @@
 
 pkgname=dbus-cpp
 pkgdesc='A header-only dbus-binding leveraging C++-11'
-pkgver=5.0.4
+pkgver=5.0.5
 pkgrel=0
 url='https://gitlab.com/ubports/development/core/lib-cpp/dbus-cpp'
 arch=(x86_64 aarch64)
 license=(LGPL3)
 depends=(process-cpp dbus libxml2)
 makedepends=(cmake gmock properties-cpp boost lcov gcovr)
-source=("https://gitlab.com/ubports/development/core/lib-cpp/dbus-cpp/-/archive/5.0.4/dbus-cpp-5.0.4.tar.gz"
+source=("https://gitlab.com/ubports/development/core/lib-cpp/dbus-cpp/-/archive/5.0.5/dbus-cpp-5.0.5.tar.gz"
         '0001-ironrobin.patch')
-sha256sums=('ec0b526fcfa82a0969b6092eddded52a1287209e7613d0e409107042207bcdc5'
+sha256sums=('SKIP'
             'SKIP')
 
 prepare() {
-  cd "${srcdir}/dbus-cpp-5.0.4"
+  cd "${srcdir}/${pkgname}-${pkgver}"
 
-  patch -Np1 -i "$srcdir/0001-ironrobin.patch"
+  # patch -Np1 -i "$srcdir/0001-ironrobin.patch"
 }
 
 build() {
-  mkdir -p "${srcdir}/dbus-cpp-5.0.4/build"
-  cd "${srcdir}/dbus-cpp-5.0.4/build"
+  mkdir -p "${srcdir}/${pkgname}-${pkgver}/build"
+  cd "${srcdir}/${pkgname}-${pkgver}/build"
 
   CXXFLAGS=-Wno-error=deprecated-copy 
   cmake -DCMAKE_INSTALL_LIBDIR=/usr/lib -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DDBUS_CPP_VERSION_MAJOR=5 -DDBUS_CPP_VERSION_MINOR=0 -DDBUS_CPP_VERSION_PATCH=0 ..
@@ -31,7 +31,7 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/dbus-cpp-5.0.4/build"
+  cd "${srcdir}/${pkgname}-${pkgver}/build"
 
   make DESTDIR="${pkgdir}/" install
 }
