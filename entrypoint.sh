@@ -98,7 +98,6 @@ pkgs=(
   # lomiri-session
 )
 
-
 for i in "${pkgs[@]}" ; do
   status=13
   git submodule update --init $i
