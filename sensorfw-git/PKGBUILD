@@ -4,13 +4,13 @@ _pkgname=sensorfw
 pkgname=$_pkgname-git
 _branch=xenial_-_edge
 pkgver=0.11.2.r30.g65080cb
-pkgrel=2
+pkgrel=3
 pkgdesc="SensorFw"
 arch=('aarch64')
 url="https://github.com/ubports/$_pkgname"
 license=('GPL')
 depends=('qt5-es2-base' 'systemd-libs' 'graphviz')
-makedepends=('git' 'cmake' 'doxygen' 'deviceinfo-git')
+makedepends=('git' 'cmake' 'doxygen' 'deviceinfo')
 source=("git+$url.git#branch=$_branch")
 md5sums=('SKIP')
 

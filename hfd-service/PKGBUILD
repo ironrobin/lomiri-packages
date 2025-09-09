@@ -3,13 +3,13 @@
 pkgname="hfd-service"
 _pkgname="hfd-service"
 pkgver=0.2.3
-pkgrel=0
+pkgrel=1
 pkgdesc="Human Feedback Service for Lomiri UI"
 arch=("i686" "x86_64" "aarch64")
 url="https://github.com/ubports/hfd-service"
 license=("GPL3")
 depends=(qt5-base qt5-declarative qt5-feedback)
-makedepends=("accountsservice" "deviceinfo-git" "cmake" "cmake-extras" "git")
+makedepends=("accountsservice" "deviceinfo" "cmake" "cmake-extras" "git")
 source=("https://gitlab.com/ubports/development/core/hfd-service/-/archive/0.2.3/hfd-service-0.2.3.tar.gz")
 md5sums=("SKIP")
 options=("!emptydirs")
