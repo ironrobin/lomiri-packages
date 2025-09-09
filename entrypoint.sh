@@ -119,10 +119,10 @@ for i in "${pkgs[@]}" ; do
     echo "PKGNAME: $PKGNAME"
     if (( $(vercmp "$VERSION" "$REPO_VERSION") < 0 )); then
       echo "Package $PKGNAME of version $VERSION is older than the version ($REPO_VERSION) in the $REPONAME repo. Not building."
-      sudo pacman -Sw $PKGNAME --noconfirm --cachedir ./
+      sudo pacman -Swdd $PKGNAME --noconfirm --cachedir ./
     elif [ "$REPO_VERSION" == "$VERSION" ]; then
       echo "Package $PKGNAME of version $VERSION already exists in the $REPONAME repo. Not building."
-      sudo pacman -Sw $PKGNAME --noconfirm --cachedir ./
+      sudo pacman -Swdd $PKGNAME --noconfirm --cachedir ./
     else
       echo "Package $PKGNAME exists but with a different version ($REPO_VERSION) in the $REPONAME repo. Building new version $VERSION."
       sudo -u builduser bash -c 'export MAKEFLAGS=-j$(nproc) && makepkg --sign -s --noconfirm'||status=$?
