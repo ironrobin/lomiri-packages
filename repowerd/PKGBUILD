@@ -1,0 +1,69 @@
+# Maintainer: Furkan Kardame <furkan@fkardame.com>
+
+pkgname="repowerd"
+_pkgname="repowerd"
+pkgver=2023.07
+pkgrel=1
+pkgdesc="Repowerd, power daemon for Lomiri UI"
+arch=("i686" "x86_64" "aarch64")
+url="https://gitlab.com/ubports/development/core/repowerd"
+license=("GPL3")
+depends=("glib2" "systemd" "qt5-base" "deviceinfo" "dbus")
+makedepends=("yaml-cpp" "cmake" "cmake-extras" "gmock" "git")
+source=("https://gitlab.com/ubports/development/core/repowerd/-/archive/2023.07/repowerd-2023.07.tar.gz"
+)
+md5sums=("SKIP"
+)
+options=("!emptydirs")
+provides=("${_pkgname}")
+conflicts=("${_pkgname}")
+
+# pkgver() {
+#   cd ${_pkgname}
+#   printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+# }
+
+prepare() {
+  cd ${_pkgname}-${pkgver}
+  # Fetch and apply Debian/UBports patches from Salsa
+  local debsrc="${srcdir}/repowerd-debian"
+  if [[ ! -d "${debsrc}" ]]; then
+    git clone --depth 1 --filter=blob:none https://salsa.debian.org/ubports-team/repowerd.git "${debsrc}"
+  else
+    git -C "${debsrc}" fetch --depth 1 origin
+    git -C "${debsrc}" reset --hard origin/master
+  fi
+
+  if [[ -f "${debsrc}/debian/patches/series" ]]; then
+    echo "Applying Debian patches from series file"
+    # Apply in listed order; ignore comments/blank lines
+    while read -r line; do
+      [[ -z "$line" || "$line" =~ ^# ]] && continue
+      patch_file="${debsrc}/debian/patches/${line%% *}"
+      echo "  -> Applying ${line%% *}"
+      patch -p1 -N -i "${patch_file}"
+    done < "${debsrc}/debian/patches/series"
+  else
+    echo "No debian/patches/series found in ${debsrc}" >&2
+  fi
+}
+
+build()
+{
+    cd ${_pkgname}-${pkgver}
+    cmake -DREPOWERD_ENABLE_BINDER=OFF \
+      -DREPOWERD_ENABLE_HYBRIS=OFF \
+      -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+      -DCMAKE_INSTALL_PREFIX=/usr \
+      -DCMAKE_INSTALL_LIBEXECDIR=lib \
+      -DCMAKE_INSTALL_SYSCONFDIR=/etc \
+      -DREPOWERD_BUILD_TESTS=OFF
+    make
+}
+
+package()
+{
+    cd ${_pkgname}-${pkgver}
+    make DESTDIR="${pkgdir}" install
+    mv "${pkgdir}/usr/sbin" "${pkgdir}/usr/bin"
+}

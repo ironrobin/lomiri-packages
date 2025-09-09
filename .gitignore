@@ -8,16 +8,13 @@
 **/accountsservice/
 **/qtpim/
 **/telepathy-qt/
-**/click/
 **/qdjango/
 **/libusermetrics/
-**/libqtdbustest/
 **/lomiri-api/
 **/lomiri-app-launch/
 **/lomiri-url-dispatcher/
 **/lomiri-notifications/
 **/lomiri-telephony-service/
-**/suru-icon-theme/
 **/lomiri-ui-toolkit/
 **/libaccounts-qt/
 **/lomiri-download-manager/
@@ -25,7 +22,6 @@
 **/lomiri-content-hub/
 **/libqtdbusmock/
 **/gsettings-qt/
-**/repowerd/
 ofono-git/ofono-git/
 ofono-git/ell/
 **/qtmir/

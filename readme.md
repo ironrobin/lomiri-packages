@@ -15,3 +15,4 @@ TODO: move all git packages to tag release packages
 # - qtmir-git
 # - qdjango-git (trying to get rid of this)
 # - ofono-git (debian doesn't package ofono)
+# - telepathy-qt (not from ubports)
