@@ -26,11 +26,11 @@ echo "checking out root key"
 gpg --homedir /root/.gnupg --list-keys
 
 # add the ironrobin-lomiri repo to the end of /etc/pacman.conf
-# echo '[ironrobin-lomiri]' >> /etc/pacman.conf
-# echo 'Server = https://github.com/ironrobin/lomiri-packages/releases/download/packages' >> /etc/pacman.conf
+echo '[ironrobin-lomiri]' >> /etc/pacman.conf
+echo 'Server = https://github.com/ironrobin/lomiri-packages/releases/download/packages' >> /etc/pacman.conf
 
-# sudo pacman-key --recv-keys 6ED02751500A833A
-# sudo pacman-key --lsign-key 6ED02751500A833A
+sudo pacman-key --recv-keys 6ED02751500A833A
+sudo pacman-key --lsign-key 6ED02751500A833A
 
 sudo pacman -Sy
 sudo pacman -S base-devel --noconfirm --needed
