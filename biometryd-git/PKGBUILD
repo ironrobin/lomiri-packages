@@ -24,7 +24,7 @@ makedepends=(
   libelf
   apparmor
   process-cpp
-  gtest
+  properties-cpp
 )
 optdepends=('apparmor: confinement support')
 source=("git+https://gitlab.com/ubports/development/core/biometryd.git#branch=main"
