@@ -66,7 +66,7 @@ pkgs=(
   telepathy-qt-git
   click
   libqtdbustest
-  repowerd-git
+  repowerd
   # # Layer 3
   # dbus-cpp
   # libqtdbusmock-git
