@@ -32,8 +32,8 @@ gpg --homedir /root/.gnupg --list-keys
 # sudo pacman-key --recv-keys 6ED02751500A833A
 # sudo pacman-key --lsign-key 6ED02751500A833A
 
-# sudo pacman -Sy
-# sudo pacman -S base-devel --noconfirm --needed
+sudo pacman -Sy
+sudo pacman -S base-devel --noconfirm --needed
 
 # Removed accountsservice-ubuntu from layer 1
 
