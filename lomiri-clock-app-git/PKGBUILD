@@ -3,12 +3,12 @@
 pkgname=lomiri-clock-app-git
 _pkgname=clock-app
 pkgver=r2857.acbfa82b
-pkgrel=1
+pkgrel=2
 pkgdesc="Lomiri clock app"
 arch=('x86_64' 'armv7' 'aarch64')
 url="https://gitlab.com/ubports/apps/clock-app"
 license=('GPL3')
-depends=(qt5-base qt5-declarative lomiri-ui-toolkit-git u1db-qt libusermetrics-git)
+depends=(qt5-base qt5-declarative lomiri-ui-toolkit-git u1db-qt libusermetrics)
 makedepends=('git' 'cmake' 'intltool')
 provides=(lomiri-clock-app)
 conflicts=(lomiri-clock-app)

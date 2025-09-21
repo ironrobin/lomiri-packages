@@ -3,14 +3,14 @@
 pkgname=unity-notifications-git
 _pkgname=unity-notifications
 pkgver=r472.ca59119
-pkgrel=1
+pkgrel=2
 pkgdesc='This project provides an implementation of the Free Desktop Notification server for Unity'
 url='https://github.com/ubports/unity-notifications'
 arch=(x86_64 i686 armv7h aarch64)
 license=(LGPL GPL)
 conflicts=(unity-notifications)
 provides=(unity-notifications)
-depends=(qt5-base libqtdbusmock-git unity-api-git)
+depends=(qt5-base libqtdbusmock unity-api-git)
 makedepends=(git)
 checkdepends=()
 source=('git+https://github.com/ubports/unity-notifications.git'

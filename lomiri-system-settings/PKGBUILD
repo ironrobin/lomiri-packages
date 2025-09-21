@@ -3,7 +3,7 @@
 pkgname=lomiri-system-settings
 _pkgname=lomiri-system-settings
 pkgver=1.3.2
-pkgrel=2
+pkgrel=3
 pkgdesc='System Settings application for Unity8'
 url='https://gitlab.com/ubports/development/core/lomiri-system-settings'
 arch=(x86_64 i686 armv7h aarch64)
@@ -11,7 +11,7 @@ license=(GPL3)
 conflicts=(system-settings)
 provides=(system-settings)
 # No content-hub-git needed for mobile
-depends=(click gnome-desktop lomiri-app-launch-git geonames libqtdbusmock-git lomiri-ui-toolkit-git gsettings-qt accountsservice upower suru-icon-theme qmenumodel libqofono-qt5)
+depends=(click gnome-desktop lomiri-app-launch-git geonames libqtdbusmock lomiri-ui-toolkit-git gsettings-qt accountsservice upower suru-icon-theme qmenumodel libqofono-qt5)
 makedepends=(git cmake intltool)
 checkdepends=(xorg-server-xvfb)
 source=('https://gitlab.com/ubports/development/core/lomiri-system-settings/-/archive/1.3.2/lomiri-system-settings-1.3.2.tar.gz'

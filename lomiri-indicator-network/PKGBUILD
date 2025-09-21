@@ -3,14 +3,14 @@
 pkgname=lomiri-indicator-network
 _pkgname=lomiri-indicator-network
 pkgver=1.1.2
-pkgrel=1
+pkgrel=2
 pkgdesc='Network indicator'
 url='https://gitlab.com/ubports/development/core/lomiri-indicator-network'
 arch=(x86_64 i686 armv7h aarch64)
 license=(LGPL3 GPL3)
 conflicts=(indicator-network)
 provides=(indicator-network)
-depends=(lcov gcovr gsettings-qt ofono-git lomiri-url-dispatcher-git libqofono-qt5 libqtdbustest libqtdbusmock-git gmenuharness)
+depends=(lcov gcovr gsettings-qt ofono-git lomiri-url-dispatcher-git libqofono-qt5 libqtdbustest libqtdbusmock gmenuharness)
 makedepends=(git cmake cmake-extras doxygen)
 checkdepends=()
 source=(

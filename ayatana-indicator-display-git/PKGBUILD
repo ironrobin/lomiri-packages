@@ -3,12 +3,12 @@
 pkgname="ayatana-indicator-display-git"
 _pkgname="ayatana-indicator-display"
 pkgver="0.6.1"
-pkgrel="1"
+pkgrel="2"
 pkgdesc="Ayatana Indicator that helps with display rotate"
 arch=("i686" "x86_64" "aarch64")
 url="https://github.com/AyatanaIndicators"
 license=("GPL3")
-depends=("glib2" "accountsservice" "hicolor-icon-theme" "dconf" "systemd" "qt5-base" "gmock" "libqtdbustest" "libqtdbusmock-git")
+depends=("glib2" "accountsservice" "hicolor-icon-theme" "dconf" "systemd" "qt5-base" "gmock" "libqtdbustest" "libqtdbusmock")
 makedepends=("cmake-extras" "dbus" "intltool" "properties-cpp" "git" "cmake")
 optdepends=("mate-ayatana-indicator-applet")
 source=("git+https://github.com/AyatanaIndicators/${_pkgname}.git")
