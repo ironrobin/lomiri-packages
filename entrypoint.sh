@@ -69,10 +69,10 @@ pkgs=(
   repowerd
   # Layer 3
   dbus-cpp
-  libqtdbusmock-git
-  lomiri-history-service-git
-  libusermetrics-git
-  lomiri-api-git
+  libqtdbusmock
+  lomiri-history-service
+  libusermetrics
+  lomiri-api
   # Layer 4
   biometryd-git
   lomiri-download-manager-git
