@@ -75,12 +75,12 @@ pkgs=(
   lomiri-api
   # Layer 4
   biometryd-git
-  lomiri-download-manager-git
-  lomiri-app-launch-git
-  lomiri-ui-toolkit-git
+  lomiri-download-manager
+  lomiri-app-launch
+  lomiri-ui-toolkit
   gmenuharness
   lomiri-thumbnailer
-  lomiri-notifications-git
+  lomiri-notifications
   # Layer 5
   lomiri-url-dispatcher-git
   # Layer 6
