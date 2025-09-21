@@ -10,7 +10,7 @@ arch=(x86_64 i686 armv7h aarch64)
 license=(LGPL)
 conflicts=(qtmir)
 provides=(qtmir)
-depends=(qt5-base qt5-quickcontrols qt5-sensors mir process-cpp lomiri-app-launch-git gsettings-qt libqtdbustest libqtdbusmock lomiri-url-dispatcher-git glm valgrind)
+depends=(qt5-base qt5-quickcontrols qt5-sensors mir process-cpp lomiri-app-launch-git gsettings-qt libqtdbustest libqtdbusmock-git lomiri-url-dispatcher-git glm valgrind)
 makedepends=(git cmake cmake-extras gtest)
 source=('git+https://gitlab.com/ubports/development/core/qtmir.git#commit=ea2f4774b1a109fec3e22a021fb21ff60da80626'
         'qtmir-debian-pkg.tar.gz::https://salsa.debian.org/ubports-team/qtmir/-/archive/debian/0.8.0_git20250407.ea2f477-2/qtmir-debian-0.8.0_git20250407.ea2f477-2.tar.gz'
