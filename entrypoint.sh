@@ -81,8 +81,8 @@ pkgs=(
   gmenuharness
   lomiri-thumbnailer
   lomiri-notifications-git
-  # # Layer 5
-  # lomiri-url-dispatcher-git
+  # Layer 5
+  lomiri-url-dispatcher
   # # Layer 6
   # libayatana-common-git
   # lomiri-indicator-network
