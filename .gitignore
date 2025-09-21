@@ -9,8 +9,6 @@
 **/qtpim/
 **/telepathy-qt/
 **/qdjango/
-**/libusermetrics/
-**/lomiri-api/
 **/lomiri-app-launch/
 **/lomiri-url-dispatcher/
 **/lomiri-notifications/
@@ -20,7 +18,6 @@
 **/lomiri-download-manager/
 **/libertine/
 **/lomiri-content-hub/
-**/libqtdbusmock/
 **/gsettings-qt/
 ofono-git/ofono-git/
 ofono-git/ell/
@@ -29,5 +26,4 @@ ofono-git/ell/
 **/biometryd/
 **/libayatana-common/
 **/ayatana-indicator-datetime/
-**/lomiri-history-service/
 **/lomiri-address-book-service/

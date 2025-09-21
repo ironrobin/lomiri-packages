@@ -1,0 +1,46 @@
+# Maintainer: Ivan Semkin (ivan at semkin dot ru)
+
+pkgname=libusermetrics
+_pkgname=libusermetrics
+pkgver=1.3.3
+pkgrel=0
+pkgdesc='Library for exporting anonymous metrics about users'
+url='https://gitlab.com/ubports/development/core/libusermetrics'
+arch=(x86_64 i686 armv7h aarch64)
+license=(LGPL3 LGPL GPL)
+conflicts=(libusermetrics)
+provides=(libusermetrics)
+depends=(qt5-base qt5-xmlpatterns gsettings-qt apparmor click qdjango-git libqtdbustest)
+makedepends=(git cmake cmake-extras doxygen intltool)
+source=('https://gitlab.com/ubports/development/core/libusermetrics/-/archive/1.3.3/libusermetrics-1.3.3.tar.gz')
+sha256sums=('SKIP')
+
+BUILDENV+=('!check') # Some tests are broken
+
+# pkgver() {
+#   cd ${_pkgname}
+#   echo "$(git rev-list --count HEAD).$(git rev-parse --short HEAD)"
+# }
+
+prepare() {
+  cd ${_pkgname}-$pkgver
+  # git checkout bionic
+}
+
+build() {
+  cd ${_pkgname}-$pkgver
+  cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_INSTALL_LIBDIR="lib/" -DCMAKE_INSTALL_LIBEXECDIR="lib/" .
+  make -j$(nproc)
+}
+
+# Tests working, but takes too long
+# check() {
+#   cd ${_pkgname}
+#   make ARGS+="--output-on-failure" test
+# }
+
+package() {
+  cd ${_pkgname}-$pkgver
+  make DESTDIR="${pkgdir}/" install
+}
+# vim:set ts=2 sw=2 et:

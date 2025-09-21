@@ -1,0 +1,43 @@
+# Maintainer: Ivan Semkin (ivan at semkin dot ru)
+
+pkgname=lomiri-api
+_pkgname=lomiri-api
+pkgver=0.2.2
+pkgrel=0
+pkgdesc='API for Lomiri shell integration'
+url='https://gitlab.com/ubports/development/core/lomiri-api'
+arch=(x86_64 i686 armv7h aarch64)
+license=(LGPL3)
+conflicts=(lomiri-api)
+provides=(lomiri-api)
+depends=(qt5-quickcontrols)
+makedepends=(git cmake cppcheck graphviz libqtdbustest cmake-extras)
+source=('https://gitlab.com/ubports/development/core/lomiri-api/-/archive/0.2.2/lomiri-api-0.2.2.tar.gz')
+sha256sums=('SKIP')
+
+BUILDENV+=('!check') # Some tests are broken
+
+# pkgver() {
+#   cd ${_pkgname}
+#   echo "r$(git rev-list --count HEAD).$(git describe --always)" | sed 's/\([^-]*-g\)/r\1/;s/-/./g'
+# }
+
+build() {
+  cd ${_pkgname}-${pkgver}
+  mkdir -p build
+  cd build
+  cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_INSTALL_LIBDIR="lib/" ..
+  make -j8
+}
+
+check() {
+  cd ${_pkgname}-${pkgver}/build
+  make ARGS+="--output-on-failure" test
+}
+
+# Provides lomiri-shell-notification
+package() {
+  cd ${_pkgname}-${pkgver}/build
+  make DESTDIR="${pkgdir}/" install
+}
+# vim:set ts=2 sw=2 et:
