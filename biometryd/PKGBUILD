@@ -1,11 +1,11 @@
 # Maintainer: You <you@example.com>
-pkgname=biometryd-git
+pkgname=biometryd
 _pkgname=biometryd
-pkgver=r263.0.3.2
+pkgver=0.3.2
 pkgrel=0
 pkgdesc="Biometric mediation/aggregation daemon + QML bindings for Lomiri (UBports)"
 arch=('x86_64' 'aarch64' 'armv7h')
-url="https://salsa.debian.org/ubports-team/biometryd"
+url="https://gitlab.com/ubports/development/core/biometryd/-/archive/0.3.2/biometryd-0.3.2.tar.gz"
 license=('GPL3')
 depends=(
   dbus
@@ -36,11 +36,11 @@ sha256sums=('SKIP'
             'SKIP'
 )
 
-pkgver() {
-  cd ${_pkgname}
-  ver="r$(git rev-list --count HEAD).$(git describe --always)"
-  echo "${ver//-/_}"            # only: hyphens → underscores
-}
+# pkgver() {
+#   cd ${_pkgname}
+#   ver="r$(git rev-list --count HEAD).$(git describe --always)"
+#   echo "${ver//-/_}"            # only: hyphens → underscores
+# }
 
 prepare() {
   cd "${srcdir}/${_pkgname}"
@@ -62,7 +62,7 @@ check() {
 }
 
 package() {
-  cd "$srcdir/${_pkgname}"
+  cd "$srcdir/${_pkgname-}"
   DESTDIR="$pkgdir" cmake --install build
 
   # License
