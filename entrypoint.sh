@@ -83,13 +83,14 @@ pkgs=(
   lomiri-notifications
   # Layer 5
   lomiri-url-dispatcher-git
-  # # Layer 6
-  # libayatana-common-git
-  # lomiri-indicator-network
-  # lomiri-telephony-service-git
-  # lomiri-address-book-service-git
-  # lomiri-system-settings
-  # qtmir-git
+  # Layer 6
+  libayatana-common-git
+  lomiri-indicator-network
+  lomiri-telephony-service-git
+  lomiri-address-book-service-git
+  lomiri-system-settings
+  lomiri-content-hub-git
+  qtmir-git
   # # Layer 7
   # ayatana-indicator-datetime-git
   # lomiri
