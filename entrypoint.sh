@@ -75,24 +75,24 @@ pkgs=(
   lomiri-api
   # Layer 4
   biometryd
-  lomiri-download-manager
+  lomiri-download-manager-git
   lomiri-app-launch
   lomiri-ui-toolkit
   gmenuharness
   lomiri-thumbnailer
   lomiri-notifications
   # Layer 5
-  lomiri-url-dispatcher-git
-  # Layer 6
-  libayatana-common-git
-  lomiri-indicator-network
-  lomiri-telephony-service-git
-  lomiri-address-book-service-git
-  lomiri-system-settings
-  qtmir-git
-  # Layer 7
-  ayatana-indicator-datetime-git
-  lomiri
+  # lomiri-url-dispatcher-git
+  # # Layer 6
+  # libayatana-common-git
+  # lomiri-indicator-network
+  # lomiri-telephony-service-git
+  # lomiri-address-book-service-git
+  # lomiri-system-settings
+  # qtmir-git
+  # # Layer 7
+  # ayatana-indicator-datetime-git
+  # lomiri
   # Layer 8
   # lomiri-session
 )
