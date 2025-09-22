@@ -36,7 +36,7 @@ sudo pacman -Sy
 sudo pacman -S base-devel --noconfirm --needed
 
 # Removed accountsservice-ubuntu from layer 1
-
+# no content-hub. needed for mobile
 pkgs=(
   # Layer 1
   telepathy-farstream
@@ -88,7 +88,6 @@ pkgs=(
   lomiri-indicator-network
   lomiri-telephony-service-git
   lomiri-address-book-service-git
-  lomiri-content-hub-git
   lomiri-system-settings
   qtmir-git
   # Layer 7
