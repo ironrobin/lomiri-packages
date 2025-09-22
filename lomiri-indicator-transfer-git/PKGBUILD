@@ -3,12 +3,12 @@
 pkgname="lomiri-indicator-transfer-git"
 _pkgname="indicator-transfer"
 pkgver=git_r437
-pkgrel=1
+pkgrel=2
 pkgdesc="Lomiri Transfer Indicator"
 arch=("i686" "x86_64" "aarch64")
 url="https://github.com/ubports/indicator-transfer"
 license=("GPL2" "GPL3")
-depends=("systemd" "libnotify" "dconf" "lomiri-app-launch-git")
+depends=("systemd" "libnotify" "dconf" "lomiri-app-launch")
 makedepends=("cmake" "cmake-extras" "intltool" "glib2" "dbus" "debianutils" "properties-cpp" "click")
 source=("git+https://github.com/ubports/${_pkgname}.git"
         "fix-systemd.patch")

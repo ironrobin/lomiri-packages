@@ -3,12 +3,12 @@
 pkgname=lomiri-terminal-app-git
 _pkgname=terminal-app
 pkgver=r882.4f574e1
-pkgrel=1
+pkgrel=2
 pkgdesc="Lomiri terminal app"
 arch=('x86_64' 'armv7' 'aarch64')
 url="https://gitlab.com/ubports/apps/terminal-app"
 license=('GPL3')
-depends=(qt5-base qt5-declarative lomiri-ui-toolkit-git lomiri-ui-extras-git)
+depends=(qt5-base qt5-declarative lomiri-ui-toolkit lomiri-ui-extras-git)
 provides=(lomiri-terminal-app qmltermwidget)
 conflicts=(lomiri-terminal-app qmltermwidget)
 makedepends=('git' 'cmake' 'intltool')

@@ -3,12 +3,12 @@
 pkgname=lomiri-music-app-git
 _pkgname=music-app
 pkgver=r816.e0af942
-pkgrel=6
+pkgrel=7
 pkgdesc="Lomiri music app"
 arch=('x86_64' 'armv7' 'aarch64')
 url="https://gitlab.com/ubports/apps/music-app"
 license=('GPL3')
-depends=(qt5-base qt5-declarative lomiri-ui-toolkit-git mediascanner2-git)
+depends=(qt5-base qt5-declarative lomiri-ui-toolkit mediascanner2-git)
 provides=(lomiri-music-app)
 conflicts=(lomiri-music-app)
 makedepends=('git' 'cmake' 'intltool')

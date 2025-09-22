@@ -4,14 +4,14 @@ pkgbase=lomiri-url-dispatcher
 pkgname=(lomiri-url-dispatcher-git lomiri-url-dispatcher-gui-git)
 _pkgname=lomiri-url-dispatcher
 pkgver=r1031.0.1.4.r10.gf763aac
-pkgrel=1
+pkgrel=2
 pkgdesc='Service to allow sending of URLs and get handlers started'
 url='https://gitlab.com/ubports/development/core/lomiri-url-dispatcher'
 arch=(x86_64 i686 armv7h aarch64)
 license=(LGPL)
 conflicts=(url-dispatcher)
 provides=(url-dispatcher)
-depends=(lomiri-app-launch-git intltool apparmor)
+depends=(lomiri-app-launch intltool apparmor)
 makedepends=(glib2-devel glib2 git cmake cmake-extras dbus-test-runner lcov gcovr gmock)
 checkdepends=(python-testtools python-nose python-dbusmock)
 source=('git+https://gitlab.com/ubports/development/core/lomiri-url-dispatcher#branch=main')

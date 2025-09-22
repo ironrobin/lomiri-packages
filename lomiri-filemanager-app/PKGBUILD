@@ -3,14 +3,14 @@
 pkgname=lomiri-filemanager-app-git
 _pkgname=filemanager-app
 pkgver=r2395.ea63772
-pkgrel=1
+pkgrel=2
 pkgdesc="Lomiri filemanager app"
 arch=('x86_64' 'armv7' 'aarch64')
 url="https://gitlab.com/ubports/apps/filemanager-app"
 license=('GPL3')
 provides=(lomiri-filemanager-app)
 conflicts=(lomiri-filemanager-app)
-depends=(qt5-base qt5-declarative lomiri-ui-toolkit-git taglib pam smbclient lomiri-terminal-app)
+depends=(qt5-base qt5-declarative lomiri-ui-toolkit taglib pam smbclient lomiri-terminal-app)
 makedepends=('git' 'cmake' 'intltool')
 source=('git+https://gitlab.com/ubports/apps/filemanager-app.git'
         '0001-Use-pamauth-from-terminal-app.patch')

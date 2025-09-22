@@ -3,12 +3,12 @@
 pkgname=camera-app-git
 _pkgname=camera-app
 pkgver=r2484.0f4846f
-pkgrel=2
+pkgrel=3
 pkgdesc="Camera application"
 arch=('x86_64' 'armv7' 'aarch64')
 url="https://gitlab.com/ubports/apps/camera-app"
 license=('GPL3')
-depends=(qt5-base qt5-multimedia qt5-quickcontrols2 exiv2 lomiri-ui-toolkit-git
+depends=(qt5-base qt5-multimedia qt5-quickcontrols2 exiv2 lomiri-ui-toolkit
          libusermetrics unity-action-api-git gst-plugins-bad gst-plugins-bad-libs) 
 makedepends=('git' 'cmake' 'extra-cmake-modules' 'intltool')
 source=("git+$url.git"
