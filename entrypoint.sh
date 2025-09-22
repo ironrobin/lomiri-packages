@@ -95,7 +95,7 @@ pkgs=(
   ayatana-indicator-datetime-git
   lomiri
   # Layer 8
-  # lomiri-session
+  lomiri-session
 )
 
 for i in "${pkgs[@]}" ; do
