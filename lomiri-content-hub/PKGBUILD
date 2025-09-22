@@ -34,7 +34,7 @@ build() {
   cd ${_pkgname}-${pkgver}
   mkdir -p /tmp/runtime-builduser
   cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_INSTALL_LIBDIR="lib/" -DCMAKE_INSTALL_LIBEXECDIR="lib/" -DENABLE_TESTS=off .
-  XDG_RUNTIME_DIR=/tmp/runtime-builduser make -j8
+  XDG_RUNTIME_DIR=/tmp/runtime-builduser make
 }
 
 # check() {
