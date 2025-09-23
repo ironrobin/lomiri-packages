@@ -1,6 +1,6 @@
 # Maintainer: Ivan Semkin (ivan at semkin dot ru)
 
-pkgname=lomiri-content-hub-git
+pkgname=lomiri-content-hub
 _pkgname=lomiri-content-hub
 pkgver=2.1.0
 pkgrel=0
@@ -34,7 +34,7 @@ build() {
   cd ${_pkgname}-$pkgver
   mkdir -p /tmp/runtime-builduser
   cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_INSTALL_LIBDIR="lib/" -DCMAKE_INSTALL_LIBEXECDIR="lib/" -DENABLE_TESTS=off .
-  XDG_RUNTIME_DIR=/tmp/runtime-builduser make
+  XDG_RUNTIME_DIR=/tmp/runtime-builduser make -j8
 }
 
 # check() {

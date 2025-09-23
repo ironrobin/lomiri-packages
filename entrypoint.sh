@@ -88,7 +88,7 @@ pkgs=(
   lomiri-indicator-network
   lomiri-telephony-service
   lomiri-system-settings
-  lomiri-content-hub
+  # lomiri-content-hub
   qtmir-git
   # Layer 7
   # ayatana-indicator-datetime-git
