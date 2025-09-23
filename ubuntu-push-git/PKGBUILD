@@ -1,7 +1,7 @@
 pkgname=ubuntu-push-git
 _pkgname=ubuntu-push
 pkgver=r2436.da470db
-pkgrel=1
+pkgrel=2
 pkgdesc="Protocol, client, and development code for Ubuntu Touch push notifications"
 arch=('x86_64' 'aarch64')
 url="https://github.com/ubports/ubuntu-push"

@@ -3,7 +3,7 @@
 pkgname="libayatana-common-git"
 _pkgname="libayatana-common"
 pkgver=git_r236
-pkgrel=1
+pkgrel=2
 pkgdesc="Ayatana shared library for common functions"
 arch=("i686" "x86_64" "aarch64")
 url="https://github.com/AyatanaIndicators/libayatana-common"

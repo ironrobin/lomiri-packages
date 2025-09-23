@@ -3,7 +3,7 @@
 pkgname="ayatana-indicator-power-git"
 _pkgname="ayatana-indicator-power"
 pkgver=git_r1057
-pkgrel=3
+pkgrel=4
 pkgdesc="Ayatana Indicator showing power state"
 arch=("i686" "x86_64" "aarch64")
 url="https://github.com/AyatanaIndicators"

@@ -3,7 +3,7 @@
 pkgname=lomiri-telephony-service-git
 _pkgname=lomiri-telephony-service
 pkgver=r4983.0.6.1_16_gd4188be8
-pkgrel=3
+pkgrel=4
 pkgdesc='Lomiri Telephony Service is a backend dispatcher service for various mobilephone related operations.'
 url='https://gitlab.com/ubports/development/core/lomiri-telephony-service'
 arch=(x86_64 i686 armv7h aarch64)

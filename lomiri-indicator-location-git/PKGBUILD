@@ -3,7 +3,7 @@
 pkgname="lomiri-indicator-location-git"
 _pkgname="indicator-location"
 pkgver=git_r444
-pkgrel=2
+pkgrel=3
 pkgdesc="Lomiri Location Indicator"
 arch=("i686" "x86_64" "aarch64")
 url="https://github.com/ubports/indicator-location"

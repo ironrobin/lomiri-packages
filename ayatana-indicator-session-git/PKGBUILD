@@ -3,7 +3,7 @@
 pkgname="ayatana-indicator-session-git"
 _pkgname="ayatana-indicator-session"
 pkgver=git_r2492
-pkgrel=1
+pkgrel=2
 pkgdesc="Ayatana Indicator showing session management, status and user switching"
 arch=("i686" "x86_64" "aarch64")
 url="https://github.com/AyatanaIndicators"
