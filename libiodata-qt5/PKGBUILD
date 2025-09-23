@@ -1,0 +1,35 @@
+pkgname=libiodata-qt5
+pkgver=0.19.14
+pkgrel=1
+pkgdesc="Qt5 helper library for structured data storage used by timed"
+arch=('x86_64' 'aarch64' 'armv7h')
+url="https://github.com/sailfishos/libiodata"
+license=('LGPL-2.1-only')
+depends=('qt5-base' 'libxcrypt')
+makedepends=('pkgconf' 'qt5-base' 'flex' 'bison')
+source=("${url}/archive/refs/tags/${pkgver}.tar.gz")
+sha256sums=('d141e2f4f9002d3affc503ed73697d0cd4f1c236a633f09f61ac18e03b52d553')
+
+prepare() {
+  cd "libiodata-${pkgver}"
+
+  # Skip the upstream test harness, it expects Sailfish-specific tooling
+  sed -i 's/ tests//' root.pro
+}
+
+build() {
+  cd "libiodata-${pkgver}"
+
+  export IODATA_VERSION="${pkgver}"
+  qmake-qt5 PREFIX=/usr root.pro
+  make
+}
+
+package() {
+  cd "libiodata-${pkgver}"
+
+  make INSTALL_ROOT="${pkgdir}" install
+
+  install -Dm644 COPYING "${pkgdir}/usr/share/licenses/${pkgname}/COPYING"
+  install -Dm644 debian/copyright "${pkgdir}/usr/share/licenses/${pkgname}/copyright"
+}

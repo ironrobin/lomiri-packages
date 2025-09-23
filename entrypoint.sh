@@ -60,6 +60,7 @@ pkgs=(
   ayatana-indicator-messages
   lomiri-wallpapers
   kcalendarcore5
+  libiodata-qt5
   # Layer 2
   suru-icon-theme
   hfd-service
