@@ -91,11 +91,11 @@ pkgs=(
   lomiri-system-settings
   lomiri-content-hub-git
   qtmir-git
-  # Layer 7
-  ayatana-indicator-datetime-git
-  lomiri
-  # Layer 8
-  lomiri-session
+  # # Layer 7
+  # ayatana-indicator-datetime-git
+  # lomiri
+  # # Layer 8
+  # lomiri-session
 )
 
 for i in "${pkgs[@]}" ; do

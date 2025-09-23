@@ -8,7 +8,7 @@ pkgdesc="Lomiri Location Indicator"
 arch=("i686" "x86_64" "aarch64")
 url="https://github.com/ubports/indicator-location"
 license=("GPL2" "GPL3")
-depends=("systemd" "lomiri-app-launch" "glib2" "dbus" "properties-cpp" "lomiri-url-dispatcher-git")
+depends=("systemd" "lomiri-app-launch" "glib2" "dbus" "properties-cpp" "lomiri-url-dispatcher")
 makedepends=("cmake" "cmake-extras" "intltool" "git")
 source=("git+https://github.com/ubports/${_pkgname}.git"
         "fix-systemd.patch")
