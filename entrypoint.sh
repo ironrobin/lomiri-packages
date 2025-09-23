@@ -75,7 +75,7 @@ pkgs=(
   lomiri-api
   # Layer 4
   biometryd
-  lomiri-download-manager-git
+  lomiri-download-manager
   lomiri-app-launch
   lomiri-ui-toolkit
   gmenuharness

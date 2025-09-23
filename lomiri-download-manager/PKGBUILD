@@ -1,10 +1,9 @@
 # Maintainer: Ivan Semkin (ivan at semkin dot ru)
 
-pkgname=lomiri-download-manager-git
+pkgname=lomiri-download-manager
 _pkgname=lomiri-download-manager
-# Waiting for 0.2.2 tag to be created before removing -git
-pkgver=r2856.0.2.1_14_g7a47c6a1
-pkgrel=2
+pkgver=0.2.2
+pkgrel=0
 pkgdesc='Provides a service for downloading files while an application is suspended'
 url='https://gitlab.com/ubports/development/core/lomiri-download-manager'
 arch=(x86_64 i686 armv7h aarch64)
@@ -13,24 +12,24 @@ conflicts=(ubuntu-download-manager lomiri-download-manager)
 provides=(lomiri-download-manager)
 depends=(boost dbus-test-runner gmock qt5-base qt5-declarative libnih google-glog clang)
 makedepends=(libqtdbusmock apparmor git doxygen cmake cmake-extras gcovr lcov lomiri-api)
-source=('git+https://gitlab.com/ubports/development/core/lomiri-download-manager.git')
+source=('https://gitlab.com/ubports/development/core/lomiri-download-manager/-/archive/0.2.2/lomiri-download-manager-0.2.2.tar.gz')
 sha256sums=('SKIP')
 
 BUILDENV+=('!check') # Some tests are broken
 
 prepare() {
-  cd ${_pkgname}
+  cd ${_pkgname}-${pkgver}
   #patch -Np1 -i "${srcdir}/wno-error.patch"
 }
 
-pkgver() {
-  cd ${_pkgname}
-  ver="r$(git rev-list --count HEAD).$(git describe --always)"
-  echo "${ver//-/_}"            # only: hyphens → underscores
-}
+# pkgver() {
+#   cd ${_pkgname}
+#   ver="r$(git rev-list --count HEAD).$(git describe --always)"
+#   echo "${ver//-/_}"            # only: hyphens → underscores
+# }
 
 build() {
-  cd ${_pkgname}
+  cd ${_pkgname}-${pkgver}
   cmake -DBUILD_TESTING=OFF -DENABLE_DOC=OFF -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_INSTALL_LIBDIR="lib/" -DCMAKE_INSTALL_LIBEXECDIR="lib/" .
   make
 }
@@ -41,7 +40,7 @@ build() {
 # }
 
 package() {
-  cd ${_pkgname}
+  cd ${_pkgname}-${pkgver}
   make DESTDIR="${pkgdir}/" install
   mv ${pkgdir}/usr/lib/qt5/ ${pkgdir}/usr/lib/qt/
 }
