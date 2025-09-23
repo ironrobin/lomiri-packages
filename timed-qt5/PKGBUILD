@@ -1,0 +1,53 @@
+pkgname=timed-qt5
+_pkgname=timed
+pkgver=3.6.24
+pkgrel=1
+pkgdesc="Time management daemon from SailfishOS for Lomiri"
+arch=('x86_64' 'aarch64' 'armv7h')
+url="https://github.com/sailfishos/timed"
+license=('LGPL-2.1-only')
+# depends=('qt5-base' 'libsystemd' 'libiodata-qt5' 'sailfishaccesscontrol' 'tzdata')
+depends=('qt5-base' 'libiodata-qt5' 'sailfish-access-control' 'libsystemd' 'tzdata')
+makedepends=('pkgconf' 'qt5-base' 'libcap')
+backup=('etc/timed.rc')
+source=("${url}/archive/refs/tags/${pkgver}.tar.gz")
+sha256sums=('26b6833507c16af3259a02bc037ce128664b86c174a9e6d9e32571c0ce23301e')
+
+prepare() {
+  cd "${_pkgname}-${pkgver}"
+
+  mkdir -p src/h/timed-qt5
+  ln -sf ../../lib/qmacro.h src/h/timed-qt5
+
+  # Skip building the upstream test suite to avoid installing SailfishOS test assets
+  sed -i 's/ tests//g' timed.pro
+}
+
+build() {
+  cd "${_pkgname}-${pkgver}"
+
+  local timed_version="${pkgver}"
+  if [[ ${timed_version} == *.*.* ]]; then
+    timed_version="${timed_version%.*}"
+  fi
+  export TIMED_VERSION="${timed_version}"
+
+  qmake-qt5 CONFIG+=ofono
+  make
+}
+
+package() {
+  cd "${_pkgname}-${pkgver}"
+
+  make INSTALL_ROOT="${pkgdir}" install
+
+  install -Dm644 rpm/timed-qt5.privileges "${pkgdir}/usr/share/mapplauncherd/privileges.d/timed-qt5.privileges"
+
+  install -dm755 "${pkgdir}/var/lib/timed/shared_events"
+  install -dm755 "${pkgdir}/var/lib/timed/shared_settings"
+  install -dm755 "${pkgdir}/var/lib/timed"
+  : > "${pkgdir}/var/lib/timed/localtime"
+  ln -sf /var/lib/timed/localtime "${pkgdir}/etc/localtime"
+
+  setcap cap_sys_time+ep "${pkgdir}/usr/bin/timed"
+}

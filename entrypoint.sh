@@ -68,6 +68,7 @@ pkgs=(
   mir
   process-cpp
   telepathy-qt-git
+  timed-qt5
   click
   libqtdbustest
   repowerd
