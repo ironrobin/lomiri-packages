@@ -35,6 +35,8 @@ sudo pacman-key --lsign-key 6ED02751500A833A
 sudo pacman -Sy
 sudo pacman -S base-devel --noconfirm --needed
 
+# remove lomiri-address-book-service from layer 6, don't need for desktop
+
 pkgs=(
   # Layer 1
   telepathy-farstream
@@ -85,7 +87,6 @@ pkgs=(
   libayatana-common
   lomiri-indicator-network
   lomiri-telephony-service
-  lomiri-address-book-service
   lomiri-system-settings
   lomiri-content-hub
   qtmir-git
