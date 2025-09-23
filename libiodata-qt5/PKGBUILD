@@ -22,13 +22,13 @@ build() {
 
   export IODATA_VERSION="${pkgver}"
   qmake-qt5 PREFIX=/usr root.pro
-  make
+  make -j1
 }
 
 package() {
   cd "libiodata-${pkgver}"
 
-  make INSTALL_ROOT="${pkgdir}" install
+  make -j1 INSTALL_ROOT="${pkgdir}" install
 
   install -Dm644 COPYING "${pkgdir}/usr/share/licenses/${pkgname}/COPYING"
   install -Dm644 debian/copyright "${pkgdir}/usr/share/licenses/${pkgname}/copyright"
