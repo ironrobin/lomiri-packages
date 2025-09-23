@@ -1,25 +1,25 @@
 # Maintainer: Furkan Kardame <furkan@fkardame.com>
 
-pkgname=lomiri-address-book-service-git
+pkgname=lomiri-address-book-service
 _pkgname=lomiri-address-book-service
-pkgver=r1209.9c96731
-pkgrel=3
+pkgver=0.1.7
+pkgrel=0
 pkgdesc='The Ubuntu Touch Address Book Service'
 url='https://gitlab.com/ubports/development/core/lomiri-address-book-service'
 arch=(x86_64 i686 armv7h aarch64)
 license=()
 depends=(libaccounts-qt5 folks libgee lomiri-url-dispatcher qt5-pim-git qt5-base lomiri-notifications libphonenumber lomiri-ui-toolkit buteo-syncfw-qml)
 makedepends=(git cmake vala ayatana-indicator-messages)
-source=('git+https://gitlab.com/ubports/development/core/lomiri-address-book-service.git')
+source=('https://gitlab.com/ubports/development/core/lomiri-address-book-service/-/archive/0.1.7/lomiri-address-book-service-0.1.7.tar.gz')
 sha256sums=('SKIP')
 
-pkgver() {
- cd ${_pkgname}
- printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
-}
+# pkgver() {
+#  cd ${_pkgname}
+#  printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+# }
 
 build() {
-  cd ${_pkgname}
+  cd ${_pkgname}-$pkgver
   mkdir -p build
   cd build
   cmake ../ -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_INSTALL_LIBDIR="lib/" -DCMAKE_INSTALL_SYSCONFDIR=/etc -DCMAKE_INSTALL_LOCALSTATEDIR=/var
@@ -28,7 +28,7 @@ build() {
 }
 
 package() {
-  cd ${_pkgname}/build
+  cd ${_pkgname}-$pkgver/build
   make DESTDIR="${pkgdir}/" install
   mv "${pkgdir}/usr/lib/qt5/" "${pkgdir}/usr/lib/qt/"
 }

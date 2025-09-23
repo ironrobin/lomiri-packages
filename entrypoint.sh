@@ -35,8 +35,6 @@ sudo pacman-key --lsign-key 6ED02751500A833A
 sudo pacman -Sy
 sudo pacman -S base-devel --noconfirm --needed
 
-# Removed accountsservice-ubuntu from layer 1
-# no content-hub. needed for mobile
 pkgs=(
   # Layer 1
   telepathy-farstream
@@ -84,12 +82,12 @@ pkgs=(
   # Layer 5
   lomiri-url-dispatcher
   # Layer 6
-  libayatana-common-git
+  libayatana-common
   lomiri-indicator-network
-  lomiri-telephony-service-git
-  lomiri-address-book-service-git
+  lomiri-telephony-service
+  lomiri-address-book-service
   lomiri-system-settings
-  lomiri-content-hub-git
+  lomiri-content-hub
   qtmir-git
   # Layer 7
   ayatana-indicator-datetime-git

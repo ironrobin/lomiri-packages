@@ -9,7 +9,6 @@
 **/qtpim/
 **/telepathy-qt/
 **/qdjango/
-**/lomiri-telephony-service/
 **/libaccounts-qt/
 **/libertine/
 **/gsettings-qt/
@@ -17,6 +16,4 @@ ofono-git/ofono-git/
 ofono-git/ell/
 **/qtmir/
 **/trust-store/
-**/libayatana-common/
 **/ayatana-indicator-datetime/
-**/lomiri-address-book-service/

@@ -1,9 +1,9 @@
 # Maintainer: Furkan Kardame <furkan@fkardame.com>
 
-pkgname="libayatana-common-git"
+pkgname="libayatana-common"
 _pkgname="libayatana-common"
-pkgver=git_r236
-pkgrel=2
+pkgver=0.9.11
+pkgrel=0
 pkgdesc="Ayatana shared library for common functions"
 arch=("i686" "x86_64" "aarch64")
 url="https://github.com/AyatanaIndicators/libayatana-common"
@@ -11,26 +11,26 @@ license=("LGPL2.1" "LGPL3")
 makedepends=("git" "cmake" "cmake-extras" "gtest")
 depends=("gtk3" "glib2" "lomiri-url-dispatcher")
 options=('!emptydirs')
-source=("git+https://github.com/AyatanaIndicators/${_pkgname}.git")
+source=("https://github.com/AyatanaIndicators/libayatana-common/archive/refs/tags/0.9.11.tar.gz")
 md5sums=("SKIP")
 provides=("$_pkgname")
 conflicts=("$_pkgname" "${_pkgname}-gtk3")
 
-pkgver()
-{
-    cd ${srcdir}/${_pkgname}
-    echo "git_r$(git rev-list --count HEAD)"
-}
+# pkgver()
+# {
+#     cd ${srcdir}/${_pkgname}
+#     echo "git_r$(git rev-list --count HEAD)"
+# }
 
 build()
 {
-    cd ${srcdir}/${_pkgname}
+    cd ${srcdir}/${_pkgname}-$pkgver
     cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBEXECDIR=lib -Denable_tests=OFF
     make
 }
 
 package()
 {
-    cd ${srcdir}/${_pkgname}
+    cd ${srcdir}/${_pkgname}-$pkgver
     make DESTDIR="${pkgdir}" install
 }
