@@ -55,6 +55,7 @@ pkgs=(
   deviceinfo
   lomiri-settings-components
   lomiri-schemas
+  lomiri-sounds
   persistent-cache-cpp
   ayatana-indicator-messages
   lomiri-wallpapers

@@ -2,22 +2,22 @@
 
 pkgname=(lomiri-sounds)
 _pkgname=ubuntu-touch-sounds
-pkgver=r414.8dd87b9
-pkgrel=2
+pkgver=25.01
+pkgrel=0
 pkgdesc="Ringtones and notification tones for Lomiri"
 arch=('any')
 url="https://github.com/ubports/ubuntu-touch-sounds"
 license=('CC0' 'CC-BY-3.0' 'CC-BY-SA-3.0' 'CC-BY-4.0')
-source=('git+https://github.com/ubports/ubuntu-touch-sounds.git')
+source=('https://gitlab.com/ubports/development/core/lomiri-sounds/-/archive/25.01/lomiri-sounds-25.01.tar.gz')
 md5sums=('SKIP')
 
 pkgver() {
-  cd ${_pkgname}
+  cd ${_pkgname}-$pkgver
   printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
 }
 
 package() {
-  cd ${_pkgname}
+  cd ${_pkgname}-$pkgver
   mkdir -p ${pkgdir}/usr
   cp -a share ${pkgdir}/usr
 }
