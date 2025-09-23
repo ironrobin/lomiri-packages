@@ -58,6 +58,7 @@ pkgs=(
   persistent-cache-cpp
   ayatana-indicator-messages
   lomiri-wallpapers
+  kcalendarcore5
   # Layer 2
   suru-icon-theme
   hfd-service
