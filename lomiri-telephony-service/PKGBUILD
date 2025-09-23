@@ -35,6 +35,6 @@ build() {
 }
 
 package() {
-  cd ${_pkgname}/${BUILD_DIR}-$pkgver
+  cd ${_pkgname}-$pkgver/${BUILD_DIR}
   make DESTDIR="${pkgdir}/" install
 }
