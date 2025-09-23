@@ -73,6 +73,7 @@ pkgs=(
   libqtdbustest
   repowerd
   # Layer 3
+  mkcal
   dbus-cpp
   libqtdbusmock
   lomiri-history-service

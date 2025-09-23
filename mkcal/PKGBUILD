@@ -1,0 +1,25 @@
+pkgname=mkcal
+pkgver=0.7.27
+pkgrel=1
+pkgdesc="Qt-based calendar storage backend used by Lomiri"
+arch=('x86_64' 'aarch64' 'armv7h')
+url="https://github.com/sailfishos/mkcal"
+license=('LGPL-2.0-only')
+depends=('qt5-base' 'kcalendarcore5' 'sqlite')
+makedepends=('timed-qt5' 'cmake' 'extra-cmake-modules' 'pkgconf')
+source=("${url}/archive/refs/tags/${pkgver}.tar.gz")
+sha256sums=('e71841261fee464a66df1b9914a017ae54a2f166086e2809c9ab4c429f7ca729')
+
+build() {
+  cmake -S "${pkgname}-${pkgver}" -B build \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_INSTALL_LIBDIR=lib \
+    -DBUILD_TESTS=OFF \
+    -DBUILD_PLUGINS=OFF
+  cmake --build build
+}
+
+package() {
+  DESTDIR="${pkgdir}" cmake --install build
+}
