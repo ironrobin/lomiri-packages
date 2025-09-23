@@ -60,7 +60,7 @@ build() {
   -DCMAKE_INSTALL_PREFIX:PATH=/usr \
   -DCMAKE_INSTALL_LIBDIR="lib/" \
   -DNO_TESTS=true ..
-  make -j8
+  make
 }
 
 #check() {
