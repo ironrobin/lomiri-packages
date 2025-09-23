@@ -1,10 +1,10 @@
 # Maintainer: Ivan Semkin (ivan at semkin dot ru)
 
 pkgbase=lomiri-url-dispatcher
-pkgname=(lomiri-url-dispatcher-git lomiri-url-dispatcher-gui-git)
+pkgname=(lomiri-url-dispatcher lomiri-url-dispatcher-gui)
 _pkgname=lomiri-url-dispatcher
-pkgver=r1032.0.1.4.r11.g403231b
-pkgrel=2
+pkgver=0.1.4
+pkgrel=3
 pkgdesc='Service to allow sending of URLs and get handlers started'
 url='https://gitlab.com/ubports/development/core/lomiri-url-dispatcher'
 arch=(x86_64 i686 armv7h aarch64)
@@ -14,29 +14,28 @@ provides=(url-dispatcher)
 depends=(lomiri-app-launch intltool apparmor)
 makedepends=(glib2-devel glib2 git cmake cmake-extras dbus-test-runner lcov gcovr gmock)
 checkdepends=(python-testtools python-nose python-dbusmock)
-source=('git+https://gitlab.com/ubports/development/core/lomiri-url-dispatcher#branch=main')
+source=('https://gitlab.com/ubports/development/core/lomiri-url-dispatcher/-/archive/0.1.4/lomiri-url-dispatcher-0.1.4.tar.gz')
 sha256sums=('SKIP')
 
-pkgver() {
-  cd ${_pkgname}
-  echo "r$(git rev-list --count HEAD).$(git describe --always)" | sed 's/\([^-]*-g\)/r\1/;s/-/./g'
-}
+# pkgver() {
+#   cd ${_pkgname}
+#   echo "r$(git rev-list --count HEAD).$(git describe --always)" | sed 's/\([^-]*-g\)/r\1/;s/-/./g'
+# }
 
 build() {
-  cd ${_pkgname}
+  cd ${_pkgname}-${pkgver}
   cmake -Denable_mirclient=off -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_INSTALL_LIBDIR="lib/" -DCMAKE_INSTALL_LIBEXECDIR="lib/" .
   make
 }
 
-package_lomiri-url-dispatcher-git() {
-  cd ${_pkgname}
+package_lomiri-url-dispatcher() {
+  cd ${_pkgname}-${pkgver}
   make DESTDIR="${pkgdir}/" install
 
 }
 
-package_lomiri-url-dispatcher-gui-git() {
-  cd ${_pkgname}
+package_lomiri-url-dispatcher-gui() {
+  cd ${_pkgname}-${pkgver}
   make DESTDIR="${pkgdir}/" install
-
 }
 # vim:set ts=2 sw=2 et:
