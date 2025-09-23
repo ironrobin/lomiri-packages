@@ -57,6 +57,7 @@ pkgs=(
   lomiri-schemas
   lomiri-sounds
   persistent-cache-cpp
+  sailfish-access-control
   ayatana-indicator-messages
   lomiri-wallpapers
   kcalendarcore5

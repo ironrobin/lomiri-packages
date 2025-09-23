@@ -1,0 +1,70 @@
+pkgbase=sailfish-access-control
+pkgname=(sailfish-access-control sailfish-access-control-qt5)
+pkgver=0.0.12
+pkgrel=1
+arch=('x86_64' 'aarch64' 'armv7h')
+url="https://github.com/sailfishos/sailfish-access-control"
+license=('LGPL-2.1-or-later')
+makedepends=('pkgconf' 'glib2' 'qt5-base' 'qt5-declarative')
+source=("${url}/archive/refs/tags/${pkgver}.tar.gz")
+sha256sums=('543d7c7ec211e6b48ace1f11d5085bd3a0080f2ac71d1b708bb465d331ba340e')
+
+build() {
+  cd "${srcdir}/${pkgbase}-${pkgver}"
+
+  local _staging="${PWD}/.staging"
+  rm -rf "${_staging}"
+  install -dm755 "${_staging}"
+
+  make -C glib \
+    PREFIX=/usr \
+    LIBDIR=/usr/lib \
+    PKGCFGDIR=/usr/lib/pkgconfig \
+    VERSION="${pkgver}"
+  make -C glib \
+    PREFIX=/usr \
+    LIBDIR=/usr/lib \
+    PKGCFGDIR=/usr/lib/pkgconfig \
+    VERSION="${pkgver}" \
+    ROOT="${_staging}" \
+    install-libsailfishaccesscontrol \
+    install-libsailfishaccesscontrol-dev
+
+  export PKG_CONFIG_PATH="${_staging}/usr/lib/pkgconfig:${PKG_CONFIG_PATH:-}"
+  export PKG_CONFIG_SYSROOT_DIR="${_staging}"
+  export QT_QPA_PLATFORM=offscreen
+
+  pushd qt >/dev/null
+  qmake-qt5 PREFIX=/usr
+  make
+  popd >/dev/null
+}
+
+package_sailfish-access-control() {
+  pkgdesc="SailfishOS access control helper library"
+  depends=('glib2')
+
+  cd "${srcdir}/${pkgbase}-${pkgver}"
+
+  make -C glib \
+    PREFIX=/usr \
+    LIBDIR=/usr/lib \
+    PKGCFGDIR=/usr/lib/pkgconfig \
+    VERSION="${pkgver}" \
+    ROOT="${pkgdir}" \
+    install-libsailfishaccesscontrol \
+    install-libsailfishaccesscontrol-dev
+
+  install -Dm644 glib/COPYING "${pkgdir}/usr/share/licenses/${pkgname}/COPYING"
+}
+
+package_sailfish-access-control-qt5() {
+  pkgdesc="SailfishOS access control QML plugin"
+  depends=('qt5-declarative' 'sailfish-access-control')
+
+  cd "${srcdir}/${pkgbase}-${pkgver}/qt"
+
+  make INSTALL_ROOT="${pkgdir}" install
+
+  install -Dm644 COPYING "${pkgdir}/usr/share/licenses/${pkgname}/COPYING"
+}
