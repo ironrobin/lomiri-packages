@@ -92,13 +92,13 @@ pkgs=(
   lomiri-url-dispatcher
   # Layer 6
   libayatana-common
-  ayatana-indicator-power
   lomiri-indicator-network
   lomiri-telephony-service
   lomiri-system-settings
   # lomiri-content-hub
   qtmir-git
   # Layer 7
+  ayatana-indicator-power
   ayatana-indicator-datetime
   lomiri
   # Layer 8
