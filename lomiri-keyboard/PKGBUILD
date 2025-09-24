@@ -52,7 +52,7 @@ prepare() {
 build() {
     cd ${_pkgname}-$pkgver
     qmake-qt5 CONFIG+=no_docs CONFIG+=notests INCLUDEPATH+="/usr/include/maliit-2" QMAKE_CXXFLAGS+="-I/usr/include/maliit-2"
-    make -j8
+    make
 }
 
 package() {

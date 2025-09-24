@@ -1,12 +1,12 @@
 # Maintainer: you <alex@ironrobin.net>
 pkgname=lomiri-session
 pkgver=0.3
-pkgrel=2
+pkgrel=3
 pkgdesc="Lomiri desktop session integration (Wayland session, units, defaults)"
 arch=('any')
 url="https://salsa.debian.org/ubports-team/lomiri-session"
 license=('GPL3')  # adjust if upstream lists differently
-depends=(dbus systemd lomiri)   # keep minimal; add more if the package ships hard runtime hooks
+depends=(dbus systemd lomiri lomiri-keyboard)  # keep minimal; add more if the package ships hard runtime hooks
 makedepends=(cmake pkgconf)
 # Debian hosts the pristine orig tarball; patches are fetched on-the-fly
 source=("https://deb.debian.org/debian/pool/main/l/lomiri-session/lomiri-session_${pkgver}.orig.tar.bz2")
