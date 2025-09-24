@@ -1,9 +1,9 @@
 # Maintainer: Furkan Kardame <furkan@fkardame.com>
 
-pkgname="ayatana-indicator-power-git"
+pkgname="ayatana-indicator-power"
 _pkgname="ayatana-indicator-power"
-pkgver=git_r1057
-pkgrel=4
+pkgver=24.5.2
+pkgrel=0
 pkgdesc="Ayatana Indicator showing power state"
 arch=("i686" "x86_64" "aarch64")
 url="https://github.com/AyatanaIndicators"
@@ -11,33 +11,33 @@ license=("GPL2" "GPL3")
 depends=("libayatana-indicator" "upower" "systemd" "libnotify" "dconf" "lomiri-url-dispatcher")
 makedepends=("cmake" "cmake-extras" "libnotify" "glib2" "python" "git")
 optdepends=("mate-ayatana-indicator-applet" "zenity" "mate-control-center" "mate-power-manager")
-source=("git+https://github.com/AyatanaIndicators/${_pkgname}.git")
+source=("https://github.com/AyatanaIndicators/ayatana-indicator-power/archive/refs/tags/24.5.2.tar.gz")
 md5sums=("SKIP")
 options=("!emptydirs")
 provides=("${_pkgname}")
 conflicts=("${_pkgname}")
 
 
-pkgver()
-{
-    cd ${_pkgname}
-    echo "git_r$(git rev-list --count HEAD)"
-}
+# pkgver()
+# {
+#     cd ${_pkgname}
+#     echo "git_r$(git rev-list --count HEAD)"
+# }
 
 prepare()
 {
-    cd ${_pkgname}
+    cd ${_pkgname}-${pkgver}
 }
 
 build()
 {
-    cd ${_pkgname}
-    cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBEXECDIR=lib -Denable_tests=OFF
+    cd ${_pkgname}-${pkgver}
+    cmake -DENABLE_RDA=OFF -DENABLE_LOMIRI_FEATURES=ON -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBEXECDIR=lib -Denable_tests=OFF
     make
 }
 
 package()
 {
-    cd ${_pkgname}
+    cd ${_pkgname}-${pkgver}
     make DESTDIR="${pkgdir}" install
 }
