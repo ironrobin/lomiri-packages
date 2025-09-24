@@ -1,0 +1,22 @@
+From 269646fd87ef79118493011fae3a3c30ac395586 Mon Sep 17 00:00:00 2001
+From: Jan Arne Petersen <janarne@gmail.com>
+Date: Sat, 30 Nov 2019 11:28:35 +0100
+Subject: [PATCH] [pinyin] Add additional required paramter
+
+---
+ plugins/pinyin/src/pinyinadapter.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/plugins/pinyin/src/pinyinadapter.cpp b/plugins/pinyin/src/pinyinadapter.cpp
+index f852ec4d..ebbb76df 100644
+--- a/plugins/pinyin/src/pinyinadapter.cpp
++++ b/plugins/pinyin/src/pinyinadapter.cpp
+@@ -58,7 +58,7 @@ void PinyinAdapter::parse(const QString& string)
+     std::cout << std::endl;
+ #endif
+ 
+-    pinyin_guess_candidates(m_instance, 0);
++    pinyin_guess_candidates(m_instance, 0, SORT_BY_PHRASE_LENGTH_AND_PINYIN_LENGTH_AND_FREQUENCY);
+ 
+     candidates.clear();
+     guint len = 0;

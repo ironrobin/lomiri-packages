@@ -1,0 +1,24 @@
+From e8bbad0d78eb2ca75b47e0d9e71b3c40c2e268bc Mon Sep 17 00:00:00 2001
+From: Jan Arne Petersen <janarne@gmail.com>
+Date: Tue, 18 Apr 2017 00:20:25 +0200
+Subject: [PATCH] Add a subview to make keyboard work
+
+---
+ src/plugin/inputmethod.cpp | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/src/plugin/inputmethod.cpp b/src/plugin/inputmethod.cpp
+index c33b33a4..2cd4aad6 100644
+--- a/src/plugin/inputmethod.cpp
++++ b/src/plugin/inputmethod.cpp
+@@ -204,7 +204,10 @@ QList<MAbstractInputMethod::MInputMethodSubView>
+ InputMethod::subViews(Maliit::HandlerState state) const
+ {
+     Q_UNUSED(state)
++    Q_D(const InputMethod);
++
+     QList<MInputMethodSubView> views;
++    views << MInputMethodSubView{ d->activeLanguage, d->activeLanguage };
+     return views;
+ }
+ 

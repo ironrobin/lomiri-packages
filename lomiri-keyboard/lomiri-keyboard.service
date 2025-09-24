@@ -1,0 +1,18 @@
+[Unit]
+Description=Lomiri Keyboard
+# nowadays, maliit-server needs to start *after* Lomiri, or it crashes while
+# trying to poke geometry
+After=lomiri-full-greeter.service lomiri-full-shell.service lomiri-greeter.service lomiri-shell.service lomiri.service
+
+[Service]
+# needed to fix lp:1233550
+Environment=QML_BAD_GUI_RENDER_LOOP=1
+Environment=PULSE_PROP="media.role=feedbacksound"
+# Allow keyboard vibration to bypass "Other vibrations" settings.
+Environment=HFD_USE_PRIVILEGED_INTERFACE=1
+Restart=on-failure
+
+ExecStart=maliit-server
+
+[Install]
+WantedBy=lomiri-full-greeter.service lomiri-full-shell.service lomiri-greeter.service lomiri-shell.service lomiri.service

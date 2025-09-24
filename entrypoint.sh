@@ -53,6 +53,7 @@ pkgs=(
   ofono-git
   wlcs
   deviceinfo
+  lomiri-keyboard
   lomiri-settings-components
   lomiri-schemas
   lomiri-sounds

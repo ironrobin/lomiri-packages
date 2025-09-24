@@ -1,0 +1,65 @@
+# Maintainer: Philip Müller <philm@manjaro.org>
+# Contributor: Bhushan Shah <bshah@kde.org>
+pkgname=lomiri-keyboard
+_pkgname=lomiri-keyboard
+pkgver=1.0.3
+pkgrel=1
+pkgdesc="Ubuntu Touch keyboard as maliit plugin"
+arch=('aarch64')
+url="https://gitlab.com/ubports/development/core/lomiri-keyboard"
+license=('GPL')
+groups=()
+depends=('maliit-framework' 'qt5-feedback' 'qt5-multimedia' 'gsettings-qt'
+         'hunspell' 'libchewing' 'presage' 'libpinyin' 'sqlite' 'anthy')
+makedepends=('git' 'cmake')
+provides=(lomiri-keyboard)
+conflicts=(lomiri-keyboard lomiri-keyboard-git)
+install=
+source=("https://gitlab.com/ubports/development/core/lomiri-keyboard/-/archive/1.0.3/lomiri-keyboard-1.0.3.tar.gz"
+        "fix-for-newer-cpp.patch"
+        "hack-maliit-dirs.patch"
+        "0001_src-imports-Drop-Lomiri.Keyboard-QML-module.patch"
+        "https://github.com/maliit/keyboard/commit/269646fd87ef79118493011fae3a3c30ac395586.patch"
+        "https://github.com/maliit/keyboard/commit/e8bbad0d78eb2ca75b47e0d9e71b3c40c2e268bc.patch"
+        "lomiri-keyboard.service"
+        "server.conf"
+        )
+md5sums=('SKIP'
+         'SKIP'
+         'SKIP'         
+         'SKIP'
+         'SKIP'
+         'SKIP'
+         'SKIP'
+         'SKIP'
+         )
+
+# pkgver() {
+#     cd $_pkgname-$pkgver
+#     printf "r%s.g%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+# }
+
+prepare() {
+    cd $_pkgname-$pkgver
+
+    # patch -Np1 -i "${srcdir}/fix-for-newer-cpp.patch"
+    # patch -Np1 -i "${srcdir}/hack-maliit-dirs.patch"
+    # patch -Np1 -i "${srcdir}/269646fd87ef79118493011fae3a3c30ac395586.patch"
+    # patch -Np1 -i "${srcdir}/e8bbad0d78eb2ca75b47e0d9e71b3c40c2e268bc.patch"
+    patch -Np1 -i "${srcdir}/0001_src-imports-Drop-Lomiri.Keyboard-QML-module.patch"
+}
+
+build() {
+    cd ${_pkgname}-$pkgver
+    qmake-qt5 CONFIG+=no_docs CONFIG+=notests INCLUDEPATH+="/usr/include/maliit-2" QMAKE_CXXFLAGS+="-I/usr/include/maliit-2"
+    make -j8
+}
+
+package() {
+    cd ${_pkgname}-$pkgver
+    make INSTALL_ROOT="${pkgdir}/" install
+    # install lomiri-keyboard.service to /usr/lib/systemd/user/
+    install -Dm644 ../lomiri-keyboard.service "${pkgdir}/usr/lib/systemd/user/lomiri-keyboard.service"
+    # install server.conf to etc/xdg/maliit.org/
+    install -Dm644 ../server.conf "${pkgdir}/etc/xdg/maliit.org/server.conf"
+}
