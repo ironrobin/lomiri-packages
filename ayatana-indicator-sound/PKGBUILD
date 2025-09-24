@@ -9,7 +9,7 @@ arch=("i686" "x86_64" "aarch64")
 url="https://github.com/AyatanaIndicators"
 license=("GPL3")
 depends=("pulseaudio" "libayatana-indicator" "glib2" "accountsservice" "dconf" "libnotify" "libgee" "libayatana-common")
-makedepends="lomiri-schemas" "cmake" "cmake-extras" "dbus" "accountsservice" "mate-common" "gsettings-desktop-schemas" "intltool" "vala" "glib2" "libpulse" "libnotify" "libgee" "libxml2" "pulseaudio" "qt5-base" "qt5-declarative" "systemd" "gobject-introspection" "git")
+makedepends=("lomiri-schemas" "cmake" "cmake-extras" "dbus" "accountsservice" "mate-common" "gsettings-desktop-schemas" "intltool" "vala" "glib2" "libpulse" "libnotify" "libgee" "libxml2" "pulseaudio" "qt5-base" "qt5-declarative" "systemd" "gobject-introspection" "git")
 optdepends=("pavucontrol" "mate-media")
 source=("https://github.com/AyatanaIndicators/ayatana-indicator-sound/archive/refs/tags/24.5.2.tar.gz" 
           )
