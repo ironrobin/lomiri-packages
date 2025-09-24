@@ -9,7 +9,7 @@ arch=("i686" "x86_64" "aarch64")
 url="https://github.com/AyatanaIndicators"
 license=("GPL2" "GPL3")
 depends=("libayatana-indicator" "gsettings-desktop-schemas" "systemd" "glib2" "lomiri-url-dispatcher" "libayatana-common")
-makedepends=("glib2-devel" "git" "cmake" "intltool" "glib2" "systemd")
+makedepends=("gsettings-desktop-schemas" "glib2-devel" "git" "cmake" "intltool" "glib2" "systemd")
 optdepends=("mate-screensaver" "mate-ayatana-indicator-applet" "mate-control-center" "yelp" "firefox")
 source=("https://github.com/AyatanaIndicators/ayatana-indicator-session/archive/refs/tags/24.5.1.tar.gz"
         'https://patch-diff.githubusercontent.com/raw/AyatanaIndicators/ayatana-indicator-session/pull/25.patch')
