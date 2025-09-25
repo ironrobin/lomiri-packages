@@ -9,7 +9,7 @@ arch=("i686" "x86_64" "aarch64")
 url="https://github.com/AyatanaIndicators/ayatana-indicator-bluetooth"
 license=("GPL3")
 depends=("glib2" "accountsservice" "hicolor-icon-theme" "dconf" "lomiri-url-dispatcher")
-makedepends=("gnome-common" "systemd" "intltool" "accountsservice" "vala" "glib2" "gio-qt" "git")
+makedepends=("cmake" "gnome-common" "systemd" "intltool" "accountsservice" "vala" "glib2" "gio-qt" "git")
 source=("https://github.com/AyatanaIndicators/ayatana-indicator-bluetooth/archive/refs/tags/24.5.0.tar.gz"
         "fix-systemd.patch"
         "0001-bluez-Set-Powerd-prop-regardless-if-rfkill-is-writab.patch")
