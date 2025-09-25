@@ -1,0 +1,49 @@
+# Maintainer: Furkan Kardame <furkan@fkardame.com>
+
+pkgname="ayatana-indicator-bluetooth"
+_pkgname="ayatana-indicator-bluetooth"
+pkgver=24.5.0
+pkgrel=1
+pkgdesc="Bluetooth Indicator"
+arch=("i686" "x86_64" "aarch64")
+url="https://github.com/AyatanaIndicators/ayatana-indicator-bluetooth"
+license=("GPL3")
+depends=("glib2" "accountsservice" "hicolor-icon-theme" "dconf" "lomiri-url-dispatcher")
+makedepends=("gnome-common" "systemd" "intltool" "accountsservice" "vala" "glib2" "gio-qt" "git")
+source=("https://github.com/AyatanaIndicators/ayatana-indicator-bluetooth/archive/refs/tags/24.5.0.tar.gz"
+        "fix-systemd.patch"
+        "0001-bluez-Set-Powerd-prop-regardless-if-rfkill-is-writab.patch")
+md5sums=("SKIP"
+        "SKIP"
+        "SKIP")
+options=("!emptydirs")
+provides=("${_pkgname}")
+conflicts=("${_pkgname}")
+
+# pkgver()
+# {
+#     cd ${_pkgname}-${pkgver}
+#     echo "git_r$(git rev-list --count HEAD)"
+# }
+
+prepare()
+{
+    cd ${_pkgname}-${pkgver}
+    # patch -Np1 -i "${srcdir}/fix-systemd.patch"
+    # patch -Np1 -i "${srcdir}/0001-bluez-Set-Powerd-prop-regardless-if-rfkill-is-writab.patch"
+    # NOCONFIGURE=1 ./autogen.sh
+}
+
+build()
+{
+    cd ${_pkgname}-${pkgver}
+    cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBEXECDIR=lib
+    make
+}
+
+package()
+{
+    cd ${_pkgname}-${pkgver}
+    make DESTDIR="${pkgdir}" install
+    find ${pkgdir}/usr/lib -name *.la -delete
+}

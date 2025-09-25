@@ -98,7 +98,7 @@ pkgs=(
   # lomiri-content-hub
   qtmir-git
   # Layer 7
-  ayatana-indicator-notifications
+  ayatana-indicator-bluetooth
   ayatana-indicator-session
   ayatana-indicator-sound
   ayatana-indicator-power
