@@ -103,6 +103,7 @@ pkgs=(
   ayatana-indicator-sound
   ayatana-indicator-power
   ayatana-indicator-datetime
+  ayatana-indicator-display
   lomiri
   # Layer 8
   lomiri-session
