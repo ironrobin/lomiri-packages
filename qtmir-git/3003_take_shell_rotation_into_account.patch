@@ -1,0 +1,27 @@
+From 5ede0aae6ee656b0a403d886a0e590505f442b41 Mon Sep 17 00:00:00 2001
+From: Ratchanan Srirattanamet <ratchanan@ubports.com>
+Date: Mon, 12 May 2025 22:30:24 +0700
+Subject: [PATCH] mirserver/cursor: take Shell's rotation into account
+
+---
+ src/platforms/mirserver/cursor.cpp | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/src/platforms/mirserver/cursor.cpp b/src/platforms/mirserver/cursor.cpp
+index dc56f0f1..268b9b73 100644
+--- a/src/platforms/mirserver/cursor.cpp
++++ b/src/platforms/mirserver/cursor.cpp
+@@ -148,8 +148,9 @@ void Cursor::registerMousePointer(MirMousePointerInterface *mousePointer)
+     auto updatePositionFunction = [mousePointer](const QPoint& screenPos) {
+         if (!mousePointer->window()) return;
+         if (!mousePointer->isEnabled()) return;
+-
+-        QPoint localPos = screenPos - mousePointer->window()->geometry().topLeft();
++        if (!mousePointer->parentItem()) return;
++        
++        QPoint localPos = mousePointer->parentItem()->mapFromGlobal(screenPos).toPoint();
+         mousePointer->moveTo(localPos);
+     };
+ 
+-- 
+2.51.0

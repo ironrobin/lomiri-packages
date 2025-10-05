@@ -6,7 +6,7 @@ pkgbase=lomiri
 pkgname=(lomiri)
 _pkgname=lomiri
 pkgver=0.5.0
-pkgrel=11
+pkgrel=12
 url='https://gitlab.com/ubports/development/core/lomiri'
 arch=(x86_64 i686 armv7h aarch64)
 license=(LGPL3)
@@ -14,15 +14,15 @@ depends=(dbus-cpp biometryd xorg-xwayland lcov gcovr geonames lomiri-system-sett
 makedepends=(git cmake cmake-extras doxygen)
 checkdepends=(xorg-server-xvfb)
 source=(
-  'https://gitlab.com/ubports/development/core/lomiri/-/archive/0.5.0/lomiri-0.5.0.tar.gz'
+  'git+https://gitlab.com/ubports/development/core/lomiri.git#tag=0.5.0'
   'debian-patches.tar.gz::https://salsa.debian.org/ubports-team/lomiri/-/archive/debian/0.5.0-6/lomiri-debian-0.5.0-6.tar.gz'
   'force-CXX_20.patch'
+  '0001-take-shells-rotation-into-account.patch'
 )
-sha256sums=(
-  'SKIP'
-  'SKIP'
-  'SKIP'
-)
+sha256sums=('3e05440ce9bdd0d7f36e651ad00f059464198aba459aadabe51a1f427adc1779'
+            '6bd0f3ad9a9db3a12cf3402a4c4487e932658c4ebe8754aceffe056151498cda'
+            'c5dc8e491e059e88a9ce303c3266729c20c79955e80d56cdac759e9e79479265'
+            '76c303d709b57555e82bf2f834a3e0377e3207d5158d48ebb70a6dabedc63fdb')
 
 BUILDENV+=('!check') # https://paste.ubuntu.com/p/2d33RJX4W8/
 
@@ -32,7 +32,7 @@ BUILDENV+=('!check') # https://paste.ubuntu.com/p/2d33RJX4W8/
 # }
 
 prepare() {
-  cd "${_pkgname}-${pkgver}"
+  cd "${_pkgname}"
 
   # Apply Debian patches from the specified tag (debian/0.5.0-6)
   local patches_dir
@@ -43,13 +43,12 @@ prepare() {
       patch -Np1 -i "${patches_dir}/${p}"
     done < "${patches_dir}/series"
   fi
-
   # Apply local adjustments
-  #patch -Np1 -i "${srcdir}/force-CXX_20.patch"
+  patch -Np1 -i "${srcdir}/0001-take-shells-rotation-into-account.patch"
 }
 
 build() {
-  cd ${_pkgname}-${pkgver}
+  cd ${_pkgname}
   mkdir -p build
   cd build
   cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
@@ -60,7 +59,7 @@ build() {
   -DCMAKE_INSTALL_PREFIX:PATH=/usr \
   -DCMAKE_INSTALL_LIBDIR="lib/" \
   -DNO_TESTS=true ..
-  make
+  make -j8
 }
 
 #check() {
@@ -72,7 +71,7 @@ package() {
   pkgdesc='Lomiri shell'
   conflicts=(lomiri)
   provides=(lomiri)
-  cd ${_pkgname}-${pkgver}/build
+  cd ${_pkgname}/build
   make DESTDIR="${pkgdir}/" install
 
   # Move conf to the right directory
