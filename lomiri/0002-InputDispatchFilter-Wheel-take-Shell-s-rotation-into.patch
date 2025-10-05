@@ -1,25 +1,17 @@
-From eb228d6491a59417c8bfbd0c421caeda90e1bbb9 Mon Sep 17 00:00:00 2001
+From 27744be887481f9659e0dc4491400dd78338661a Mon Sep 17 00:00:00 2001
 From: Alex R <alex@ironrobin.net>
-Date: Sun, 5 Oct 2025 01:35:34 +0000
-Subject: [PATCH] InputDispatchFilter: take Shell's rotation into account
+Date: Sun, 5 Oct 2025 19:03:38 +0000
+Subject: [PATCH] InputDispatchFilter:Wheel: take Shell's rotation into account
 
 ---
- plugins/Cursor/InputDispatcherFilter.cpp | 19 ++++++++++++++-----
- 1 file changed, 14 insertions(+), 5 deletions(-)
+ plugins/Cursor/InputDispatcherFilter.cpp | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
 diff --git a/plugins/Cursor/InputDispatcherFilter.cpp b/plugins/Cursor/InputDispatcherFilter.cpp
-index 3021c85f8..7253a3bce 100644
+index 7253a3bce..0e301c6d8 100644
 --- a/plugins/Cursor/InputDispatcherFilter.cpp
 +++ b/plugins/Cursor/InputDispatcherFilter.cpp
-@@ -17,6 +17,7 @@
- #include "InputDispatcherFilter.h"
- #include "MousePointer.h"
- 
-+#include <QDebug>
- #include <QEvent>
- #include <QGuiApplication>
- #include <QQuickWindow>
-@@ -66,21 +67,29 @@ bool InputDispatcherFilter::eventFilter(QObject *o, QEvent *e)
+@@ -143,14 +143,25 @@ bool InputDispatcherFilter::eventFilter(QObject *o, QEvent *e)
              auto pointer = currentPointer();
              if (!pointer || !pointer->window()) return true;
  
@@ -28,12 +20,11 @@ index 3021c85f8..7253a3bce 100644
 +                return true;
 +            }
 +
-             QMouseEvent* me = static_cast<QMouseEvent*>(e);
+             QWheelEvent* we = static_cast<QWheelEvent*>(e);
  
              // Local position gives relative change of mouse pointer.
-             QPointF movement = me->localPos();
+             QPointF movement = we->position();
  
--            QPointF oldPos;
 +            // Because the movement is relative to the visual display, run both old and new
 +            // pointer position through mapToGlobal() to take Shell's rotation into account,
 +            // then recalculate the movement as a difference between them.
@@ -42,15 +33,9 @@ index 3021c85f8..7253a3bce 100644
 +            movement = newPos - oldPos;
 +
              // Adjust the position
-             if (qEnvironmentVariableIsSet("LOMIRI_RUNNING_IN_VM")) {
-                 // Get the position directly from Mir
-                 oldPos = me->screenPos();
-             }
--            else {
--                oldPos = pointer->window()->geometry().topLeft() + pointer->position();
--            }
+-            QPointF oldPos = pointer->window()->geometry().topLeft() + pointer->position();
 -            QPointF newPos = adjustedPositionForMovement(oldPos, movement);
 +            newPos = adjustedPositionForMovement(oldPos, movement);
  
-             QScreen* currentScreen = screenAt(newPos);
-             if (currentScreen) {
+             // Send the event
+             QWheelEvent eCopy(we->position(), newPos, we->pixelDelta(), we->angleDelta(), we->buttons(), we->modifiers(), we->phase(), we->inverted());
