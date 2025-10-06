@@ -3,7 +3,7 @@
 pkgname="ayatana-indicator-session"
 _pkgname="ayatana-indicator-session"
 pkgver=24.5.1
-pkgrel=0
+pkgrel=1
 pkgdesc="Ayatana Indicator showing session management, status and user switching"
 arch=("i686" "x86_64" "aarch64")
 url="https://github.com/AyatanaIndicators"
@@ -12,9 +12,9 @@ depends=("libayatana-indicator" "gsettings-desktop-schemas" "systemd" "glib2" "l
 makedepends=("glib2-devel" "git" "cmake" "cmake-extras" "intltool" "glib2" "systemd")
 optdepends=("mate-screensaver" "mate-ayatana-indicator-applet" "mate-control-center" "yelp" "firefox")
 source=("https://github.com/AyatanaIndicators/ayatana-indicator-session/archive/refs/tags/24.5.1.tar.gz"
-        'https://patch-diff.githubusercontent.com/raw/AyatanaIndicators/ayatana-indicator-session/pull/25.patch')
-md5sums=('SKIP'
-         '962eeccbd33cb88d54bf0472bae4d2fb')
+        "0002-Don-t-switch-to-greeter-when-locking-Lomiri.patch")
+md5sums=('bf7530633a81ba7819bbaa40335a8190'
+         '9483d357026a2563de7ddd33156dee9c')
 options=("!emptydirs")
 provides=("${_pkgname}")
 conflicts=("${_pkgname}")
@@ -27,19 +27,20 @@ conflicts=("${_pkgname}")
 
 prepare()
 {
-    cd ${_pkgname}-${pkgver}
-    # patch -p1 -i ../25.patch
+    cd "${srcdir}/${_pkgname}-${pkgver}"
+
+    patch -Np1 -i "${srcdir}/0002-Don-t-switch-to-greeter-when-locking-Lomiri.patch"
 }
 
 build()
 {
-    cd ${srcdir}/${_pkgname}-$pkgver
+    cd "${srcdir}/${_pkgname}-${pkgver}"
     cmake -DENABLE_RDA=OFF -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBEXECDIR=lib -DENABLE_TESTS=OFF
     make
 }
 
 package()
 {
-    cd ${srcdir}/${_pkgname}-$pkgver
+    cd "${srcdir}/${_pkgname}-${pkgver}"
     make DESTDIR="${pkgdir}" install
 }

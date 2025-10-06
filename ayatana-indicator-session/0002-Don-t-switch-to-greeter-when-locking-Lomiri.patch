@@ -1,0 +1,82 @@
+From: Robert Tari <robert@tari.in>
+Date: Tue, 17 Jun 2025 18:11:44 +0200
+Subject: Don't switch to greeter when locking Lomiri
+
+https://salsa.debian.org/ubports-team/lomiri/-/issues/39
+
+[ratchanan@ubports.com: now, what _actually_ happens here is it calls
+ DBus method `PromptLock()` instead of `Lock()`, because `Lock()`
+ implicitly also switch to greeter. Lomiri code itself [^1] admits that
+ this is an incorrect behavior; `Lock()` should simply lock (with
+ annimation - while `PromptLock()` "promtly" lock without animation).
+ But the behavior is there because - long story short, see [^1] - Lomiri
+ cannot show "Switch user" button from the lock screen.
+
+ So the side effect of this patch is that it will no longer be possible
+ *at all* to switch to greeter from a-i-session or from Lomiri. For
+ Ubuntu Touch, this is acceptable because 1.) we don't properly support
+ multi-user yet anyway, and 2.) switching to greeter is currently broken
+ inside nested-compositor situation [^2]. So the side effect solves/
+ workaround the problem for us.
+
+ But this side effect is (IMO) not acceptable on desktops (even though
+ it has been accepted by a-i-session upstream). I've opened a discussion
+ on how to properly solve this at [^3].
+
+ [^1]: https://gitlab.com/ubports/development/core/lomiri/-/blob/0.5.0/plugins/Lomiri/Session/dbuslomirisessionservice.cpp?ref_type=tags#L432-456
+ [^2]: https://gitlab.com/ubports/development/core/lomiri/-/issues/138#note_2713812501
+ [^3]: https://github.com/AyatanaIndicators/ayatana-indicator-session/pull/104#issuecomment-3267301231
+]
+
+Origin: upstream, https://github.com/AyatanaIndicators/ayatana-indicator-session/commit/cd1044a376ab772d5bdd1655c135ac39e39dc012
+Bug-UBports: https://gitlab.com/ubports/development/core/lomiri/-/issues/138
+---
+ src/backend-dbus/actions.c         | 4 ++--
+ tests/backend-dbus/test-actions.cc | 4 +++-
+ 2 files changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/src/backend-dbus/actions.c b/src/backend-dbus/actions.c
+index 331c1bf..db32f0c 100644
+--- a/src/backend-dbus/actions.c
++++ b/src/backend-dbus/actions.c
+@@ -1,6 +1,6 @@
+ /*
+  * Copyright 2013 Canonical Ltd.
+- * Copyright 2023 Robert Tari
++ * Copyright 2023-2025 Robert Tari
+  *
+  * Authors:
+  *   Charles Kerr <charles.kerr@canonical.com>
+@@ -970,7 +970,7 @@ lock_current_session (IndicatorSessionActions * self, gboolean immediate)
+ static void
+ my_switch_to_screensaver (IndicatorSessionActions * self)
+ {
+-  lock_current_session (self, FALSE);
++  lock_current_session (self, TRUE);
+ }
+ 
+ static void
+diff --git a/tests/backend-dbus/test-actions.cc b/tests/backend-dbus/test-actions.cc
+index bced3e9..3691cb8 100644
+--- a/tests/backend-dbus/test-actions.cc
++++ b/tests/backend-dbus/test-actions.cc
+@@ -1,8 +1,10 @@
+ /*
+  * Copyright 2013 Canonical Ltd.
++ * Copyright 2025 Robert Tari
+  *
+  * Authors:
+  *   Charles Kerr <charles.kerr@canonical.com>
++ *   Robert Tari <robert@tari.in>
+  *
+  * This program is free software: you can redistribute it and/or modify it
+  * under the terms of the GNU General Public License version 3, as published
+@@ -361,7 +363,7 @@ TEST_F (Actions, SwitchToScreensaver)
+   ASSERT_EQ (MockLomiriSession::None, lomiri_session.last_action());
+   indicator_session_actions_switch_to_screensaver (actions);
+   wait_msec (50);
+-  ASSERT_EQ (MockLomiriSession::Lock, lomiri_session.last_action());
++  ASSERT_EQ (MockLomiriSession::PromptLock, lomiri_session.last_action());
+ }
+ 
+ TEST_F (Actions, SwitchToGreeter)
