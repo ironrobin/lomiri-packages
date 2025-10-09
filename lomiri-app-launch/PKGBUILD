@@ -4,20 +4,25 @@ pkgbase=lomiri-app-launch
 pkgname=(lomiri-app-launch)
 _pkgname=lomiri-app-launch
 pkgver=0.1.12
-pkgrel=0
+pkgrel=1
 pkgdesc='Session init system job for Launching Applications'
 url='https://github.com/ubports/ubuntu-app-launch'
 arch=(x86_64 i686 armv7h aarch64)
 license=(GPL)
 depends=(qt5-wayland zeitgeist gobject-introspection lttng-ust lomiri-api properties-cpp curl click)
 makedepends=(python-dbusmock dbus json-glib glib2-devel git cmake cmake-extras dbus-test-runner gtest lcov gcovr)
-source=('https://gitlab.com/ubports/development/core/lomiri-app-launch/-/archive/0.1.12/lomiri-app-launch-0.1.12.tar.gz')
-sha256sums=('SKIP')
+#source=('https://gitlab.com/ubports/development/core/lomiri-app-launch/-/archive/0.1.12/lomiri-app-launch-0.1.12.tar.gz')
+source=('git+https://gitlab.com/ubports/development/core/lomiri-app-launch.git#tag=0.1.12'
+        '0001-PATCH-support-apps-with-wrapper-scripts.patch')
+
+sha256sums=('c73294652f294ce886e5eec52e822835b2b5d0c914d301294d6db105db49ecce'
+            '0881ede64b3c7a40c4fbc83610c973ff5db13482ae9e2eb83251cf124cc6a41a')
 
 BUILDENV+=('!check') # Some tests are broken
 
 prepare() {
-    cd ${_pkgname}-$pkgver
+    cd ${_pkgname}
+    patch -Np1 -i "${srcdir}/0001-PATCH-support-apps-with-wrapper-scripts.patch"
 }
 
 # pkgver() {
@@ -26,18 +31,18 @@ prepare() {
 # }
 
 build() {
-  cd ${_pkgname}-$pkgver
+  cd ${_pkgname}
   cmake -DUSE_SYSTEMD=true -DENABLE_MIRCLIENT=false -DLOMIRI_APP_LAUNCH_ARCH=lib -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_INSTALL_LIBDIR="lib/" -DCMAKE_INSTALL_LIBEXECDIR="lib/" .
-  make
+  make -j8
 }
 
 check() {
-  cd ${_pkgname}-$pkgver
+  cd ${_pkgname}
   make ARGS+="--output-on-failure" test
 }
 
 package() {
-  cd ${_pkgname}-$pkgver
+  cd ${_pkgname}
   make DESTDIR="${pkgdir}/" install
 }
 

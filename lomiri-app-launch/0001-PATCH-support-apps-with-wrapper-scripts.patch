@@ -1,0 +1,71 @@
+From 593cfb8e9983c8d1283623d933408ecb2f997315 Mon Sep 17 00:00:00 2001
+From: Alex R <alex@ironrobin.net>
+Date: Thu, 9 Oct 2025 22:37:50 +0000
+Subject: [PATCH] PATCH: support apps with wrapper scripts
+
+---
+ liblomiri-app-launch/jobs-systemd.cpp | 26 +++++++++++++++++++++++---
+ 1 file changed, 23 insertions(+), 3 deletions(-)
+
+diff --git a/liblomiri-app-launch/jobs-systemd.cpp b/liblomiri-app-launch/jobs-systemd.cpp
+index 185a992..9e2f999 100644
+--- a/liblomiri-app-launch/jobs-systemd.cpp
++++ b/liblomiri-app-launch/jobs-systemd.cpp
+@@ -707,6 +707,7 @@ std::shared_ptr<Application::Instance> SystemD::launch(
+ 
+         /* ExecStart */
+         auto commands = parseExec(env);
++        bool exec_is_script = false;
+         if (!commands.empty())
+         {
+             g_variant_builder_open(&builder, G_VARIANT_TYPE_TUPLE);
+@@ -719,6 +720,15 @@ std::shared_ptr<Application::Instance> SystemD::launch(
+             gchar* pathexec = g_find_program_in_path(commands[0].c_str());
+             if (pathexec != nullptr)
+             {
++                /* Detect if the resolved exec is a text script with a shebang */
++                GError* sheb_err = nullptr;
++                gchar* sheb_buf = nullptr;
++                gsize sheb_len = 0;
++                if (g_file_get_contents(pathexec, &sheb_buf, &sheb_len, &sheb_err) && sheb_len >= 2) {
++                    exec_is_script = (sheb_buf[0] == '#' && sheb_buf[1] == '!');
++                }
++                if (sheb_buf) g_free(sheb_buf);
++                if (sheb_err) g_error_free(sheb_err);
+                 g_variant_builder_add_value(&builder, g_variant_new_take_string(pathexec));
+             }
+             else
+@@ -740,13 +750,15 @@ std::shared_ptr<Application::Instance> SystemD::launch(
+             g_variant_builder_close(&builder);
+             g_variant_builder_close(&builder);
+             g_variant_builder_close(&builder);
+-        }
++        } else { /* commands empty */ }
+ 
+-        /* RemainAfterExit */
++        /* RemainAfterExit
++         * If the main process is a short-lived wrapper script, keep the unit
++         * "active" after the wrapper exits so systemd doesn’t reap children. */        
+         g_variant_builder_open(&builder, G_VARIANT_TYPE_TUPLE);
+         g_variant_builder_add_value(&builder, g_variant_new_string("RemainAfterExit"));
+         g_variant_builder_open(&builder, G_VARIANT_TYPE_VARIANT);
+-        g_variant_builder_add_value(&builder, g_variant_new_boolean(FALSE));
++        g_variant_builder_add_value(&builder, g_variant_new_boolean(exec_is_script ? TRUE : FALSE));
+         g_variant_builder_close(&builder);
+         g_variant_builder_close(&builder);
+ 
+@@ -766,6 +778,14 @@ std::shared_ptr<Application::Instance> SystemD::launch(
+         g_variant_builder_close(&builder);
+         g_variant_builder_close(&builder);
+ 
++        /* KillMode=process (don’t kill the whole cgroup if main PID exits) */
++        g_variant_builder_open(&builder, G_VARIANT_TYPE_TUPLE);
++        g_variant_builder_add_value(&builder, g_variant_new_string("KillMode"));
++        g_variant_builder_open(&builder, G_VARIANT_TYPE_VARIANT);
++        g_variant_builder_add_value(&builder, g_variant_new_string("process"));
++        g_variant_builder_close(&builder);
++        g_variant_builder_close(&builder);
++
+         /* Working Directory */
+         if (!findEnv("APP_DIR", env).empty())
+         {
