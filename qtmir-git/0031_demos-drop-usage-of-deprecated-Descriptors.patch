@@ -1,0 +1,33 @@
+From 8e928fa3b10463ba1b60bd997fce84098e88b419 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Micha=C5=82=20Sawicz?= <michal@sawicz.net>
+Date: Fri, 12 Sep 2025 18:41:08 +0200
+Subject: [PATCH] demos: drop usage of deprecated `Descriptor`s
+
+---
+ demos/qtmir-demo-shell/main.cpp | 3 ---
+ 1 file changed, 3 deletions(-)
+
+--- a/demos/qtmir-demo-shell/main.cpp
++++ b/demos/qtmir-demo-shell/main.cpp
+@@ -34,6 +34,8 @@
+ #include <qtmir/windowmanagementpolicy.h>
+ #include <qtmir/displayconfigurationstorage.h>
+ 
++#include <mir/version.h>
++
+ #include <miroil/edid.h>
+ 
+ 
+@@ -43,9 +45,12 @@
+     str += QString::fromStdString(edid.vendor);
+     str += QString("%1%2").arg(edid.product_code).arg(edid.serial_number);
+ 
++#if MIR_SERVER_VERSION < MIR_VERSION_NUMBER(2, 22, 0)
+     for (int i = 0; i < 4; i++) {
+         str += QString::fromStdString(edid.descriptors[i].string_value());
+     }
++#endif
++
+     return str;
+ }
+ 

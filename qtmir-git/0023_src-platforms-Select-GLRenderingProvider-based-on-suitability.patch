@@ -1,0 +1,116 @@
+From b35762f5198873560138a810b387ae9401615c02 Mon Sep 17 00:00:00 2001
+From: Alfred Neumayer <dev.beidl@gmail.com>
+Date: Tue, 20 May 2025 10:03:12 +0200
+Subject: [PATCH] src: platforms: Select GLRenderingProvider based on
+ suitability
+
+Only if the display_sink can handle the output should it be used.
+In order to achieve this, store the list of available rendering
+providers and select the right one based on suitability later on,
+when the display buffer is hooked to the actual screen.
+
+Fixes rendering provider selection on Asahi Linux.
+---
+ src/platforms/mirserver/qmirserver_p.cpp |  7 +++----
+ src/platforms/mirserver/screensmodel.cpp | 23 ++++++++++++++++++++---
+ src/platforms/mirserver/screensmodel.h   |  4 ++--
+ 3 files changed, 25 insertions(+), 9 deletions(-)
+
+diff --git a/src/platforms/mirserver/qmirserver_p.cpp b/src/platforms/mirserver/qmirserver_p.cpp
+index 3aef77d8..c29573e3 100644
+--- a/src/platforms/mirserver/qmirserver_p.cpp
++++ b/src/platforms/mirserver/qmirserver_p.cpp
+@@ -258,7 +258,7 @@ void QMirServerPrivate::run(const std::function<void()> &startCallback)
+                     return result;
+                 }
+                 ,
+-                // Initialization called by mir when the new compositor is setup up              
++                // Initialization called by mir when the new compositor is setup up
+                     [this](const std::shared_ptr<mir::graphics::Display>& display,
+ #if MIR_SERVER_VERSION >= MIR_VERSION_NUMBER(2, 20, 0)
+                            const std::vector<std::shared_ptr<mir::graphics::GLRenderingProvider>> render_providers,
+@@ -267,10 +267,9 @@ void QMirServerPrivate::run(const std::function<void()> &startCallback)
+                            const std::shared_ptr<mir::compositor::DisplayListener>& displayListener)
+                 {
+                     std::shared_ptr<QtCompositor> qtCompsitor = std::dynamic_pointer_cast<QtCompositor>(compositor);
+-                    
++
+ #if MIR_SERVER_VERSION >= MIR_VERSION_NUMBER(2, 20, 0)
+-                    this->renderingProvider = render_providers.front();
+-                    this->screensModel->init(display, renderingProvider, qtCompsitor, std::make_shared<miroil::DisplayListenerWrapper>(displayListener));
++                    this->screensModel->init(display, render_providers, qtCompsitor, std::make_shared<miroil::DisplayListenerWrapper>(displayListener));
+ #else
+                     this->screensModel->init(display, qtCompsitor, std::make_shared<miroil::DisplayListenerWrapper>(displayListener));
+ #endif
+diff --git a/src/platforms/mirserver/screensmodel.cpp b/src/platforms/mirserver/screensmodel.cpp
+index f89dcac4..51cfeb47 100644
+--- a/src/platforms/mirserver/screensmodel.cpp
++++ b/src/platforms/mirserver/screensmodel.cpp
+@@ -58,14 +58,14 @@ ScreensModel::ScreensModel([[maybe_unused]]QObject *parent)
+ void ScreensModel::init(
+     const std::shared_ptr<mir::graphics::Display>& display,
+ #if MIR_SERVER_VERSION >= MIR_VERSION_NUMBER(2, 20, 0)
+-    std::shared_ptr<mir::graphics::GLRenderingProvider> glProvider,
++    const std::vector<std::shared_ptr<mir::graphics::GLRenderingProvider>> renderProviders,
+ #endif
+     const std::shared_ptr<QtCompositor>& compositor,
+     const std::shared_ptr<miroil::DisplayListenerWrapper>& displayListener)
+ {
+     m_display = display;
+ #if MIR_SERVER_VERSION >= MIR_VERSION_NUMBER(2, 20, 0)
+-    m_glProvider = std::move(glProvider);
++    m_glProviders = renderProviders;
+ #endif
+     m_compositor = compositor;
+     m_displayListener = displayListener;
+@@ -203,7 +203,24 @@ void ScreensModel::updateInternal()
+ 
+             Q_FOREACH (auto screen, m_screenList) {
+                 if (dbGeom == screen->geometry()) {
+-                    screen->setMirDisplaySink(*m_glProvider, &sink, &group);
++                    // Find suitable glProvider
++                    std::pair<mg::probe::Result, std::shared_ptr<mg::GLRenderingProvider>> best_provider = std::make_pair(mg::probe::unsupported, nullptr);
++                    for (auto const& provider : m_glProviders)
++                    {
++                        auto suitability = provider->suitability_for_display(sink);
++                        if (suitability > best_provider.first)
++                        {
++                            best_provider = std::make_pair(suitability, provider);
++                        }
++                    }
++
++                    if (best_provider.first == mg::probe::unsupported)
++                    {
++                        BOOST_THROW_EXCEPTION((std::logic_error{"No rendering platform claims to support this output"}));
++                    }
++
++                    auto const chosen_provider = best_provider.second;
++                    screen->setMirDisplaySink(*chosen_provider, &sink, &group);
+                     break;
+                 }
+             }
+diff --git a/src/platforms/mirserver/screensmodel.h b/src/platforms/mirserver/screensmodel.h
+index 55b131ba..739fac70 100644
+--- a/src/platforms/mirserver/screensmodel.h
++++ b/src/platforms/mirserver/screensmodel.h
+@@ -87,7 +87,7 @@ public:
+     void init(
+         const std::shared_ptr<mir::graphics::Display>& display,
+ #if MIR_SERVER_VERSION >= MIR_VERSION_NUMBER(2, 20, 0)
+-        std::shared_ptr<mir::graphics::GLRenderingProvider> glProvider,
++        const std::vector<std::shared_ptr<mir::graphics::GLRenderingProvider>> render_providers,
+ #endif
+         const std::shared_ptr<QtCompositor>& compositor,
+         const std::shared_ptr<miroil::DisplayListenerWrapper> & displayListener);
+@@ -111,7 +111,7 @@ private:
+     std::shared_ptr<QtCompositor> m_compositor;
+     std::shared_ptr<miroil::DisplayListenerWrapper> m_displayListener;
+ #if MIR_SERVER_VERSION >= MIR_VERSION_NUMBER(2, 20, 0)
+-    std::shared_ptr<mir::graphics::GLRenderingProvider> m_glProvider;
++    std::vector<std::shared_ptr<mir::graphics::GLRenderingProvider>> m_glProviders;
+ #endif
+     QList<PlatformScreen*> m_screenList;
+     bool m_compositing;
+-- 
+GitLab
+

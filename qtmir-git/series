@@ -1,0 +1,11 @@
+2002_no-requires-provides-check.patch
+2003_disable-benchmarks.patch
+0002_src-modules-Re-introduce-lost-workaround-for-font-re.patch
+0009_src-modules-Add-header-for-getpid.patch
+0011_src-platforms-Wrap-window-activity-change-in-a-try-c.patch
+0012_src-modules-Partial-revert-of-e73ef71622ad3202b77bf6.patch
+0022_modules-MirSurface-try-to-let-Mir-forceClose-dead-su.patch
+0001_Bump-minimum-required-CMake-version.patch
+0030_mirserver-update-for-Mir-2.22.patch
+0031_demos-drop-usage-of-deprecated-Descriptors.patch
+0032_mirsurface-add-mirror_mode_set_to.patch

@@ -1,0 +1,33 @@
+From b7333e0a00c2d7169c48e16b6e08c32803823fb4 Mon Sep 17 00:00:00 2001
+From: Alfred <dev.beidl@gmail.com>
+Date: Thu, 11 Jul 2024 18:54:41 +0200
+Subject: [PATCH 02/14] src/modules: Re-introduce lost workaround for font
+ render issue
+
+Lost in commit b27b44772de3be476a05831c0f14a63f56d79378, pulled from
+revision 15fcc65039b19a598eda76e18260ea9824a13048 and placed in a
+similar place around buffer bindings happen.
+
+Signed-off-by: Mike Gabriel <mike.gabriel@das-netzwerkteam.de>
+---
+ src/modules/QtMir/Application/mirbuffersgtexture.cpp | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/src/modules/QtMir/Application/mirbuffersgtexture.cpp b/src/modules/QtMir/Application/mirbuffersgtexture.cpp
+index 47d9f03a..6397b528 100644
+--- a/src/modules/QtMir/Application/mirbuffersgtexture.cpp
++++ b/src/modules/QtMir/Application/mirbuffersgtexture.cpp
+@@ -135,6 +135,10 @@ public:
+         f->glBindTexture(GL_TEXTURE_2D, m_textureId);
+ 
+         m_texSourceBuf->bind();
++
++        // Fix for lp:1583088 - For non-GL clients, Mir uploads the client pixel buffer to a GL texture.
++        // But as it does so, it changes some GL state and neglects to restore it, which breaks Qt's rendering.
++        f->glPixelStorei(GL_UNPACK_ALIGNMENT, 4); // 4 is the default which Qt uses
+     }
+ 
+ private:
+-- 
+2.47.2
+

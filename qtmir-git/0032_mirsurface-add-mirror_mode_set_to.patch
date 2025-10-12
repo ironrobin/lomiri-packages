@@ -1,0 +1,27 @@
+From 349ca009f042fe0271b195bbc8892fcd8527048c Mon Sep 17 00:00:00 2001
+From: OPNA2608 <opna2608@protonmail.com>
+Date: Fri, 12 Sep 2025 18:45:21 +0200
+Subject: [PATCH] mirsurface: add `mirror_mode_set_to`
+
+---
+ src/modules/QtMir/Application/mirsurface.cpp | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/src/modules/QtMir/Application/mirsurface.cpp b/src/modules/QtMir/Application/mirsurface.cpp
+index b37bae31..6af36719 100644
+--- a/src/modules/QtMir/Application/mirsurface.cpp
++++ b/src/modules/QtMir/Application/mirsurface.cpp
+@@ -135,6 +135,10 @@ public:
+     void application_id_set_to(mir::scene::Surface const* /* surf */, std::string const& /* application_id */) override {};
+ #endif
+ 
++#if MIR_SERVER_VERSION >= MIR_VERSION_NUMBER(2, 22, 0)
++    void mirror_mode_set_to(mir::scene::Surface const* /* surf */, MirMirrorMode /* mirror_mode */) override {};
++#endif
++
+ #else
+     void attrib_changed(MirWindowAttrib, int) override;
+     void resized_to(mir::geometry::Size const&) override;
+-- 
+GitLab
+

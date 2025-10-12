@@ -4,7 +4,7 @@ pkgbase=qtmir-git
 pkgname=(qtmir-git)
 _pkgname=qtmir
 pkgver=r2907.0.7.2.r113.gea2f4774
-pkgrel=9
+pkgrel=10
 url='https://gitlab.com/ubports/development/core/qtmir'
 arch=(x86_64 i686 armv7h aarch64)
 license=(LGPL)
@@ -13,14 +13,36 @@ provides=(qtmir)
 depends=(qt5-base qt5-quickcontrols qt5-sensors mir process-cpp lomiri-app-launch gsettings-qt libqtdbustest libqtdbusmock lomiri-url-dispatcher glm valgrind)
 makedepends=(boost git cmake cmake-extras gtest)
 source=('git+https://gitlab.com/ubports/development/core/qtmir.git#commit=ea2f4774b1a109fec3e22a021fb21ff60da80626'
-        'qtmir-debian-pkg.tar.gz::https://salsa.debian.org/ubports-team/qtmir/-/archive/debian/0.8.0_git20250407.ea2f477-6/qtmir-debian-0.8.0_git20250407.ea2f477-6.tar.gz'
+        '2002_no-requires-provides-check.patch'
+        '2003_disable-benchmarks.patch'
+        '0002_src-modules-Re-introduce-lost-workaround-for-font-re.patch'
+        '0009_src-modules-Add-header-for-getpid.patch'
+        '0011_src-platforms-Wrap-window-activity-change-in-a-try-c.patch'
+        '0012_src-modules-Partial-revert-of-e73ef71622ad3202b77bf6.patch'
+        '0022_modules-MirSurface-try-to-let-Mir-forceClose-dead-su.patch'
+        '0001_Bump-minimum-required-CMake-version.patch'
+        '0023_src-platforms-Select-GLRenderingProvider-based-on-suitability.patch'
+        '0030_mirserver-update-for-Mir-2.22.patch'
+        '0031_demos-drop-usage-of-deprecated-Descriptors.patch'
+        '0032_mirsurface-add-mirror_mode_set_to.patch'
         '3001_link_freetype_harfbuzz.patch'
         '3002_add-qt5mir2server.patch'
         '3003_take_shell_rotation_into_account.patch'
         '3004_add_touchpad_config.patch'
 )
 sha256sums=('f18fc49b66f4d43dcefd56961e7680435bcc910dece31fe996f5e679c6af24c0'
-            '5fca70be7a579bfaa23331c72a8fe32d72e3dff00b94507360b83026c2120488'
+            '781fcd94bbf857395fdf94dc7ed310296287fdef4ba5a38311c3ad8e3c3739ec'
+            '2e6d768428861df691d141267f8c59cd9956f39007e57aa02b19b01f629163f1'
+            'b80b594d61320c4d933f1862a0d5fb2ebe7a3da555ca6a2fd015f540414be9f8'
+            '38398164eb056cf0c611b1f98f3cb1688d7f82f09cb8d561d26c2e54210032f3'
+            'ae8b026033ffe6ffad45199769ef23b7c64c020b87f5b0dd4b9f3029450fb1ed'
+            '1e1c168f08d76998d728d2b1efd4b37929fdccc18c494fae47b3036b3016f465'
+            '67d377dc5d69963a9e48b850388ef7be2c4cd2a419f6fe446092ba531e0a70e3'
+            '50e45f94605e8008df036c71857f01da72a4074be329de6cd1bd0c9dc05527cb'
+            '0ecb38ebf68a31755d0de3641e8cb391aeefbc0edd38d383b3adc6a2f2e6738a'
+            '17c733aba90cb0ceec2f1df39184addc05821d9d9cd7d5e85931083ead947696'
+            '11d9b920833b7765da28e495001b1f9a1e2dd9b70f0187ee83b76513208c5d18'
+            '44be835086d86d2f12c15fbdc211c25055d14a395a20a8cc5c18576e07641e7b'
             'f8ed4b35ec82c6b1f00186a5e2faf4399b50868241690a2fc20487e384f2c686'
             'f1077654c0d2e9201c234b7782f28ecb6385f19369952b6249195f2ac9ca98a5'
             '731633429641e75b8ed878568e346e674fdf33c55eb381db93149b55afbc8200'
@@ -33,16 +55,21 @@ BUILD_DIR=build
 prepare() {
   cd ${_pkgname}
 
-  # Apply Debian patches from the provided packaging tarball
-  local debian_dir
-  debian_dir=$(ls -d ../qtmir-debian-*/debian 2>/dev/null | head -n1)
-  if [[ -n "$debian_dir" && -f "$debian_dir/patches/series" ]]; then
-    echo "Applying Debian patch series from: $debian_dir"
-    while read -r p; do
-      [[ -z "$p" || "$p" =~ ^# ]] && continue
-      patch -Np1 -i "$debian_dir/patches/$p"
-    done < "$debian_dir/patches/series"
-  fi
+  # Begin debian patches
+  patch -Np1 -i "${srcdir}/2002_no-requires-provides-check.patch"
+  patch -Np1 -i "${srcdir}/2003_disable-benchmarks.patch"
+  patch -Np1 -i "${srcdir}/0002_src-modules-Re-introduce-lost-workaround-for-font-re.patch"
+  patch -Np1 -i "${srcdir}/0009_src-modules-Add-header-for-getpid.patch"
+  patch -Np1 -i "${srcdir}/0011_src-platforms-Wrap-window-activity-change-in-a-try-c.patch"
+  patch -Np1 -i "${srcdir}/0012_src-modules-Partial-revert-of-e73ef71622ad3202b77bf6.patch"
+  patch -Np1 -i "${srcdir}/0022_modules-MirSurface-try-to-let-Mir-forceClose-dead-su.patch"
+  patch -Np1 -i "${srcdir}/0001_Bump-minimum-required-CMake-version.patch"
+  #patch -Np1 -i "${srcdir}/0023_src-platforms-Select-GLRenderingProvider-based-on-suitability.patch"
+  patch -Np1 -i "${srcdir}/0030_mirserver-update-for-Mir-2.22.patch"
+  patch -Np1 -i "${srcdir}/0031_demos-drop-usage-of-deprecated-Descriptors.patch"
+  patch -Np1 -i "${srcdir}/0032_mirsurface-add-mirror_mode_set_to.patch"
+  # End debian patches
+
   patch -Np1 -i "${srcdir}/3001_link_freetype_harfbuzz.patch"
   patch -Np1 -i "${srcdir}/3002_add-qt5mir2server.patch"
   patch -Np1 -i "${srcdir}/3003_take_shell_rotation_into_account.patch"
@@ -67,7 +94,7 @@ build() {
     -DCMAKE_CXX_STANDARD_REQUIRED=ON \
     -DCMAKE_CXX_EXTENSIONS=ON \
     ..
-  make
+  cmake --build .
 }
 
 # check() {
@@ -78,7 +105,7 @@ build() {
 package_qtmir-git() {
   pkgdesc='Qt platform abstraction (QPA) plugin for a Mir server'
   cd ${_pkgname}/${BUILD_DIR}
-  make DESTDIR="${pkgdir}/" install
+  DESTDIR="${pkgdir}/" cmake --install .
   mv ${pkgdir}/usr/lib/qt5/ ${pkgdir}/usr/lib/qt/
 }
 # vim:set ts=2 sw=2 et:
