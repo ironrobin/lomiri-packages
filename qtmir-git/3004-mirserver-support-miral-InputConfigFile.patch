@@ -1,0 +1,248 @@
+From cbf570671c5f9c44bd169b036d7715371348aa95 Mon Sep 17 00:00:00 2001
+From: Alex R <alex@ironrobin.net>
+Date: Mon, 13 Oct 2025 19:33:46 +0000
+Subject: [PATCH] mirserver: support miral InputConfigFile
+
+---
+ CMakeLists.txt                           |   1 +
+ src/platforms/mirserver/CMakeLists.txt   |   1 +
+ src/platforms/mirserver/qmirserver_p.cpp | 174 +++++++++++++++++++++++
+ 3 files changed, 176 insertions(+)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index c4899e88..6d6c1ae4 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -78,6 +78,7 @@ find_package(Qt5Sensors 5.9 REQUIRED)
+ find_package(Qt5Test 5.9 REQUIRED)
+ 
+ find_package(Threads REQUIRED)
++find_package(tomlplusplus CONFIG REQUIRED)
+ 
+ # Qt’s FontDatabaseSupport is static and needs Freetype explicitly.
+ # Make Freetype available to subdirs and targets created after this point.
+diff --git a/src/platforms/mirserver/CMakeLists.txt b/src/platforms/mirserver/CMakeLists.txt
+index 19a7f637..44b86e22 100644
+--- a/src/platforms/mirserver/CMakeLists.txt
++++ b/src/platforms/mirserver/CMakeLists.txt
+@@ -207,6 +207,7 @@ target_link_libraries(qtmirserver
+ 
+     PRIVATE
+         Threads::Threads
++        tomlplusplus::tomlplusplus
+         ${URL_DISPATCHER_LDFLAGS}
+         ${EGL_LDFLAGS}
+         ${LTTNG_LIBRARIES}
+diff --git a/src/platforms/mirserver/qmirserver_p.cpp b/src/platforms/mirserver/qmirserver_p.cpp
+index 3aef77d8..c6dd14b1 100644
+--- a/src/platforms/mirserver/qmirserver_p.cpp
++++ b/src/platforms/mirserver/qmirserver_p.cpp
+@@ -46,6 +46,8 @@
+ #include <miral/x11_support.h>
+ #include <miral/keymap.h>
+ #include <miral/wayland_extensions.h>
++#include <miral/input_configuration.h>
++#include <miral/config_file.h>
+ 
+ #include <miral/lambda_as_function.h>
+ 
+@@ -57,6 +59,10 @@
+ #include <valgrind.h>
+ #endif
+ 
++#include <iostream>
++#include <filesystem>
++#include <toml++/toml.h>
++
+ namespace
+ {
+ static int qtmirArgc{1};
+@@ -93,6 +99,171 @@ std::shared_ptr<qtmir::SessionAuthorizer> buildSessionAuthorizer()
+     return std::make_shared<qtmir::SessionAuthorizer>();
+ }
+ 
++class InputConfigFile
++{
++public:
++    InputConfigFile(miral::MirRunner& runner, std::filesystem::path file) :
++        config_file{
++            runner,
++            file,
++            miral::ConfigFile::Mode::reload_on_change,
++            [this](std::istream& istream, std::filesystem::path const& path) {loader(istream, path);  }}
++    {
++        runner.add_start_callback([this]
++            {
++                std::lock_guard lock{config_mutex};
++                apply_config();
++            });
++    }
++    void operator()(mir::Server& server)
++    {
++        input_configuration(server);
++    }
++private:
++    miral::InputConfiguration input_configuration;
++    miral::InputConfiguration::Touchpad touchpad = input_configuration.touchpad();
++    miral::InputConfiguration::Mouse mouse = input_configuration.mouse();
++    std::mutex config_mutex;
++    miral::ConfigFile config_file;
++    void apply_config()
++    {
++        input_configuration.touchpad(touchpad);
++        input_configuration.mouse(mouse);
++    };
++    void loader(std::istream& is, std::filesystem::path const& path)
++    {
++        std::cout << "** Reloading: " << path << std::endl;
++        std::string content{ std::istreambuf_iterator<char>(is), {} };
++        try {
++            auto tbl = toml::parse(content, path.string()); // second arg is used for diagnostic
++
++            // mouse.acceleration_bias ∈ [-1.0, 1.0]
++            if (auto d = tbl.at_path("mouse.acceleration_bias").value<double>()) {
++                double x = *d;
++
++                if (!std::isfinite(x)) {
++                    qWarning() << "mouse.acceleration_bias is not finite; ignoring (" << x << ")";
++                } else if (x < -1.0 || x > 1.0) {
++                    qWarning() << "mouse.acceleration_bias out of range [-1,1]; ignoring (" << x << ")";
++                } else {
++                    mouse.acceleration_bias(x);
++                }
++            }
++
++            // mouse.vscroll_speed ∈ [0, 1.0]
++            // vscroll speed should be from 0 to 1.00 (we don't support natural scrolling yet)
++            if (auto d = tbl.at_path("mouse.vscroll_speed").value<double>()) {
++                double x = *d;
++
++                if (!std::isfinite(x)) {
++                    qWarning() << "mouse.vscroll_speed is not finite; ignoring (" << x << ")";
++                } else if (x < 0 || x > 1.0) {
++                    qWarning() << "mouse.vscroll_speed out of range [0,1]; ignoring (" << x << ")";
++                } else {
++                    mouse.vscroll_speed(x);
++                }
++            }
++
++            // mouse.handedness
++            if (auto v = tbl.at_path("mouse.handedness").value<std::string>()) {
++                std::string s = *v;
++
++                // trim whitespace
++                auto l = s.find_first_not_of(" \t\r\n");
++                auto r = s.find_last_not_of(" \t\r\n");
++                if (l != std::string::npos) s = s.substr(l, r - l + 1);
++                
++                // to lowercase
++                std::transform(s.begin(), s.end(), s.begin(), 
++                    [](unsigned char c){ return static_cast<char>(std::tolower(c)); });
++                    
++                if (s == "right") {
++                    mouse.handedness(mir_pointer_handedness_right);
++                } else if (s == "left") {
++                    mouse.handedness(mir_pointer_handedness_left);
++                } else {
++                     qWarning() << "mouse.handedness must be 'right' or 'left'; ignoring (" << s.c_str() << ")";
++                }
++            }
++            
++            // touchpad.acceleration_bias  ∈ [-1.0, 1.0]
++            if (auto d = tbl.at_path("touchpad.acceleration_bias").value<double>()) {
++                double x = *d;
++
++                if (!std::isfinite(x)) {
++                    qWarning() << "touchpad.acceleration_bias is not finite; ignoring (" << x << ")";
++                } else if (x < -1.0 || x > 1.0) {
++                    qWarning() << "touchpad.acceleration_bias out of range [-1,1]; ignoring (" << x << ")";
++                } else {
++                    touchpad.acceleration_bias(x);
++                }
++            }
++
++            // touchpad.vscroll_speed ∈ [0, 1.0]
++            // vscroll speed should be from 0 to 1.00 (we don't support natural scrolling yet)
++            if (auto d = tbl.at_path("touchpad.vscroll_speed").value<double>()) {
++                double x = *d;
++
++                if (!std::isfinite(x)) {
++                    qWarning() << "touchpad.vscroll_speed is not finite; ignoring (" << x << ")";
++                } else if (x < 0 || x > 1.0) {
++                    qWarning() << "touchpad.vscroll_speed out of range [0,1]; ignoring (" << x << ")";
++                } else {
++                    touchpad.vscroll_speed(x);
++                }
++            }
++
++            // touchpad.handedness: Not supported by Mir yet!
++
++            // touchpad.scroll_mode
++            if (auto v = tbl.at_path("touchpad.scroll_mode").value<std::string>()) {
++                std::string s = *v;
++
++                // trim whitespace
++                auto l = s.find_first_not_of(" \t\r\n");
++                auto r = s.find_last_not_of(" \t\r\n");
++                if (l != std::string::npos) s = s.substr(l, r - l + 1);
++                
++                // to lowercase
++                std::transform(s.begin(), s.end(), s.begin(), 
++                    [](unsigned char c){ return static_cast<char>(std::tolower(c)); });
++                    
++                if (s == "two_finger_scroll") {
++                    touchpad.scroll_mode(mir_touchpad_scroll_mode_two_finger_scroll);
++                } else if (s == "none") {
++                    touchpad.scroll_mode(mir_touchpad_scroll_mode_none);
++                } else {
++                     qWarning() << "touchpad.scroll_mode must be 'two_finger_scroll' or 'none'; ignoring (" << s.c_str() << ")";
++                }
++            }
++
++            // touchpad.tap_to_click
++            if (auto b = tbl.at_path("touchpad.tap_to_click").value<bool>()) {
++                touchpad.tap_to_click(*b);
++            }
++
++            // touchpad.disable_while_typing
++            if (auto b = tbl.at_path("touchpad.disable_while_typing").value<bool>()) {
++                touchpad.disable_while_typing(*b);
++            }
++
++            // touchpad.disable_with_external_mouse
++            if (auto b = tbl.at_path("touchpad.disable_with_external_mouse").value<bool>()) {
++                touchpad.disable_with_external_mouse(*b);
++            }
++        }
++        catch (const toml::parse_error& e) {
++            std::cerr << "TOML parse error at "
++                      << (e.source().path ? e.source().path->c_str() : "<input>")
++                      << ":" << e.source().begin.line << ":" << e.source().begin.column
++                      << " - " << e.description() << "\n";
++        }
++
++        std::lock_guard lock{config_mutex};
++        apply_config();
++    }
++};
++
+ } // namespace
+ 
+ void MirServerThread::run()
+@@ -194,6 +365,8 @@ void QMirServerPrivate::run(const std::function<void()> &startCallback)
+     waylandExtensions.add_extension(qtmir::qtWindowmanagerExtension());
+     waylandExtensions.add_extension(qtmir::qtKwinServerDecorationManagerExtension(m_windowModelNotifier));
+ 
++    InputConfigFile input_configuration{runner, "mir_input.toml"};
++
+     runner.set_exception_handler([]
+     {
+         try {
+@@ -278,6 +451,7 @@ void QMirServerPrivate::run(const std::function<void()> &startCallback)
+             ),
+             setTerminator,
+             config_keymap,
++            std::ref(input_configuration),
+             miroil::PersistDisplayConfig{displayStorageBuilder(),
+                                         m_displayConfigurationPolicy},
+         });

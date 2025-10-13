@@ -4,7 +4,7 @@ pkgbase=qtmir-git
 pkgname=(qtmir-git)
 _pkgname=qtmir
 pkgver=r2907.0.7.2.r113.gea2f4774
-pkgrel=11
+pkgrel=12
 url='https://gitlab.com/ubports/development/core/qtmir'
 arch=(x86_64 i686 armv7h aarch64)
 license=(LGPL)
@@ -28,6 +28,7 @@ source=('git+https://gitlab.com/ubports/development/core/qtmir.git#commit=ea2f47
         '3001_link_freetype_harfbuzz.patch'
         '3002_add-qt5mir2server.patch'
         '3003_take_shell_rotation_into_account.patch'
+        '3004-mirserver-support-miral-InputConfigFile.patch'
 )
 sha256sums=('f18fc49b66f4d43dcefd56961e7680435bcc910dece31fe996f5e679c6af24c0'
             '781fcd94bbf857395fdf94dc7ed310296287fdef4ba5a38311c3ad8e3c3739ec'
@@ -44,7 +45,8 @@ sha256sums=('f18fc49b66f4d43dcefd56961e7680435bcc910dece31fe996f5e679c6af24c0'
             '44be835086d86d2f12c15fbdc211c25055d14a395a20a8cc5c18576e07641e7b'
             'b01298cd9611c39d2b9eb72f7e49d597674a80ac304df91ac69ca45e367cf9b5'
             '66aa5adc68a1eb6fa215f0903ca5d5aa682ae6beedc327a4a3185c7d05a4f1e0'
-            'b3f7c45f791c8575778409399f520b3e5e82cbc6b46d0dbb1d20d0efa719c91a')
+            'b3f7c45f791c8575778409399f520b3e5e82cbc6b46d0dbb1d20d0efa719c91a'
+            '52c725f84f4532c6c145fdbe8066d473c0ad4f78805dd9d51c189cf3688d899c')
 BUILDENV+=('!check')
 
 BUILD_DIR=build
@@ -69,6 +71,7 @@ prepare() {
   patch -Np1 -i "${srcdir}/3001_link_freetype_harfbuzz.patch"
   patch -Np1 -i "${srcdir}/3002_add-qt5mir2server.patch"
   patch -Np1 -i "${srcdir}/3003_take_shell_rotation_into_account.patch"
+  patch -Np1 -i "${srcdir}/3004-mirserver-support-miral-InputConfigFile.patch"
 }
 
 pkgver() {
