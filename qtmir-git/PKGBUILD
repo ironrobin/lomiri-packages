@@ -11,7 +11,7 @@ license=(LGPL)
 conflicts=(qtmir)
 provides=(qtmir)
 depends=(qt5-base qt5-quickcontrols qt5-sensors mir process-cpp lomiri-app-launch gsettings-qt libqtdbustest libqtdbusmock lomiri-url-dispatcher glm valgrind)
-makedepends=(boost git cmake cmake-extras gtest)
+makedepends=(tomlplusplus boost git cmake cmake-extras gtest)
 source=('git+https://gitlab.com/ubports/development/core/qtmir.git#commit=ea2f4774b1a109fec3e22a021fb21ff60da80626'
         '2002_no-requires-provides-check.patch'
         '2003_disable-benchmarks.patch'
