@@ -1,15 +1,15 @@
-From f068795f015d29b457c96bb20564a5c0d6baa283 Mon Sep 17 00:00:00 2001
+From 0a75c23e384bfae06927e96687316519c109b324 Mon Sep 17 00:00:00 2001
 From: Alex R <alex@ironrobin.net>
-Date: Wed, 3 Sep 2025 14:32:38 -0500
-Subject: [PATCH] make build work
+Date: Mon, 13 Oct 2025 18:40:23 +0000
+Subject: [PATCH] link freetype harfbuzz
 
 ---
  CMakeLists.txt                         |  7 +++++++
- src/platforms/mirserver/CMakeLists.txt | 23 +++++++++++++++++++++++
- 2 files changed, 30 insertions(+)
+ src/platforms/mirserver/CMakeLists.txt | 10 ++++++++++
+ 2 files changed, 17 insertions(+)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 67289888..484deb47 100644
+index e6fc0c59..c4899e88 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -79,6 +79,13 @@ find_package(Qt5Test 5.9 REQUIRED)
@@ -27,7 +27,7 @@ index 67289888..484deb47 100644
  if(WITH_MIR2)
  pkg_check_modules(MIRSERVER mirserver REQUIRED)
 diff --git a/src/platforms/mirserver/CMakeLists.txt b/src/platforms/mirserver/CMakeLists.txt
-index 01615532..19a7f637 100644
+index 01615532..2615ea07 100644
 --- a/src/platforms/mirserver/CMakeLists.txt
 +++ b/src/platforms/mirserver/CMakeLists.txt
 @@ -42,6 +42,11 @@ set(QT5PLATFORMSUPPORT_LIBS
@@ -59,3 +59,5 @@ index 01615532..19a7f637 100644
 +        Freetype::Freetype
 +        ${HARFBUZZ_LIBRARIES}
  )
+ 
+ set_target_properties(qtmirserver

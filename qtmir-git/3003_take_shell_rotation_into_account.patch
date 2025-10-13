@@ -22,6 +22,3 @@ index dc56f0f1..268b9b73 100644
 +        QPoint localPos = mousePointer->parentItem()->mapFromGlobal(screenPos).toPoint();
          mousePointer->moveTo(localPos);
      };
- 
--- 
-2.51.0
