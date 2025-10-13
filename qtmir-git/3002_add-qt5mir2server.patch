@@ -5,9 +5,9 @@ Subject: [PATCH] add qt5mir2server
 
 ---
  src/platforms/mirserver/CMakeLists.txt       | 13 +++++++++++++
- src/platforms/mirserver/qt5mir2server.pc.in~ | 12 ++++++++++++
+ src/platforms/mirserver/qt5mir2server.pc.in | 12 ++++++++++++
  2 files changed, 25 insertions(+)
- create mode 100644 src/platforms/mirserver/qt5mir2server.pc.in~
+ create mode 100644 src/platforms/mirserver/qt5mir2server.pc.in
 
 diff --git a/src/platforms/mirserver/CMakeLists.txt b/src/platforms/mirserver/CMakeLists.txt
 index 2615ea07..19a7f637 100644
@@ -33,11 +33,11 @@ index 2615ea07..19a7f637 100644
  install(
    TARGETS qtmirserver
    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-diff --git a/src/platforms/mirserver/qt5mir2server.pc.in~ b/src/platforms/mirserver/qt5mir2server.pc.in~
+diff --git a/src/platforms/mirserver/qt5mir2server.pc.in b/src/platforms/mirserver/qt5mir2server.pc.in
 new file mode 100644
 index 00000000..0ef4dfba
 --- /dev/null
-+++ b/src/platforms/mirserver/qt5mir2server.pc.in~
++++ b/src/platforms/mirserver/qt5mir2server.pc.in
 @@ -0,0 +1,12 @@
 +prefix=@CMAKE_INSTALL_PREFIX@
 +exec_prefix=${prefix}
