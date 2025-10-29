@@ -1,0 +1,21 @@
+From 35246071da5b0cbf8a31aa706827f5ca78239ce0 Mon Sep 17 00:00:00 2001
+From: Alex R <alex@ironrobin.net>
+Date: Wed, 29 Oct 2025 17:02:38 +0000
+Subject: [PATCH] remove Boost.System
+
+---
+ CMakeLists.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 372e166..64f2909 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -24,7 +24,7 @@ set(DBUS_CPP_VERSION_PATCH 4)
+ 
+ message(STATUS "${CMAKE_PROJECT_NAME} ${DBUS_CPP_VERSION_MAJOR}.${DBUS_CPP_VERSION_MINOR}.${DBUS_CPP_VERSION_PATCH}")
+ 
+-find_package(Boost 1.66 REQUIRED COMPONENTS filesystem program_options system REQUIRED)
++find_package(Boost 1.66 REQUIRED COMPONENTS filesystem program_options REQUIRED)
+ find_package(LibXml2 REQUIRED)
+ find_package(PkgConfig REQUIRED)

@@ -4,26 +4,29 @@
 pkgname=dbus-cpp
 pkgdesc='A header-only dbus-binding leveraging C++-11'
 pkgver=5.0.5
-pkgrel=0
+pkgrel=1
 url='https://gitlab.com/ubports/development/core/lib-cpp/dbus-cpp'
 arch=(x86_64 aarch64)
 license=(LGPL3)
 depends=(process-cpp dbus libxml2)
 makedepends=(gtest cmake cmake-extras gmock properties-cpp boost lcov gcovr)
-source=("https://gitlab.com/ubports/development/core/lib-cpp/dbus-cpp/-/archive/5.0.5/dbus-cpp-5.0.5.tar.gz"
-        '0001-ironrobin.patch')
-sha256sums=('SKIP'
-            'SKIP')
+source=("git+https://gitlab.com/ubports/development/core/lib-cpp/dbus-cpp.git#tag=${pkgver}"
+        '0001-ironrobin.patch'
+        '0001-remove-Boost.System.patch'
+)
+sha256sums=('1ccbc6c0a453b81a0b9386ee0e9dfbb547d375b17033f5a659b9d468b6833f8c'
+            '29dbd6e3575a28fffc04e57c65de5c70b9b9981a7b3124605a1e591fa9c905c5'
+            '320ef5f5a57946b48a63fcf1db61258f965789b4119693b8bd7f5db02702c9d2')
 
 prepare() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}"
 
-  # patch -Np1 -i "$srcdir/0001-ironrobin.patch"
+  patch -Np1 -i "$srcdir/0001-remove-Boost.System.patch"
 }
 
 build() {
-  mkdir -p "${srcdir}/${pkgname}-${pkgver}/build"
-  cd "${srcdir}/${pkgname}-${pkgver}/build"
+  mkdir -p "${srcdir}/${pkgname}/build"
+  cd "${srcdir}/${pkgname}/build"
 
   CXXFLAGS=-Wno-error=deprecated-copy 
   cmake -DCMAKE_INSTALL_LIBDIR=/usr/lib -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DDBUS_CPP_VERSION_MAJOR=5 -DDBUS_CPP_VERSION_MINOR=0 -DDBUS_CPP_VERSION_PATCH=0 ..
@@ -31,7 +34,7 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/${pkgname}-${pkgver}/build"
+  cd "${srcdir}/${pkgname}/build"
 
   make DESTDIR="${pkgdir}/" install
 }
