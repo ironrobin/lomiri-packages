@@ -7,7 +7,7 @@
 
 pkgname=mir
 pkgver=2.20.2
-pkgrel=1
+pkgrel=2
 pkgdesc="Canonical's display server"
 url="https://github.com/canonical/mir"
 arch=(x86_64 i686 aarch64)
@@ -30,30 +30,31 @@ optdepends=('qterminal: required for miral demos'
             'qt5-wayland: required for miral demos'
             'xcursor-dmz: opt requirement for miral demos')
 options=()
-source=("https://github.com/canonical/mir/releases/download/v${pkgver}/mir-${pkgver}.tar.xz"
+source=("git+https://github.com/canonical/mir.git#tag=v2.20.2"
         "1003_cross.patch"
         "1004_fix-autopkgtest.patch"
         "2002_dont-dpkg-gensymbols-by-upstream.patch"
         "2003_ignore-package-abi-test.patch"
         "2004_python_to_python3.patch"
         "2005_skip-check-miroil-symbols.patch"
+        "0001-Remove-Boost.system.patch"
 )
 # 0xxx: Grabbed from upstream development.
 # 1xxx: Possibly relevant for upstream adoption.
 # 2xxx: Only relevant for official Debian release.
-sha256sums=('c8994ba14d986d484daaec6c0ccb5f4ca7eb52746167899991a0983772c0fda8'
+sha256sums=('8600401c327c174ac133207596ce9814aee275a914278bff0e913bcba1e3598d'
             'a779cead843cd71ca480fadf3511db52e8849b5f5093a2847ce204839e32f52f'
             'a50fc9a95642e3ada0d6a70e97bee9fdfa113bfcf5bd070f1680fe2e818b25cd'
             '0d905db592de5ef07d63f7c73df20b6d89e7e9526b51f01e3d325556fee0fc87'
             '9178bde76a91b2fd40e9623fbe2f2edd7b4c056ca7fa3a96d6cdffe0d95345e1'
             '630f38c48f877a8d1f33cd79f804883acf810e946ce4741ca30cb459011abc7d'
             '9c739b136e0ba8dddc85c07f613b5897ff81cae4f58da92398b9b12fbb6f2c34'
-)
+            '57c46421c8cc0c71b899eef97d6024927481ed32c73bfc7068915663a55d8f4d')
 
 # glm doesnt ship with a glm.pc, but mir build falls back on cmake's find_package for non-debian systems
 
 prepare() {
-  cd "${pkgname}-${pkgver}"
+  cd "${pkgname}"
 
   patch -p1 -i ../1003_cross.patch
   patch -p1 -i ../1004_fix-autopkgtest.patch
@@ -61,8 +62,7 @@ prepare() {
   patch -p1 -i ../2003_ignore-package-abi-test.patch
   patch -p1 -i ../2004_python_to_python3.patch
   patch -p1 -i ../2005_skip-check-miroil-symbols.patch
-  exit 1
-
+  patch -p1 -i ../0001-Remove-Boost.system.patch
 }
 
 build() {
@@ -71,13 +71,12 @@ build() {
 
   local _flags=(
     -B build 
-    -S "${pkgname}-${pkgver}" 
+    -S "${pkgname}" 
     -GNinja
     -Wno-dev
     -DCMAKE_BUILD_TYPE=None
     -DCMAKE_INSTALL_PREFIX=/usr
     -DCMAKE_INSTALL_LIBDIR=lib
-    -DBoost_NO_BOOST_CMAKE=ON
     # mir options
     -DMIR_FATAL_COMPILE_WARNINGS=OFF
     -DCMAKE_INSTALL_LIBEXECDIR=/usr/lib/$pkgname/
