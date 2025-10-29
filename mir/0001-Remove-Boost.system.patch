@@ -1,0 +1,180 @@
+From c0894c52a897457e140c81b7f84e9eebc92665b8 Mon Sep 17 00:00:00 2001
+From: Alex R <alex@ironrobin.net>
+Date: Wed, 29 Oct 2025 15:51:16 +0000
+Subject: [PATCH] Remove Boost.system
+
+---
+ CMakeLists.txt                               | 4 ++--
+ examples/mir_demo_server/CMakeLists.txt      | 1 -
+ src/core/CMakeLists.txt                      | 1 -
+ src/platforms/common/server/CMakeLists.txt   | 1 -
+ tests/CMakeLists.txt                         | 2 --
+ tests/integration-tests/CMakeLists.txt       | 1 -
+ tests/mir_test_doubles/CMakeLists.txt        | 1 -
+ tests/mir_test_framework/CMakeLists.txt      | 1 -
+ tests/mirtest-internal.pc.in                 | 2 +-
+ tests/mirtest.pc.in                          | 2 +-
+ tests/unit-tests/CMakeLists.txt              | 2 --
+ tests/window_management_tests/CMakeLists.txt | 1 -
+ 12 files changed, 4 insertions(+), 15 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 9cfd1bce3a..d724d29af4 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -162,8 +162,8 @@ endif()
+ enable_testing()
+ find_package(PkgConfig)
+ 
+-# Check for boost
+-find_package(Boost 1.48.0 COMPONENTS system program_options filesystem iostreams REQUIRED)
++# Check for Boost (Boost.System is header-only now; don't request it)
++find_package(Boost 1.48.0 COMPONENTS program_options filesystem iostreams REQUIRED)
+ 
+ add_compile_definitions(EGL_NO_X11)
+ 
+diff --git a/examples/mir_demo_server/CMakeLists.txt b/examples/mir_demo_server/CMakeLists.txt
+index 07c71d023f..9e5f3db994 100644
+--- a/examples/mir_demo_server/CMakeLists.txt
++++ b/examples/mir_demo_server/CMakeLists.txt
+@@ -26,5 +26,4 @@ mir_add_wrapped_executable(mir_demo_server
+ target_link_libraries(mir_demo_server
+   example-shell-lib
+   exampleserverconfig
+-  Boost::system
+ )
+diff --git a/src/core/CMakeLists.txt b/src/core/CMakeLists.txt
+index cf5394b9cf..0d6184f2e4 100644
+--- a/src/core/CMakeLists.txt
++++ b/src/core/CMakeLists.txt
+@@ -36,7 +36,6 @@ target_include_directories(mircore
+ 
+ target_link_libraries(mircore
+   PRIVATE
+-    Boost::system
+ )
+ 
+ set(symbol_map ${CMAKE_CURRENT_SOURCE_DIR}/symbols.map)
+diff --git a/src/platforms/common/server/CMakeLists.txt b/src/platforms/common/server/CMakeLists.txt
+index 192322e587..7fd7f10fe3 100644
+--- a/src/platforms/common/server/CMakeLists.txt
++++ b/src/platforms/common/server/CMakeLists.txt
+@@ -31,7 +31,6 @@ target_link_libraries(server_platform_common
+     mircommon
+     mircore
+     ${KMS_UTILS_STATIC_LIBRARY}
+-    Boost::system
+     PkgConfig::WAYLAND_SERVER
+     PkgConfig::GLESv2
+ )
+diff --git a/tests/CMakeLists.txt b/tests/CMakeLists.txt
+index 2188d6e2cf..7bbc1343f9 100644
+--- a/tests/CMakeLists.txt
++++ b/tests/CMakeLists.txt
+@@ -142,7 +142,6 @@ PUBLIC
+   miral
+   mirserver
+ 
+-  Boost::system
+   ${GTEST_BOTH_LIBRARIES}
+ PRIVATE
+   ${GMOCK_MAIN_LIBRARY}
+@@ -154,7 +153,6 @@ target_link_libraries(mir-test-assist-internal
+ PUBLIC
+   mirserver
+ 
+-  Boost::system
+   ${GTEST_BOTH_LIBRARIES}
+ PRIVATE
+   ${GMOCK_MAIN_LIBRARY}
+diff --git a/tests/integration-tests/CMakeLists.txt b/tests/integration-tests/CMakeLists.txt
+index de9b9b36ab..40b2cf5792 100644
+--- a/tests/integration-tests/CMakeLists.txt
++++ b/tests/integration-tests/CMakeLists.txt
+@@ -58,7 +58,6 @@ target_link_libraries(
+ 
+   ${MIR_PLATFORM_REFERENCES}
+   ${MIR_SERVER_REFERENCES}
+-  Boost::system
+   # GBM platform dependencies
+   PkgConfig::DRM
+   # Shared platform dependencies
+diff --git a/tests/mir_test_doubles/CMakeLists.txt b/tests/mir_test_doubles/CMakeLists.txt
+index 62d1519f9f..d295b139bd 100644
+--- a/tests/mir_test_doubles/CMakeLists.txt
++++ b/tests/mir_test_doubles/CMakeLists.txt
+@@ -127,7 +127,6 @@ target_link_libraries(mir-test-doubles-static
+ 
+   mir-test-framework-static
+ 
+-  Boost::system
+   ${GMOCK_LIBRARIES}
+   ${GMOCK_MAIN_LIBRARY}
+   ${CMAKE_THREAD_LIBS_INIT} # Link in pthread.
+diff --git a/tests/mir_test_framework/CMakeLists.txt b/tests/mir_test_framework/CMakeLists.txt
+index 4d49d930a9..089918b578 100644
+--- a/tests/mir_test_framework/CMakeLists.txt
++++ b/tests/mir_test_framework/CMakeLists.txt
+@@ -115,7 +115,6 @@ add_dependencies(mir-test-framework-static GMock)
+ target_link_libraries(mir-test-framework-static
+ 
+   mirserver
+-  Boost::system
+   ${GTEST_BOTH_LIBRARIES}
+   ${GMOCK_LIBRARIES}
+   PkgConfig::UMOCKDEV
+diff --git a/tests/mirtest-internal.pc.in b/tests/mirtest-internal.pc.in
+index e9a52d3326..c099818904 100644
+--- a/tests/mirtest-internal.pc.in
++++ b/tests/mirtest-internal.pc.in
+@@ -6,5 +6,5 @@ Name: mirtest-internal
+ Description: Mir test assist internal library
+ Version: @MIR_VERSION@
+ Requires: mirtest mirserver mirserver-internal
+-Libs: -L${libdir} -lmir-test-assist -lmir-test-assist-internal -ldl -lboost_filesystem -lboost_system
++Libs: -L${libdir} -lmir-test-assist -lmir-test-assist-internal -ldl -lboost_filesystem
+ Cflags: -I${includedir}
+diff --git a/tests/mirtest.pc.in b/tests/mirtest.pc.in
+index 37e391c614..3987ef2817 100644
+--- a/tests/mirtest.pc.in
++++ b/tests/mirtest.pc.in
+@@ -6,5 +6,5 @@ Name: mirtest
+ Description: Mir test assist library
+ Version: @MIR_VERSION@
+ Requires: miral mirserver mirplatform mircommon mir-renderer-gl-dev
+-Libs: -L${libdir} -lmir-test-assist -ldl -lboost_filesystem -lboost_system
++Libs: -L${libdir} -lmir-test-assist -ldl -lboost_filesystem
+ Cflags: -I${includedir}
+diff --git a/tests/unit-tests/CMakeLists.txt b/tests/unit-tests/CMakeLists.txt
+index c4ea1ed4f4..c7059ab1f4 100644
+--- a/tests/unit-tests/CMakeLists.txt
++++ b/tests/unit-tests/CMakeLists.txt
+@@ -190,7 +190,6 @@ target_link_libraries(
+ 
+   mircommon
+ 
+-  Boost::system
+   PkgConfig::LIBINPUT
+   PkgConfig::WAYLAND_SERVER
+   ${CMAKE_THREAD_LIBS_INIT} # Link in pthread.
+@@ -223,7 +222,6 @@ target_link_libraries(
+   mir-test-static
+   mir-test-framework-static
+ 
+-  Boost::system
+   PkgConfig::UMOCKDEV
+   PkgConfig::LIBINPUT
+   ${CMAKE_THREAD_LIBS_INIT} # Link in pthread.
+diff --git a/tests/window_management_tests/CMakeLists.txt b/tests/window_management_tests/CMakeLists.txt
+index a151346a66..00fb8c9abd 100644
+--- a/tests/window_management_tests/CMakeLists.txt
++++ b/tests/window_management_tests/CMakeLists.txt
+@@ -42,7 +42,6 @@ target_link_libraries(
+   mircommon
+   miral
+ 
+-  Boost::system
+ 
+   # GBM platform dependencies
+   PkgConfig::DRM
+
