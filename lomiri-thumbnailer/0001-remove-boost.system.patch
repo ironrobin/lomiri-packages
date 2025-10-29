@@ -1,0 +1,22 @@
+From 32e956044043ee72bb1cccf6c2c74290aee5d7c4 Mon Sep 17 00:00:00 2001
+From: Alex R <alex@ironrobin.net>
+Date: Wed, 29 Oct 2025 18:53:31 +0000
+Subject: [PATCH] remove boost.system
+
+---
+ CMakeLists.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 9442b4e..d6a8be3 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -146,7 +146,7 @@ include(cmake/UseGSettings.cmake)
+ set(SHARE_PRIV_DIR ${CMAKE_INSTALL_LIBEXECDIR}/lomiri-thumbnailer)
+ set(SHARE_PRIV_ABS ${CMAKE_INSTALL_FULL_LIBEXECDIR}/lomiri-thumbnailer)
+ 
+-find_package(Boost COMPONENTS filesystem iostreams regex system REQUIRED)
++find_package(Boost COMPONENTS filesystem iostreams regex REQUIRED)
+ find_package(Threads REQUIRED)
+ find_package(Qt5Core REQUIRED)
+ find_package(Qt5DBus REQUIRED)

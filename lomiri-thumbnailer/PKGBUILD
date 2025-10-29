@@ -3,7 +3,7 @@
 pkgname=lomiri-thumbnailer
 _pkgname=lomiri-thumbnailer
 pkgver=3.0.5
-pkgrel=1
+pkgrel=2
 pkgdesc='D-Bus service for out of process thumbnailing'
 url='https://gitlab.com/ubports/development/core/lomiri-thumbnailer'
 arch=(x86_64 i686 armv7h aarch64)
@@ -12,18 +12,21 @@ conflicts=(lomiri-thumbnailer)
 provides=(lomiri-thumbnailer)
 depends=(boost qt5-base qt5-quickcontrols gstreamer gst-plugins-base gdk-pixbuf2 libexif lomiri-api apparmor taglib persistent-cache-cpp)
 makedepends=(git cmake)
-source=('https://gitlab.com/ubports/development/core/lomiri-thumbnailer/-/archive/3.0.5/lomiri-thumbnailer-3.0.5.tar.gz'
+source=('git+https://gitlab.com/ubports/development/core/lomiri-thumbnailer.git#tag=3.0.5'
+        '0001-remove-boost.system.patch'
         '0001-work-with-new-cmake.patch'
         '0002-taglib-2.0-and-stdexcept-fixes.patch')
-sha256sums=('75821bfc4f8dc35074f4cd4c0f284759856158563c8f47b37ce06076b0db42cc'
+sha256sums=('06b65503bab44ac40f1a8f20a144b13f3a400c08cb3bb2e09ff03622f379fb9e'
+            '2da69e362a0d6bba2bc96dba0cb8b8aafed10329e30f8549422a01772a7c2399'
             '9c17cb42ef6bcb0b8acd35496d4ce91f1f20d87aa41c8da3460520e9f9901df6'
             '4c3f14c25bba18e22b6244f6f73588a85db7f23214193ceb36fb848c6e5a6c2c')
 
 prepare() {
-  cd ${_pkgname}-$pkgver
+  cd ${_pkgname}
   # TODO: See if these need to be applied upstream
   # patch -Np1 -i "${srcdir}/0001-work-with-new-cmake.patch"
   # patch -Np1 -i "${srcdir}/0002-taglib-2.0-and-stdexcept-fixes.patch"
+  patch -Np1 -i "${srcdir}/0001-remove-boost.system.patch"
 }
 
 # pkgver() {
@@ -32,7 +35,7 @@ prepare() {
 # }
 
 build() {
-  cd ${_pkgname}-$pkgver
+  cd ${_pkgname}
   cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr \
     -DBUILD_TESTING=OFF \
     -DSLOW_TESTS=OFF \
@@ -42,7 +45,7 @@ build() {
 }
 
 package() {
-  cd ${_pkgname}-$pkgver
+  cd ${_pkgname}
   make DESTDIR="${pkgdir}/" install
   mv ${pkgdir}/usr/lib/qt5/ ${pkgdir}/usr/lib/qt/
 }
