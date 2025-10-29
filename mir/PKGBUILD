@@ -7,12 +7,12 @@
 
 pkgname=mir
 pkgver=2.20.2
-pkgrel=0
+pkgrel=1
 pkgdesc="Canonical's display server"
 url="https://github.com/canonical/mir"
 arch=(x86_64 i686 aarch64)
 license=('GPL-2.0-or-later OR GPL-3.0-or-later')
-depends=(boost-libs libglvnd lttng-ust libepoxy libxml++2.6 libinput yaml-cpp
+depends=(boost-libs boost libglvnd lttng-ust libepoxy libxml++2.6 libinput yaml-cpp
          libxkbcommon  freetype2  hicolor-icon-theme libxcursor
          egl-wayland wayland
          glib2 glibc gcc-libs util-linux-libs libxcb libxkbcommon-x11 libdrm mesa libx11 gtest glibmm
@@ -61,6 +61,7 @@ prepare() {
   patch -p1 -i ../2003_ignore-package-abi-test.patch
   patch -p1 -i ../2004_python_to_python3.patch
   patch -p1 -i ../2005_skip-check-miroil-symbols.patch
+  exit 1
 
 }
 
@@ -76,6 +77,7 @@ build() {
     -DCMAKE_BUILD_TYPE=None
     -DCMAKE_INSTALL_PREFIX=/usr
     -DCMAKE_INSTALL_LIBDIR=lib
+    -DBoost_NO_BOOST_CMAKE=ON
     # mir options
     -DMIR_FATAL_COMPILE_WARNINGS=OFF
     -DCMAKE_INSTALL_LIBEXECDIR=/usr/lib/$pkgname/
