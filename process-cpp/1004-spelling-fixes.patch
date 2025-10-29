@@ -1,0 +1,56 @@
+Description: Fix spelling errors
+Author: Mike Gabriel <mike.gabriel@das-netzwerkteam.de>
+
+--- a/include/core/posix/wait.h
++++ b/include/core/posix/wait.h
+@@ -59,7 +59,7 @@
+     enum class Status
+     {
+         undefined, ///< Marks an undefined state.
+-        no_state_change, ///< No state change occured.
++        no_state_change, ///< No state change occurred.
+         exited, ///< The process exited normally.
+         signaled, ///< The process was signalled and terminated.
+         stopped, ///< The process was signalled and stopped.
+--- a/include/core/testing/fork_and_run.h
++++ b/include/core/testing/fork_and_run.h
+@@ -49,7 +49,7 @@
+  *   - Forks a process for the client and runs the respective closure.
+  *   - After the client has finished, the service is signalled with sigterm.
+  *
+- * @throw std::system_error if an error occured during process interaction.
++ * @throw std::system_error if an error occurred during process interaction.
+  * @throw std::runtime_error for signalling all other error conditions.
+  * @param [in] service The service to be executed in a child process.
+  * @param [in] client The client to be executed in a child process.
+--- a/src/core/posix/fork.cpp
++++ b/src/core/posix/fork.cpp
+@@ -93,12 +93,12 @@
+             result = main();
+         } catch(const std::exception& e)
+         {
+-            std::cerr << "core::posix::fork(): An unhandled std::exception occured in the child process:" << std::endl
++            std::cerr << "core::posix::fork(): An unhandled std::exception occurred in the child process:" << std::endl
+                       << "  what(): " << e.what() << std::endl;
+             print_backtrace(std::cerr, "  ");
+         } catch(...)
+         {
+-            std::cerr << "core::posix::fork(): An unhandled exception occured in the child process." << std::endl;
++            std::cerr << "core::posix::fork(): An unhandled exception occurred in the child process." << std::endl;
+             print_backtrace(std::cerr, "  ");
+         }
+ 
+@@ -153,12 +153,12 @@
+             result = main();
+         } catch(const std::exception& e)
+         {
+-            std::cerr << "core::posix::fork(): An unhandled std::exception occured in the child process:" << std::endl
++            std::cerr << "core::posix::fork(): An unhandled std::exception occurred in the child process:" << std::endl
+                       << "  what(): " << e.what() << std::endl;
+             print_backtrace(std::cerr, "  ");
+         } catch(...)
+         {
+-            std::cerr << "core::posix::fork(): An unhandled exception occured in the child process." << std::endl;
++            std::cerr << "core::posix::fork(): An unhandled exception occurred in the child process." << std::endl;
+             print_backtrace(std::cerr, "  ");
+         }

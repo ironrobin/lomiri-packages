@@ -1,0 +1,61 @@
+--- a/tests/CMakeLists.txt
++++ b/tests/CMakeLists.txt
+@@ -14,12 +14,12 @@
+ #
+ # Authored by: Thomas Voss <thomas.voss@canonical.com>
+ 
++#set(GMOCK_BUILD_SHARED_LIBS ON)
+ find_package(GMock)
+ 
+ include_directories(
+   ${CMAKE_SOURCE_DIR}/src
+-  ${GTEST_INCLUDE_DIR}
+-  ${GMOCK_INCLUDE_DIR}
++  ${GTEST_INCLUDE_DIRS}
+ )
+ 
+ add_executable(
+@@ -57,6 +57,7 @@
+   process-cpp
+ 
+   ${CMAKE_THREAD_LIBS_INIT}
++  ${GTEST_BOTH_LIBRARIES}
+   ${GMOCK_LIBRARIES}
+ )
+ 
+@@ -66,7 +67,7 @@
+   process-cpp
+ 
+   ${CMAKE_THREAD_LIBS_INIT}
+-  ${GMOCK_LIBRARIES}
++  ${GTEST_BOTH_LIBRARIES}
+ )
+ 
+ target_link_libraries(
+@@ -75,7 +76,7 @@
+   process-cpp
+ 
+   ${CMAKE_THREAD_LIBS_INIT}
+-  ${GMOCK_LIBRARIES}
++  ${GTEST_BOTH_LIBRARIES}
+ )
+ 
+ target_link_libraries(
+@@ -84,7 +85,7 @@
+   process-cpp
+ 
+   ${CMAKE_THREAD_LIBS_INIT}
+-  ${GMOCK_LIBRARIES}
++  ${GTEST_BOTH_LIBRARIES}
+ )
+ 
+ target_link_libraries(
+@@ -93,7 +94,7 @@
+   process-cpp
+ 
+   ${CMAKE_THREAD_LIBS_INIT}
+-  ${GMOCK_LIBRARIES}
++  ${GTEST_BOTH_LIBRARIES}
+ )
+ 
+ add_test(posix_process_test ${CMAKE_CURRENT_BINARY_DIR}/posix_process_test)

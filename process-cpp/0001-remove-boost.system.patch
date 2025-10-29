@@ -1,0 +1,22 @@
+From dee24ab860bca01e3ff665e6394804bc88f247f7 Mon Sep 17 00:00:00 2001
+From: Alex R <alex@ironrobin.net>
+Date: Wed, 29 Oct 2025 17:35:11 +0000
+Subject: [PATCH] remove boost.system
+
+---
+ CMakeLists.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index d72ffba..bfb5ff3 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -18,7 +18,7 @@ cmake_minimum_required(VERSION 3.10)
+ 
+ project(process-cpp)
+ 
+-find_package(Boost COMPONENTS iostreams system REQUIRED)
++find_package(Boost COMPONENTS iostreams REQUIRED)
+ find_package(PkgConfig REQUIRED)
+ set(THREADS_PREFER_PTHREAD_FLAG ON)
+ find_package(Threads REQUIRED)

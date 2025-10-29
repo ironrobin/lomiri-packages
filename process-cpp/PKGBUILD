@@ -2,33 +2,52 @@
 
 pkgname=process-cpp
 pkgdesc="C++11 library for handling processes"
-pkgver=3.0.1
-pkgrel=4
+pkgver=3.0.2
+pkgrel=0
 arch=('x86_64' 'aarch64')
 url="https://launchpad.net/process-cpp"
 license=('LGPL3')
 depends=('boost-libs' 'gcc-libs')
 makedepends=('cmake' 'doxygen' 'boost' 'properties-cpp')
-source=("https://launchpad.net/ubuntu/+archive/primary/+files/process-cpp_3.0.1.orig.tar.gz")
-md5sums=('95e187de74037b70b105679f85047c12')
+source=("git+https://gitlab.com/ubports/development/core/lib-cpp/process-cpp.git#tag=${pkgver}"
+        "1002-Reproducible-documentation.patch"
+        "1003-link-pthread.patch"
+        "1004-spelling-fixes.patch"
+        "1005_fix-linking-against-gtest.patch"
+        "1006_CMakeLists.txt-Bump-cmake_minimum_required-to-versio.patch"
+        "0001-remove-boost.system.patch"
+)
+md5sums=('48171b1e33a390dae3600db11260ff7d'
+         '841afd56563acc2650bf5e84970442b0'
+         'e74c8e2be3c6814b9631fae2b65a77a0'
+         'bcf98933aacd0b56e49b0db062ceb5e7'
+         'e20abeedb477217970ff7e6f3254fb66'
+         '06da9b67a97ea25bebae8b8087b9cfeb'
+         'a26711538e0833d18b1e2f0103dcde73')
 
 prepare() {
-  cd "$srcdir/${pkgname}-${pkgver}"
+  cd "$srcdir/${pkgname}"
 
+  patch -Np1 -i "${srcdir}/1002-Reproducible-documentation.patch"
+  patch -Np1 -i "${srcdir}/1003-link-pthread.patch"
+  patch -Np1 -i "${srcdir}/1004-spelling-fixes.patch"
+  patch -Np1 -i "${srcdir}/1005_fix-linking-against-gtest.patch"
+  patch -Np1 -i "${srcdir}/1006_CMakeLists.txt-Bump-cmake_minimum_required-to-versio.patch"
+  patch -Np1 -i "${srcdir}/0001-remove-boost.system.patch"
   # Don't build tests
   truncate -s 0 tests/CMakeLists.txt
 }
 
 build() {
-  mkdir -p "$srcdir/${pkgname}-${pkgver}/build"
-  cd "$srcdir/${pkgname}-${pkgver}/build"
+  mkdir -p "$srcdir/${pkgname}/build"
+  cd "$srcdir/${pkgname}/build"
 
   cmake .. -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DCMAKE_INSTALL_LIBDIR=/usr/lib -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
   make
 }
 
 package() {
-  cd "$srcdir/${pkgname}-${pkgver}/build"
+  cd "$srcdir/${pkgname}/build"
 
   make DESTDIR="$pkgdir/" install
 }

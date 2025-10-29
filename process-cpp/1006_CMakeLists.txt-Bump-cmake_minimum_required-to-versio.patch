@@ -1,0 +1,23 @@
+From 1df5d891519268ef921901562b9f46ccde0f7ce3 Mon Sep 17 00:00:00 2001
+From: Mike Gabriel <mike.gabriel@das-netzwerkteam.de>
+Date: Mon, 1 Sep 2025 16:18:26 +0200
+Subject: [PATCH] CMakeLists.txt: Bump cmake_minimum_required() to version
+ 3.10. Fix building against CMake 4.
+
+Signed-off-by: Mike Gabriel <mike.gabriel@das-netzwerkteam.de>
+---
+ CMakeLists.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 5dee0b3..8b4e6a8 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -14,7 +14,7 @@
+ #
+ # Authored by: Thomas Voss <thomas.voss@canonical.com>
+ 
+-cmake_minimum_required(VERSION 2.8)
++cmake_minimum_required(VERSION 3.10)
+ 
+ project(process-cpp)

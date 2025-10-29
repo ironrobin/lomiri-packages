@@ -1,0 +1,18 @@
+Description: Link with -pthread instead of -lpthread
+ The canonical way to link with the thread library is to use -pthread, which
+ brings in additional libraries like libatomic.so on riscv64. However cmake
+ defaults to link with -lpthread which only bring the libpthread.so library.
+ Fortunately it has the option THREADS_PREFER_PTHREAD_FLAG for that, which is
+ "highly recommended" but not the default.
+Author: Aurelien Jarno <aurel32@debian.org>
+Last-Update: 2021-12-20
+
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -20,6 +20,7 @@
+ 
+ find_package(Boost COMPONENTS iostreams system REQUIRED)
+ find_package(PkgConfig REQUIRED)
++set(THREADS_PREFER_PTHREAD_FLAG ON)
+ find_package(Threads REQUIRED)
+ find_package(Backtrace)
