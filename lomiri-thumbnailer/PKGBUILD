@@ -11,7 +11,7 @@ license=(GPL)
 conflicts=(lomiri-thumbnailer)
 provides=(lomiri-thumbnailer)
 depends=(boost qt5-base qt5-quickcontrols gstreamer gst-plugins-base gdk-pixbuf2 libexif lomiri-api apparmor taglib persistent-cache-cpp)
-makedepends=(git cmake)
+makedepends=(git cmake cmake-extras doxygen)
 source=('git+https://gitlab.com/ubports/development/core/lomiri-thumbnailer.git#tag=3.0.5'
         '0001-remove-boost.system.patch'
         '0001-work-with-new-cmake.patch'
