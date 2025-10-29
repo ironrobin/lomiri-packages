@@ -1,0 +1,22 @@
+From 73f918a449b9d52911b343745709066d7c15ebab Mon Sep 17 00:00:00 2001
+From: Alex R <alex@ironrobin.net>
+Date: Wed, 29 Oct 2025 18:23:13 +0000
+Subject: [PATCH] remove boost.system
+
+---
+ CMakeLists.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 6137a52..db1bbb7 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -31,7 +31,7 @@ set(
+ enable_testing()
+ 
+ find_package(PkgConfig)
+-find_package(Boost COMPONENTS filesystem program_options system REQUIRED)
++find_package(Boost COMPONENTS filesystem program_options REQUIRED)
+ find_package(nlohmann_json 3.11 REQUIRED)
+ 
+ pkg_check_modules(DBUS_CPP dbus-cpp REQUIRED)
