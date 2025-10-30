@@ -4,13 +4,13 @@ pkgbase=qtmir-git
 pkgname=(qtmir-git)
 _pkgname=qtmir
 pkgver=r2907.0.7.2.r113.gea2f4774
-pkgrel=13
+pkgrel=14
 url='https://gitlab.com/ubports/development/core/qtmir'
 arch=(x86_64 i686 armv7h aarch64)
 license=(LGPL)
 conflicts=(qtmir)
 provides=(qtmir)
-depends=(tomlplusplus qt5-base qt5-quickcontrols qt5-sensors mir process-cpp lomiri-app-launch gsettings-qt libqtdbustest libqtdbusmock lomiri-url-dispatcher glm valgrind)
+depends=(tomlplusplus qt5-base qt5-quickcontrols qt5-sensors mir process-cpp lomiri-app-launch gsettings-qt5 libqtdbustest libqtdbusmock lomiri-url-dispatcher glm valgrind)
 makedepends=(boost git cmake cmake-extras gtest)
 source=('git+https://gitlab.com/ubports/development/core/qtmir.git#commit=ea2f4774b1a109fec3e22a021fb21ff60da80626'
         '2002_no-requires-provides-check.patch'
