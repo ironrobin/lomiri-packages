@@ -3,7 +3,7 @@
 pkgname=lomiri-system-settings
 _pkgname=lomiri-system-settings
 pkgver=1.3.2
-pkgrel=5
+pkgrel=4
 pkgdesc='System Settings application for Unity8'
 url='https://gitlab.com/ubports/development/core/lomiri-system-settings'
 arch=(x86_64 i686 armv7h aarch64)

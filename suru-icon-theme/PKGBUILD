@@ -3,13 +3,12 @@
 pkgname=suru-icon-theme
 _pkgname=suru-icon-theme
 pkgver=2025.05.0
-pkgrel=0
+pkgrel=1
 pkgdesc="Suru Icon Theme for Lomiri Operating Environment"
 arch=(any)
 url="https://gitlab.com/ubports/development/core/suru-icon-theme"
 license=(CCPL)
-depends=(humanity-icon-theme adwaita-icon-theme hicolor-icon-theme
-         gtk-engine-murrine)
+depends=(humanity-icon-theme adwaita-icon-theme hicolor-icon-theme)
 makedepends=(python imagemagick icon-naming-utils)
 provides=(light-themes ubuntu-mono ubuntu-themes)
 conflicts=(light-themes ubuntu-mono ubuntu-themes)
