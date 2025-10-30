@@ -1,19 +1,20 @@
 # Maintainer: you <alex@ironrobin.net>
 pkgname=lomiri-session
 pkgver=0.3
-pkgrel=3
+pkgrel=4
 pkgdesc="Lomiri desktop session integration (Wayland session, units, defaults)"
 arch=('any')
 url="https://salsa.debian.org/ubports-team/lomiri-session"
 license=('GPL3')  # adjust if upstream lists differently
 depends=(dbus systemd lomiri lomiri-keyboard)  # keep minimal; add more if the package ships hard runtime hooks
 makedepends=(cmake pkgconf)
-# Debian hosts the pristine orig tarball; patches are fetched on-the-fly
-source=("https://deb.debian.org/debian/pool/main/l/lomiri-session/lomiri-session_${pkgver}.orig.tar.bz2")
-sha256sums=('b2dab5cf78dcc56739f7e72bb93ebab879be69d1308b85907434e7d4a9e1bede')  # replace with real sum
+source=("git+https://gitlab.com/ubports/development/core/lomiri-session.git#tag=${pkgver}"
+        "0001-Ensure-QML-sees-both-Lomiri-s-QML-and-the-Qt5-global.patch")
+sha256sums=('b6cddb8e6fbfdc10490cedbacc17813b608ec74fd56a6ec8ec33f203c6dc1e0a'
+            'a92a6d2dfa645398d3307dcd605ccf9b64833db85a957be840312b1586461849')
 
 prepare() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}"
   # Fetch Debian packaging repo to get the latest debian/patches series
   local debrepo="${srcdir}/debian-upstream"
   if [[ ! -d "$debrepo/.git" ]]; then
@@ -35,11 +36,12 @@ prepare() {
     echo "Applying patch: $p"
     patch -Np1 -i "$debrepo/debian/patches/$p"
   done < "$series_file"
-  exit 1
+  # Apply local adjustments
+  patch -Np1 -i "${srcdir}/0001-Ensure-QML-sees-both-Lomiri-s-QML-and-the-Qt5-global.patch"
 }
 
 build() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}"
   cmake -S . -B build \
         -DENABLE_TOUCH_SESSION=OFF \
         -DCMAKE_BUILD_TYPE=None \
@@ -50,7 +52,7 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}"
   DESTDIR="${pkgdir}" cmake --install build
 
   # If Debian splits defaults vs session, you can choose to keep them together,

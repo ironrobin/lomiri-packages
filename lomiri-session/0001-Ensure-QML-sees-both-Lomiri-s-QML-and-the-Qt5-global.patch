@@ -1,0 +1,33 @@
+From 18b8c835f096b697f69cd6b488d1b128dec950e1 Mon Sep 17 00:00:00 2001
+From: Alex R <alex@ironrobin.net>
+Date: Thu, 30 Oct 2025 20:32:13 +0000
+Subject: [PATCH] =?UTF-8?q?Ensure=20QML=20sees=20both=20Lomiri=E2=80=99s?=
+ =?UTF-8?q?=20QML=20and=20the=20Qt5=20global=20QML=20modules=20(e.g.=20GSe?=
+ =?UTF-8?q?ttings)?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ lomiri-session.in | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/lomiri-session.in b/lomiri-session.in
+index 854fc73..7d9b0e7 100755
+--- a/lomiri-session.in
++++ b/lomiri-session.in
+@@ -67,6 +67,11 @@ dbus-update-activation-environment --systemd QT_ACCESSIBILITY=1
+ dbus-update-activation-environment --systemd QT_AUTO_SCREEN_SCALE_FACTOR=0
+ dbus-update-activation-environment --systemd GTK_CSD=0
+ 
++# Ensure QML sees both Lomiri’s QML and the Qt5 global QML modules (e.g. GSettings)
++QML_DIRS="/usr/lib/lomiri/qml:/usr/lib/qt5/qml"
++export QML2_IMPORT_PATH="${QML_DIRS}${QML2_IMPORT_PATH:+:${QML2_IMPORT_PATH}}"
++dbus-update-activation-environment --systemd QML2_IMPORT_PATH="${QML2_IMPORT_PATH}"
++
+ export LOMIRI_AS_SYSTEMD_UNIT=1
+ 
+ ENABLE_UBUNTU_ACCOUNTSSERVICE="@BASH_ENABLE_UBUNTU_ACCOUNTSSERVICE@"
+-- 
+2.51.2
+
