@@ -35,6 +35,7 @@ prepare() {
     echo "Applying patch: $p"
     patch -Np1 -i "$debrepo/debian/patches/$p"
   done < "$series_file"
+  exit 1
 }
 
 build() {
