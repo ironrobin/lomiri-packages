@@ -3,7 +3,7 @@
 pkgname=lomiri-system-settings
 _pkgname=lomiri-system-settings
 pkgver=1.3.2
-pkgrel=4
+pkgrel=5
 pkgdesc='System Settings application for Unity8'
 url='https://gitlab.com/ubports/development/core/lomiri-system-settings'
 arch=(x86_64 i686 armv7h aarch64)
@@ -11,15 +11,18 @@ license=(GPL3)
 conflicts=(system-settings)
 provides=(system-settings)
 # No content-hub-git needed for mobile
-depends=(click gnome-desktop lomiri-app-launch geonames libqtdbusmock lomiri-ui-toolkit gsettings-qt accountsservice upower suru-icon-theme qmenumodel libqofono-qt5)
+depends=(click gnome-desktop lomiri-app-launch geonames libqtdbusmock lomiri-ui-toolkit gsettings-qt5 accountsservice upower suru-icon-theme qmenumodel libqofono-qt5)
 makedepends=(git cmake intltool)
 checkdepends=(xorg-server-xvfb)
-source=('https://gitlab.com/ubports/development/core/lomiri-system-settings/-/archive/1.3.2/lomiri-system-settings-1.3.2.tar.gz'
+source=('git+https://gitlab.com/ubports/development/core/lomiri-system-settings.git#tag=1.3.2'
         '2011_build-without-trust-store.patch'
+        '0001-gsettings-qt5.patch'
+        '0002-gsettings-qt5.patch'
 )
-sha256sums=('SKIP'
-            'SKIP'
-)
+sha256sums=('c68a00df34fe196fd9855157eee4dc0615ea78974954dfabf070ff73ab157801'
+            '95af897a2314648855e3d5fa5c042e73bd39f30051d0e3df5bfda5dc28856358'
+            '8cd6739afc278e4e6f20d5bf6f59d91eef32aaf607c92d40a65f4fc113daab9b'
+            'a2205bac9bcf646908ac9f45c8b741598f98e9c34c2d7267bbd1ac3d5ee1a9f8')
 
 BUILDENV+=('!check') # Some tests fail
 
@@ -29,13 +32,14 @@ BUILDENV+=('!check') # Some tests fail
 # }
 
 prepare() {
-  cd ${_pkgname}-${pkgver}
+  cd ${_pkgname}
 
   patch -Np1 -i "${srcdir}/2011_build-without-trust-store.patch"
+  patch -Np1 -i "${srcdir}/0002-gsettings-qt5.patch"
 }
 
 build() {
-  cd ${_pkgname}-${pkgver}
+  cd ${_pkgname}
   mkdir -p build
   cd build
   cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_INSTALL_LIBDIR="lib/" -DENABLE_TESTS=off ..
@@ -48,7 +52,7 @@ build() {
 # }
 
 package() {
-  cd ${_pkgname}-${pkgver}/build
+  cd ${_pkgname}/build
   make DESTDIR="${pkgdir}/" install
 }
 # vim:set ts=2 sw=2 et:

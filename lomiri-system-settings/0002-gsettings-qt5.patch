@@ -1,0 +1,42 @@
+From 7262224e7905ad088619eefaf8f831c55053d637 Mon Sep 17 00:00:00 2001
+From: Alex R <alex@ironrobin.net>
+Date: Thu, 30 Oct 2025 18:06:12 +0000
+Subject: [PATCH] Normalize gsettings-qt include dirs so
+ <QGSettings/QGSettings> resolves
+
+---
+ plugins/notifications/CMakeLists.txt | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
+
+diff --git a/plugins/notifications/CMakeLists.txt b/plugins/notifications/CMakeLists.txt
+index c5fd488d..7eab3631 100644
+--- a/plugins/notifications/CMakeLists.txt
++++ b/plugins/notifications/CMakeLists.txt
+@@ -28,8 +28,22 @@ configure_file(qmldir.in qmldir COPYONLY)
+ add_library(LomiriNotificationsPanel MODULE ${lomiri_notifications_panel_HDRS} ${lomiri_notifications_panel_SRCS} ${QML_SOURCES})
+ 
+ add_definitions(-DQT_NO_KEYWORDS)
+-include_directories(${GIO_INCLUDE_DIRS})
+-include_directories(${QTGSETTINGS_INCLUDE_DIRS})
++# Normalize gsettings-qt include dirs so <QGSettings/QGSettings> resolves.
++# pkg-config sometimes returns /usr/include/qt5/QGSettings (too deep).
++set(_qg_dirs ${QTGSETTINGS_INCLUDE_DIRS})
++foreach(p IN LISTS _qg_dirs)
++  if(p MATCHES ".*/qt5/QGSettings/?$")
++    get_filename_component(_parent "${p}" DIRECTORY)   # -> /usr/include/qt5
++    list(APPEND _qg_dirs "${_parent}")
++  endif()
++endforeach()
++list(APPEND _qg_dirs /usr/include/qt5)
++list(REMOVE_DUPLICATES _qg_dirs)
++
++target_include_directories(LomiriNotificationsPanel PRIVATE
++  ${GIO_INCLUDE_DIRS}
++  ${_qg_dirs}
++)
+ 
+ target_link_libraries(LomiriNotificationsPanel ${GIO_LDFLAGS} ${QTGSETTINGS_LDFLAGS} Qt5::Qml Qt5::Quick)
+ 
+-- 
+2.51.2
+
