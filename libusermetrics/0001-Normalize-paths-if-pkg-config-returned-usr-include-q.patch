@@ -1,0 +1,80 @@
+From fe358fc50199bc0f19f1636cd435cdcd31e70bdd Mon Sep 17 00:00:00 2001
+From: Alex R <alex@ironrobin.net>
+Date: Thu, 30 Oct 2025 19:02:26 +0000
+Subject: [PATCH]  Normalize paths: if pkg-config returned
+ /usr/include/qt5/QGSettings
+
+---
+ src/libusermetricsoutput/CMakeLists.txt | 42 +++++++++++++++++++------
+ 1 file changed, 32 insertions(+), 10 deletions(-)
+
+diff --git a/src/libusermetricsoutput/CMakeLists.txt b/src/libusermetricsoutput/CMakeLists.txt
+index 775cfa5..8b478a0 100644
+--- a/src/libusermetricsoutput/CMakeLists.txt
++++ b/src/libusermetricsoutput/CMakeLists.txt
+@@ -30,6 +30,23 @@ set(USERMETRICS_OUTPUT_DEPENDENCIES
+ 	Qt5::XmlPatterns
+ )
+ 
++# Collect gsettings-qt include dirs from either pkg-config namespace
++# (some projects use QTGSETTINGS_*, others GSETTINGS_QT_*).
++set(_QG_INC
++  ${QTGSETTINGS_INCLUDE_DIRS}
++  ${GSETTINGS_QT_INCLUDE_DIRS}
++)
++# Normalize paths: if pkg-config returned /usr/include/qt5/QGSettings,
++# also add its parent (/usr/include/qt5) so <QGSettings/QGSettings> resolves.
++foreach(p IN LISTS _QG_INC)
++  if(p MATCHES ".*/qt5/QGSettings/?$")
++    get_filename_component(_parent "${p}" DIRECTORY)
++    list(APPEND _QG_INC "${_parent}")
++  endif()
++endforeach()
++list(APPEND _QG_INC /usr/include/qt5)   # safety on Arch/ALARM
++list(REMOVE_DUPLICATES _QG_INC)
++
+ # Static library version of libusermetricsoutput
+ 
+ add_library(
+@@ -38,10 +55,13 @@ add_library(
+ 	${USERMETRICSOUTPUT_SOURCES}
+ )
+ 
+-target_link_libraries(
+-	usermetricsoutput-static
+-	${USERMETRICS_OUTPUT_DEPENDENCIES}
+-	usermetricscommon
++target_include_directories(usermetricsoutput-static PRIVATE ${_QG_INC})
++target_link_libraries(usermetricsoutput-static
++  PRIVATE
++    ${USERMETRICS_OUTPUT_DEPENDENCIES}
++    usermetricscommon
++    ${QTGSETTINGS_LIBRARIES}
++    ${GSETTINGS_QT_LIBRARIES}
+ )
+ 
+ set_target_properties(
+@@ -58,12 +78,14 @@ add_library(
+ 	${USERMETRICSOUTPUT_SOURCES}
+ )
+ 
+-target_link_libraries(
+-	usermetricsoutput
+-	${USERMETRICS_OUTPUT_DEPENDENCIES}
+-	usermetricscommon
+-	${GSETTINGS_QT_LIBRARIES}
+-	${Gettext_LIBRARIES}
++target_include_directories(usermetricsoutput PRIVATE ${_QG_INC})
++target_link_libraries(usermetricsoutput
++  PRIVATE
++    ${USERMETRICS_OUTPUT_DEPENDENCIES}
++    usermetricscommon
++    ${QTGSETTINGS_LIBRARIES}
++    ${GSETTINGS_QT_LIBRARIES}
++    ${Gettext_LIBRARIES}
+ )
+ 
+ set_target_properties(
+-- 
+2.51.2
+

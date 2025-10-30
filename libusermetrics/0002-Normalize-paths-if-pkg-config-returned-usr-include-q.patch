@@ -1,0 +1,55 @@
+From 45527281bee270503d82b0e540f12d901481b7a1 Mon Sep 17 00:00:00 2001
+From: Alex R <alex@ironrobin.net>
+Date: Thu, 30 Oct 2025 19:23:30 +0000
+Subject: [PATCH] normalize gsettings_qt paths
+
+---
+ .../unit/libusermetricsoutput/CMakeLists.txt  | 22 +++++++++++++++++++
+ 1 file changed, 22 insertions(+)
+
+diff --git a/tests/unit/libusermetricsoutput/CMakeLists.txt b/tests/unit/libusermetricsoutput/CMakeLists.txt
+index 3cd037b..51a9aa2 100644
+--- a/tests/unit/libusermetricsoutput/CMakeLists.txt
++++ b/tests/unit/libusermetricsoutput/CMakeLists.txt
+@@ -10,16 +10,38 @@ set(
+ 	TestSyncedUserMetricsStore.cpp
+ )
+ 
++# Normalize gsettings-qt include dirs so <QGSettings/QGSettings> resolves.
++# Accept either QTGSETTINGS_* or GSETTINGS_QT_* namespaces provided by pkg-config.
++set(_qg_dirs
++  ${QTGSETTINGS_INCLUDE_DIRS}
++  ${GSETTINGS_QT_INCLUDE_DIRS}
++)
++foreach(p IN LISTS _qg_dirs)
++  if(p MATCHES ".*/qt5/QGSettings/?$")
++    get_filename_component(_parent "${p}" DIRECTORY)  # -> /usr/include/qt5
++    list(APPEND _qg_dirs "${_parent}")
++  endif()
++endforeach()
++list(APPEND _qg_dirs /usr/include/qt5)  # safety on Arch/ALARM
++list(REMOVE_DUPLICATES _qg_dirs)
++
+ add_executable(
+ 	usermetricsoutput-unit-tests
+ 	${USERMETRICSOUTPUT_UNIT_TESTS_SRC}
+ )
+ 
++target_include_directories(
++  usermetricsoutput-unit-tests
++  PRIVATE
++    ${_qg_dirs}
++)
++
+ target_link_libraries(
+ 	usermetricsoutput-unit-tests
+ 	-pthread
+ 	usermetricsoutput-static
+ 	usermetrics-test-utils
++	${QTGSETTINGS_LIBRARIES}
+ 	${GSETTINGS_QT_LIBRARIES}
+ 	${GTEST_LIBRARIES}
+ 	${GMOCK_LIBRARIES}
+-- 
+2.51.2
+
