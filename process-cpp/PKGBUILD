@@ -43,7 +43,7 @@ build() {
   cd "$srcdir/${pkgname}/build"
 
   cmake .. -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DCMAKE_INSTALL_LIBDIR=/usr/lib -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
-  make
+  cmake --build .
 }
 
 package() {

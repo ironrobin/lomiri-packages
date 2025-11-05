@@ -1,0 +1,148 @@
+From e0f8c24c95ba2a03fd0079ebbe714f4509f69430 Mon Sep 17 00:00:00 2001
+From: Alex R <alex@ironrobin.net>
+Date: Sun, 2 Nov 2025 20:24:44 +0000
+Subject: [PATCH] jobs-systemd: detect ELF executables and use appropriate
+ KillMode
+
+---
+ liblomiri-app-launch/jobs-systemd.cpp | 14 ++++++++++++--
+ liblomiri-app-launch/utils.c          | 27 +++++++++++++++++++++++++++
+ liblomiri-app-launch/utils.h          |  1 +
+ tests/helper-test.cc                  | 25 +++++++++++++++++++++++++
+ 4 files changed, 65 insertions(+), 2 deletions(-)
+
+diff --git a/liblomiri-app-launch/jobs-systemd.cpp b/liblomiri-app-launch/jobs-systemd.cpp
+index 185a992..c5964e4 100644
+--- a/liblomiri-app-launch/jobs-systemd.cpp
++++ b/liblomiri-app-launch/jobs-systemd.cpp
+@@ -707,6 +707,7 @@ std::shared_ptr<Application::Instance> SystemD::launch(
+ 
+         /* ExecStart */
+         auto commands = parseExec(env);
++        bool exec_is_elf = false;
+         if (!commands.empty())
+         {
+             g_variant_builder_open(&builder, G_VARIANT_TYPE_TUPLE);
+@@ -719,6 +720,7 @@ std::shared_ptr<Application::Instance> SystemD::launch(
+             gchar* pathexec = g_find_program_in_path(commands[0].c_str());
+             if (pathexec != nullptr)
+             {
++                exec_is_elf = path_is_elf(pathexec);
+                 g_variant_builder_add_value(&builder, g_variant_new_take_string(pathexec));
+             }
+             else
+@@ -742,11 +744,11 @@ std::shared_ptr<Application::Instance> SystemD::launch(
+             g_variant_builder_close(&builder);
+         }
+ 
+-        /* RemainAfterExit */
++        /* RemainAfterExit: keep active if NOT ELF (script/loader likely). */
+         g_variant_builder_open(&builder, G_VARIANT_TYPE_TUPLE);
+         g_variant_builder_add_value(&builder, g_variant_new_string("RemainAfterExit"));
+         g_variant_builder_open(&builder, G_VARIANT_TYPE_VARIANT);
+-        g_variant_builder_add_value(&builder, g_variant_new_boolean(FALSE));
++        g_variant_builder_add_value(&builder, g_variant_new_boolean(exec_is_elf ? FALSE : TRUE));
+         g_variant_builder_close(&builder);
+         g_variant_builder_close(&builder);
+ 
+@@ -766,6 +768,14 @@ std::shared_ptr<Application::Instance> SystemD::launch(
+         g_variant_builder_close(&builder);
+         g_variant_builder_close(&builder);
+ 
++        /* KillMode=process (don’t kill the whole cgroup if main PID exits) */
++        g_variant_builder_open(&builder, G_VARIANT_TYPE_TUPLE);
++        g_variant_builder_add_value(&builder, g_variant_new_string("KillMode"));
++        g_variant_builder_open(&builder, G_VARIANT_TYPE_VARIANT);
++        g_variant_builder_add_value(&builder, g_variant_new_string("process"));
++        g_variant_builder_close(&builder);
++        g_variant_builder_close(&builder);
++
+         /* Working Directory */
+         if (!findEnv("APP_DIR", env).empty())
+         {
+diff --git a/liblomiri-app-launch/utils.c b/liblomiri-app-launch/utils.c
+index 4143849..c6e575f 100644
+--- a/liblomiri-app-launch/utils.c
++++ b/liblomiri-app-launch/utils.c
+@@ -21,6 +21,33 @@
+ #include <click.h>
+ #include "utils.h"
+ 
++#include <fcntl.h>
++#include <unistd.h>
++#include <errno.h>
++#include <string.h>
++
++/* Return TRUE if the first four bytes match ELF magic. */
++gboolean
++path_is_elf (const gchar * path)
++{
++	if (!path || !*path) return FALSE;
++
++	int fd = open(path, O_RDONLY | O_CLOEXEC);
++	if (fd == -1) {
++		g_debug("path_is_elf: open('%s') failed: %s", path, g_strerror(errno));
++		return FALSE;
++	}
++
++	guint8 magic[4];
++	ssize_t n = read(fd, magic, sizeof(magic));
++	close(fd);
++	if (n != sizeof(magic)) {
++		g_debug("path_is_elf: read('%s') failed: %s", path, g_strerror(errno));
++		return FALSE;
++	}
++	return magic[0] == 0x7f && magic[1] == 'E' && magic[2] == 'L' && magic[3] == 'F';
++}
++
+ /* Take an app ID and validate it and then break it up
+    and spit it out.  These are newly allocated strings */
+ gboolean
+diff --git a/liblomiri-app-launch/utils.h b/liblomiri-app-launch/utils.h
+index 4a349ad..82e38cd 100644
+--- a/liblomiri-app-launch/utils.h
++++ b/liblomiri-app-launch/utils.h
+@@ -21,6 +21,7 @@
+ 
+ G_BEGIN_DECLS
+ 
++gboolean  path_is_elf            (const gchar *   path); 
+ gboolean  app_id_to_triplet      (const gchar *   app_id,
+                                   gchar **        package,
+                                   gchar **        application,
+diff --git a/tests/helper-test.cc b/tests/helper-test.cc
+index 9082daa..d4dc3a1 100644
+--- a/tests/helper-test.cc
++++ b/tests/helper-test.cc
+@@ -355,3 +355,28 @@ TEST_F(HelperTest, ManifestToDesktop)
+ 
+ 	return;
+ }
++
++TEST_F(HelperTest, PathIsElf_BasicELF)
++{
++	gchar *path = g_build_filename(CMAKE_BINARY_DIR, "t-elf.bin", nullptr);
++	// 0x7F 'E' 'L' 'F' + a few padding bytes
++	const guint8 elfbytes[] = {0x7f, 'E', 'L', 'F', 0x02, 0x01, 0x01, 0x00};
++	ASSERT_TRUE(g_file_set_contents(path, (const gchar*)elfbytes, sizeof elfbytes, nullptr));
++	ASSERT_TRUE(path_is_elf(path));
++	g_unlink(path);
++	g_free(path);
++	
++	return;
++}
++
++TEST_F(HelperTest, PathIsElf_ShebangScript)
++{
++    gchar *path = g_build_filename(CMAKE_BINARY_DIR, "t-script.sh", nullptr);
++    const char *script = "#!/bin/sh\necho hi\n";
++    ASSERT_TRUE(g_file_set_contents(path, script, -1, nullptr));
++    ASSERT_FALSE(path_is_elf(path));
++    g_unlink(path);
++    g_free(path);
++	
++	return;
++}
+-- 
+2.51.2
+
