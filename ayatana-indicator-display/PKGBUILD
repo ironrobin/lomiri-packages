@@ -1,9 +1,9 @@
-# Maintainer: Furkan Kardame <furkan@fkardame.com>
+# Maintainer: Alex R <alex@ironrobin.net>
 
-pkgname="ayatana-indicator-display"
-_pkgname="ayatana-indicator-display"
-pkgver="24.5.2"
-pkgrel="1"
+pkgname=ayatana-indicator-display
+_pkgname=ayatana-indicator-display
+pkgver=24.5.2
+pkgrel=1
 pkgdesc="Ayatana Indicator that helps with display rotate"
 arch=("i686" "x86_64" "aarch64")
 url="https://github.com/AyatanaIndicators"
