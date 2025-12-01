@@ -64,22 +64,22 @@ pkgs=(
   kcalendarcore5
   libiodata-qt5
   # Layer 2
-  # suru-icon-theme
-  # hfd-service
-  # mir
-  # process-cpp
-  # telepathy-qt-git
-  # timed-qt5
-  # click
-  # libqtdbustest
-  # repowerd
-  # Layer 3
-  # mkcal
-  # dbus-cpp
-  # libqtdbusmock
-  # lomiri-history-service
-  # libusermetrics
-  # lomiri-api
+  suru-icon-theme
+  hfd-service
+  mir
+  process-cpp
+  telepathy-qt-git
+  timed-qt5
+  click
+  libqtdbustest
+  repowerd
+  Layer 3
+  mkcal
+  dbus-cpp
+  libqtdbusmock
+  lomiri-history-service
+  libusermetrics
+  lomiri-api
   # Layer 4
   # biometryd
   # lomiri-download-manager
