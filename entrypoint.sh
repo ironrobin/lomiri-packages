@@ -25,9 +25,9 @@ gpg --homedir /home/builduser/.gnupg --list-keys
 echo "checking out root key"
 gpg --homedir /root/.gnupg --list-keys
 
-# add the ironrobin-lomiri repo to the end of /etc/pacman.conf
-echo '[ironrobin-lomiri]' >> /etc/pacman.conf
-echo 'Server = https://github.com/ironrobin/lomiri-packages/releases/download/packages' >> /etc/pacman.conf
+# add the lomiri repo to the end of /etc/pacman.conf
+echo '[lomiri]' >> /etc/pacman.conf
+echo 'Server = https://archpkg.ironrobin.net/$repo/$arch/' >> /etc/pacman.conf
 
 sudo pacman-key --recv-keys 6ED02751500A833A
 sudo pacman-key --lsign-key 6ED02751500A833A
@@ -64,49 +64,49 @@ pkgs=(
   kcalendarcore5
   libiodata-qt5
   # Layer 2
-  suru-icon-theme
-  hfd-service
-  mir
-  process-cpp
-  telepathy-qt-git
-  timed-qt5
-  click
-  libqtdbustest
-  repowerd
+  # suru-icon-theme
+  # hfd-service
+  # mir
+  # process-cpp
+  # telepathy-qt-git
+  # timed-qt5
+  # click
+  # libqtdbustest
+  # repowerd
   # Layer 3
-  mkcal
-  dbus-cpp
-  libqtdbusmock
-  lomiri-history-service
-  libusermetrics
-  lomiri-api
+  # mkcal
+  # dbus-cpp
+  # libqtdbusmock
+  # lomiri-history-service
+  # libusermetrics
+  # lomiri-api
   # Layer 4
-  biometryd
-  lomiri-download-manager
-  lomiri-app-launch
-  lomiri-ui-toolkit
-  gmenuharness
-  lomiri-thumbnailer
-  lomiri-notifications
+  # biometryd
+  # lomiri-download-manager
+  # lomiri-app-launch
+  # lomiri-ui-toolkit
+  # gmenuharness
+  # lomiri-thumbnailer
+  # lomiri-notifications
   # Layer 5
-  lomiri-url-dispatcher
+  # lomiri-url-dispatcher
   # Layer 6
-  libayatana-common
-  lomiri-indicator-network
-  lomiri-telephony-service
-  lomiri-system-settings
-  # lomiri-content-hub
-  qtmir-git
+  # libayatana-common
+  # lomiri-indicator-network
+  # lomiri-telephony-service
+  # lomiri-system-settings
+  # qtmir-git
+  ## lomiri-content-hub
   # Layer 7
-  ayatana-indicator-bluetooth
-  ayatana-indicator-session
-  ayatana-indicator-sound
-  ayatana-indicator-power
-  ayatana-indicator-datetime
-  ayatana-indicator-display
-  lomiri
+  # ayatana-indicator-bluetooth
+  # ayatana-indicator-session
+  # ayatana-indicator-sound
+  # ayatana-indicator-power
+  # ayatana-indicator-datetime
+  # ayatana-indicator-display
+  # lomiri
   # Layer 8
-  lomiri-session
+  # lomiri-session
 )
 
 for i in "humanity-icon-theme" ; do
@@ -128,51 +128,44 @@ for i in "humanity-icon-theme" ; do
 	cd ..
 done
 
-# for i in "${pkgs[@]}" ; do
-#   status=13
-#   git submodule update --init $i
-#   cd $i
-#   REPONAME="$repo_owner-lomiri"
-#   PKGNAME=$(basename $i)
+for i in "${pkgs[@]}" ; do
+  status=13
+  git submodule update --init $i
+  cd $i
+  PKGNAME=$(basename $i)
 
-#   # Extract version from PKGBUILD
-#   PKGVERLINE=$(grep -E '^pkgver=' PKGBUILD)
-#   PKGVER="${PKGVERLINE#*=}"
-#   PKGRELLINE=$(grep -E '^pkgrel=' PKGBUILD)
-#   PKGREL="${PKGRELLINE#*=}"
-#   VERSION="${PKGVER}-${PKGREL}"
+  # Extract version from PKGBUILD
+  PKGVERLINE=$(grep -E '^pkgver=' PKGBUILD)
+  PKGVER="${PKGVERLINE#*=}"
+  PKGRELLINE=$(grep -E '^pkgrel=' PKGBUILD)
+  PKGREL="${PKGRELLINE#*=}"
+  VERSION="${PKGVER}-${PKGREL}"
 
-#   if pacman -Si $PKGNAME &> /dev/null; then
-#     REPO_VERSION=$(pacman -Si $PKGNAME | grep Version | awk '{print $3}')
-#     echo "REPO_VERSION: $REPO_VERSION"
-#     echo "VERSION: $VERSION"
-#     echo "PKGNAME: $PKGNAME"
-#     if (( $(vercmp "$VERSION" "$REPO_VERSION") < 0 )); then
-#       echo "Package $PKGNAME of version $VERSION is older than the version ($REPO_VERSION) in the $REPONAME repo. Not building."
-#       sudo pacman -Swdd $PKGNAME --noconfirm --cachedir ./
-#     elif [ "$REPO_VERSION" == "$VERSION" ]; then
-#       echo "Package $PKGNAME of version $VERSION already exists in the $REPONAME repo. Not building."
-#       sudo pacman -Swdd $PKGNAME --noconfirm --cachedir ./
-#     else
-#       echo "Package $PKGNAME exists but with a different version ($REPO_VERSION) in the $REPONAME repo. Building new version $VERSION."
-#       sudo -u builduser bash -c 'export MAKEFLAGS=-j$(nproc) && makepkg --sign -s --noconfirm'||status=$?
-#     fi
-#   else
-#      echo "Package $PKGNAME does not exist in the $REPONAME repo. Adding it."
-#      sudo -u builduser bash -c 'export MAKEFLAGS=-j$(nproc) && makepkg --sign -s --noconfirm'||status=$?
-#   fi
-# 	if [ $status != 13 ]; then
-# 		exit 1
-# 	fi
-# 	cd ..
-# done
+  if pacman -Si $PKGNAME &> /dev/null; then
+    REPO_VERSION=$(pacman -Si $PKGNAME | grep Version | awk '{print $3}')
+    echo "REPO_VERSION: $REPO_VERSION"
+    echo "VERSION: $VERSION"
+    echo "PKGNAME: $PKGNAME"
+    if (( $(vercmp "$VERSION" "$REPO_VERSION") < 0 )); then
+      echo "Package $PKGNAME of version $VERSION is older than the version ($REPO_VERSION) in the $REPONAME repo. Not building."
+      #sudo pacman -Swdd $PKGNAME --noconfirm --cachedir ./
+    elif [ "$REPO_VERSION" == "$VERSION" ]; then
+      echo "Package $PKGNAME of version $VERSION already exists in the $REPONAME repo. Not building."
+      #sudo pacman -Swdd $PKGNAME --noconfirm --cachedir ./
+    else
+      echo "Package $PKGNAME exists but with a different version ($REPO_VERSION) in the $REPONAME repo. Building new version $VERSION."
+      sudo -u builduser bash -c 'export MAKEFLAGS=-j$(nproc) && makepkg --sign -s --noconfirm'||status=$?
+    fi
+  else
+     echo "Package $PKGNAME does not exist in the $REPONAME repo. Adding it."
+     sudo -u builduser bash -c 'export MAKEFLAGS=-j$(nproc) && makepkg --sign -s --noconfirm'||status=$?
+  fi
+	if [ $status != 13 ]; then
+		exit 1
+	fi
+	cd ..
+done
 
 cp */*.pkg.tar.* /out/lomiri/aarch64
-# cp */*.pkg.tar.* ./
 # gpg --list-keys
 repo-add --sign /out/lomiri/aarch64/lomiri.db.tar.xz /out/lomiri/aarch64/*.pkg.tar.xz
-# repo-add --sign ./$repo_owner-lomiri.db.tar.gz ./*.pkg.tar.xz
-
-# for i in *.db *.files; do
-# cp --remove-destination $(readlink $i) $i
-# done
