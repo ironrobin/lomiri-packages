@@ -170,7 +170,7 @@ done
 cp */*.pkg.tar.* /out/lomiri/aarch64
 # cp */*.pkg.tar.* ./
 # gpg --list-keys
-repo-add --sign /out/lomiri/aarch64 /out/lomiri/aarch64/*.pkg.tar.xz
+repo-add --sign /out/lomiri/aarch64/lomiri.db.tar.xz /out/lomiri/aarch64/*.pkg.tar.xz
 # repo-add --sign ./$repo_owner-lomiri.db.tar.gz ./*.pkg.tar.xz
 
 # for i in *.db *.files; do
