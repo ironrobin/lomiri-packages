@@ -11,7 +11,7 @@ license=(LGPL)
 conflicts=(persistent-cache-cpp)
 provides=(persistent-cache-cpp)
 depends=(leveldb valgrind)
-makedepends=(boost git cmake cmake-extras doxygen graphviz lcov gcovr gtest gmock)
+makedepends=(boost boost-libs git cmake cmake-extras doxygen graphviz lcov gcovr gtest gmock)
 source=(
   "https://gitlab.com/ubports/development/core/lib-cpp/persistent-cache-cpp/-/archive/1.0.7/persistent-cache-cpp-1.0.7.tar.gz"
   "0002-tests-add-iomanip-to-speed_test.patch"
