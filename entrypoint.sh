@@ -167,6 +167,7 @@ done
 # 	cd ..
 # done
 
+cp */*.pkg.tar.* /out
 # cp */*.pkg.tar.* ./
 # gpg --list-keys
 # repo-add --sign ./$repo_owner-lomiri.db.tar.gz ./*.pkg.tar.xz
