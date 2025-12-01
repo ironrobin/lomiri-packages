@@ -109,25 +109,6 @@ pkgs=(
   # lomiri-session
 )
 
-for i in "humanity-icon-theme" ; do
-	status=13
-	git submodule update --init $i
-	cd $i
-
-	for i in $(sudo -u builduser makepkg --packagelist); do
-		package=$(basename $i)
-		# wget https://github.com/$repo_owner/$repo_name/releases/download/packages/$package \
-		# 	&& echo "Warning: $package already built, did you forget to bump the pkgver and/or pkgrel? It will not be rebuilt."
-	done
-	sudo -u builduser bash -c 'export MAKEFLAGS=-j$(nproc) && makepkg --sign -s --noconfirm'||status=$?
-
-	# Package already built is fine.
-	# if [ $status != 13 ]; then
-	# 	exit 1
-	# fi
-	cd ..
-done
-
 for i in "${pkgs[@]}" ; do
   status=13
   git submodule update --init $i
