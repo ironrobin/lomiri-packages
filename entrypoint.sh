@@ -123,16 +123,15 @@ for i in "${pkgs[@]}" ; do
   VERSION="${PKGVER}-${PKGREL}"
 
   if pacman -Si $PKGNAME &> /dev/null; then
-    REPO_VERSION=$(pacman -Si $PKGNAME | grep Version | awk '{print $3}')
+    REPO_VERSION=$(pacman -Qpi /out/lomiri/aarch64/$PKGNAME*.pkg.tar.xz | grep Version | awk '{print $3}')
+    #REPO_VERSION=$(pacman -Si $PKGNAME | grep Version | awk '{print $3}')
     echo "REPO_VERSION: $REPO_VERSION"
     echo "VERSION: $VERSION"
     echo "PKGNAME: $PKGNAME"
     if (( $(vercmp "$VERSION" "$REPO_VERSION") < 0 )); then
       echo "Package $PKGNAME of version $VERSION is older than the version ($REPO_VERSION) in the $REPONAME repo. Not building."
-      #sudo pacman -Swdd $PKGNAME --noconfirm --cachedir ./
     elif [ "$REPO_VERSION" == "$VERSION" ]; then
       echo "Package $PKGNAME of version $VERSION already exists in the $REPONAME repo. Not building."
-      #sudo pacman -Swdd $PKGNAME --noconfirm --cachedir ./
     else
       echo "Package $PKGNAME exists but with a different version ($REPO_VERSION) in the $REPONAME repo. Building new version $VERSION."
       sudo -u builduser bash -c 'export MAKEFLAGS=-j$(nproc) && makepkg --sign -s --noconfirm'||status=$?
