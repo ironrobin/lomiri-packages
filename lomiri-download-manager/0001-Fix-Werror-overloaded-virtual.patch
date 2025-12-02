@@ -1,0 +1,66 @@
+From 2c9f73912ac3bd52bd559cef6936ea29c2684e51 Mon Sep 17 00:00:00 2001
+From: Alex R <alex@ironrobin.net>
+Date: Tue, 2 Dec 2025 18:01:20 +0000
+Subject: [PATCH] Fix -Werror=overloaded-virtual
+
+---
+ src/downloads/test-daemon/testing_file_download.cpp | 4 ++--
+ src/downloads/test-daemon/testing_file_download.h   | 4 ++--
+ tests/downloads/daemon/queue.h                      | 2 +-
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/src/downloads/test-daemon/testing_file_download.cpp b/src/downloads/test-daemon/testing_file_download.cpp
+index d42e6cf4..869adb51 100644
+--- a/src/downloads/test-daemon/testing_file_download.cpp
++++ b/src/downloads/test-daemon/testing_file_download.cpp
+@@ -150,7 +150,7 @@ TestingFileDownload::setHeaders(StringMap headers) {
+ }
+ 
+ StringMap
+-TestingFileDownload::headers() {
++TestingFileDownload::headers() const {
+     if (calledFromDBus() && _returnErrors) {
+         sendErrorReply(QDBusError::InvalidMember,
+         "setThrottle");
+@@ -187,7 +187,7 @@ TestingFileDownload::metadata() const {
+ }
+ 
+ void
+-TestingFileDownload::setMetadata(QVariantMap metadata) const {
++TestingFileDownload::setMetadata(const QVariantMap& metadata) {
+     if (calledFromDBus() && _returnErrors) {
+         sendErrorReply(QDBusError::InvalidMember,
+         "metadata");
+diff --git a/src/downloads/test-daemon/testing_file_download.h b/src/downloads/test-daemon/testing_file_download.h
+index 1c546565..345492ca 100644
+--- a/src/downloads/test-daemon/testing_file_download.h
++++ b/src/downloads/test-daemon/testing_file_download.h
+@@ -47,13 +47,13 @@ class TestingFileDownload : public FileDownload {
+     qulonglong throttle();
+ 
+     void setHeaders(StringMap headers) override;
+-    StringMap headers();
++    StringMap headers() const override;
+ 
+     void allowGSMDownload(bool allowed) override;
+     bool isGSMDownloadAllowed() override;
+ 
+     QVariantMap metadata() const override;
+-    void setMetadata(QVariantMap metadata) const;
++    void setMetadata(const QVariantMap& metadata) override;
+ 
+     Lomiri::DownloadManager::Daemon::Download::State state() const override;
+ 
+diff --git a/tests/downloads/daemon/queue.h b/tests/downloads/daemon/queue.h
+index c659ea5d..19caab4a 100644
+--- a/tests/downloads/daemon/queue.h
++++ b/tests/downloads/daemon/queue.h
+@@ -28,7 +28,7 @@ using namespace Lomiri::Transfers;
+ class MockDownloadQueue : public Queue {
+  public:
+     MOCK_METHOD1(add, void(Transfer*));
+-    MOCK_METHOD0(currentTransfer, QString());
++    MOCK_METHOD1(currentTransfer, QString(const QString &));
+     MOCK_METHOD0(paths, QStringList());
+     MOCK_METHOD0(transfers, QHash<QString, Transfer*>());
+     MOCK_METHOD0(size, int());

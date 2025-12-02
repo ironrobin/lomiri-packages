@@ -3,7 +3,7 @@
 pkgname=lomiri-download-manager
 _pkgname=lomiri-download-manager
 pkgver=0.2.2
-pkgrel=1
+pkgrel=2
 pkgdesc='Provides a service for downloading files while an application is suspended'
 url='https://gitlab.com/ubports/development/core/lomiri-download-manager'
 arch=(x86_64 i686 armv7h aarch64)
@@ -12,14 +12,16 @@ conflicts=(ubuntu-download-manager lomiri-download-manager)
 provides=(lomiri-download-manager)
 depends=(boost dbus-test-runner gmock qt5-base qt5-declarative libnih google-glog clang)
 makedepends=(libqtdbusmock apparmor git doxygen cmake cmake-extras gcovr lcov lomiri-api)
-source=('https://gitlab.com/ubports/development/core/lomiri-download-manager/-/archive/0.2.2/lomiri-download-manager-0.2.2.tar.gz')
-sha256sums=('SKIP')
+source=('git+https://gitlab.com/ubports/development/core/lomiri-download-manager.git#tag=0.2.2'
+        '0001-Fix-Werror-overloaded-virtual.patch')
+sha256sums=('41073a364396554f41271d95a6d28b7f47e41894a225be7234f37687518de79d'
+            '398e4050a5a09db6b5fdcd5d7fe33e41fa8e6a3a8dd7346a37cc47d56f4c4d87')
 
 BUILDENV+=('!check') # Some tests are broken
 
 prepare() {
-  cd ${_pkgname}-${pkgver}
-  #patch -Np1 -i "${srcdir}/wno-error.patch"
+  cd ${_pkgname}
+  patch -Np1 -i "${srcdir}/0001-Fix-Werror-overloaded-virtual.patch"
 }
 
 # pkgver() {
@@ -29,7 +31,7 @@ prepare() {
 # }
 
 build() {
-  cd ${_pkgname}-${pkgver}
+  cd ${_pkgname}
   cmake -DBUILD_TESTING=OFF -DENABLE_DOC=OFF -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_INSTALL_LIBDIR="lib/" -DCMAKE_INSTALL_LIBEXECDIR="lib/" .
   make
 }
@@ -40,7 +42,7 @@ build() {
 # }
 
 package() {
-  cd ${_pkgname}-${pkgver}
+  cd ${_pkgname}
   make DESTDIR="${pkgdir}/" install
   mv ${pkgdir}/usr/lib/qt5/ ${pkgdir}/usr/lib/qt/
 }
