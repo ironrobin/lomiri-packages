@@ -106,7 +106,7 @@ pkgs=(
   ayatana-indicator-display
   lomiri
   # Layer 8
-  lomiri-session
+  # lomiri-session
 )
 
 for i in "${pkgs[@]}" ; do
@@ -123,7 +123,7 @@ for i in "${pkgs[@]}" ; do
   VERSION="${PKGVER}-${PKGREL}"
 
   if pacman -Si $PKGNAME &> /dev/null; then
-    REPO_VERSION=$(pacman -Qpi /out/lomiri/aarch64/$PKGNAME*.pkg.tar.xz | grep Version | awk '{print $3}')
+    REPO_VERSION=$(pacman -Qpi /out/lomiri/aarch64/$PKGNAME-*-.pkg.tar.xz | grep Version | awk '{print $3}')
     #REPO_VERSION=$(pacman -Si $PKGNAME | grep Version | awk '{print $3}')
     echo "REPO_VERSION: $REPO_VERSION"
     echo "VERSION: $VERSION"
