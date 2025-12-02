@@ -98,13 +98,13 @@ pkgs=(
   qtmir-git
   # lomiri-content-hub
   # Layer 7
-  # ayatana-indicator-bluetooth
-  # ayatana-indicator-session
-  # ayatana-indicator-sound
-  # ayatana-indicator-power
-  # ayatana-indicator-datetime
-  # ayatana-indicator-display
-  # lomiri
+  ayatana-indicator-bluetooth
+  ayatana-indicator-session
+  ayatana-indicator-sound
+  ayatana-indicator-power
+  ayatana-indicator-datetime
+  ayatana-indicator-display
+  lomiri
   # Layer 8
   # lomiri-session
 )
