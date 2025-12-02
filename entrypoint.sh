@@ -81,13 +81,13 @@ pkgs=(
   libusermetrics
   lomiri-api
   # Layer 4
-  # biometryd
-  # lomiri-download-manager
-  # lomiri-app-launch
-  # lomiri-ui-toolkit
-  # gmenuharness
-  # lomiri-thumbnailer
-  # lomiri-notifications
+  biometryd
+  lomiri-download-manager
+  lomiri-app-launch
+  lomiri-ui-toolkit
+  gmenuharness
+  lomiri-thumbnailer
+  lomiri-notifications
   # Layer 5
   # lomiri-url-dispatcher
   # Layer 6
