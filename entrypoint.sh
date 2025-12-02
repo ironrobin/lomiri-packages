@@ -91,12 +91,12 @@ pkgs=(
   # Layer 5
   lomiri-url-dispatcher
   # Layer 6
-  # libayatana-common
-  # lomiri-indicator-network
-  # lomiri-telephony-service
-  # lomiri-system-settings
-  # qtmir-git
-  ## lomiri-content-hub
+  libayatana-common
+  lomiri-indicator-network
+  lomiri-telephony-service
+  lomiri-system-settings
+  qtmir-git
+  # lomiri-content-hub
   # Layer 7
   # ayatana-indicator-bluetooth
   # ayatana-indicator-session
