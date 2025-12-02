@@ -106,7 +106,7 @@ pkgs=(
   ayatana-indicator-display
   lomiri
   # Layer 8
-  # lomiri-session
+  lomiri-session
 )
 
 for i in "${pkgs[@]}" ; do
