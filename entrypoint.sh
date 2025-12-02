@@ -74,12 +74,12 @@ pkgs=(
   libqtdbustest
   repowerd
   # Layer 3
-  # mkcal
-  # dbus-cpp
-  # libqtdbusmock
-  # lomiri-history-service
-  # libusermetrics
-  # lomiri-api
+  mkcal
+  dbus-cpp
+  libqtdbusmock
+  lomiri-history-service
+  libusermetrics
+  lomiri-api
   # Layer 4
   # biometryd
   # lomiri-download-manager
