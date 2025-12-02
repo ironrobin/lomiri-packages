@@ -1,11 +1,11 @@
 # Maintainer: You <you@example.com>
 pkgname=biometryd
 _pkgname=biometryd
-pkgver=0.3.2
-pkgrel=1
+pkgver=0.3.3
+pkgrel=0
 pkgdesc="Biometric mediation/aggregation daemon + QML bindings for Lomiri (UBports)"
 arch=('x86_64' 'aarch64' 'armv7h')
-url="https://gitlab.com/ubports/development/core/biometryd/-/archive/0.3.2/biometryd-0.3.2.tar.gz"
+url="https://gitlab.com/ubports/development/core/biometryd/-/archive/0.3.3/biometryd-0.3.3.tar.gz"
 license=('GPL3')
 depends=(
   dbus
@@ -31,12 +31,9 @@ makedepends=(
 optdepends=('apparmor: confinement support')
 source=("git+https://gitlab.com/ubports/development/core/biometryd.git#branch=main"
         "fix-boost.patch"
-        "0001-remove-boost.system.patch"
 )
 sha256sums=('SKIP'
-            '35db377a23061cbeabc7015bebd342758becaf596b2b06b08742ea855f2826e6'
-            'eacddc74a9309f5e87b3e948e41dcb3d8a6481de46e984c42257b76010c4ec4e')
-
+            '35db377a23061cbeabc7015bebd342758becaf596b2b06b08742ea855f2826e6')
 # pkgver() {
 #   cd ${_pkgname}
 #   ver="r$(git rev-list --count HEAD).$(git describe --always)"
@@ -46,7 +43,6 @@ sha256sums=('SKIP'
 prepare() {
   cd "${srcdir}/${_pkgname}"
   patch -Np1 -i "${srcdir}/fix-boost.patch"
-  patch -Np1 -i "${srcdir}/0001-remove-boost.system.patch"
 }
 
 build() {
