@@ -89,7 +89,7 @@ pkgs=(
   lomiri-thumbnailer
   lomiri-notifications
   # Layer 5
-  # lomiri-url-dispatcher
+  lomiri-url-dispatcher
   # Layer 6
   # libayatana-common
   # lomiri-indicator-network
